@@ -13,6 +13,6 @@ public class HomeController {
 
      @GetMapping("/temporal")
     public String temporal() {
-        return "/temporal"; 
+        return "temporal"; 
     }
 }
