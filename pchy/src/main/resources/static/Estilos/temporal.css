@@ -1,0 +1,23 @@
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fondoAnimado 3s infinite alternate;
+        }
+
+        @keyframes fondoAnimado {
+            0% {
+                background-color: #800020; /* guinda */
+            }
+            100% {
+                background-color: #000000; /* negro */
+            }
+        }
+
+        img {
+            max-width: 80%;
+            height: auto;
+        }
