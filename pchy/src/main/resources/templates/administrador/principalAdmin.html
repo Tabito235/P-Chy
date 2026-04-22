@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P-Chy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/Estilos/styles.css">
+</head>
+<body>
+
+  <!-- Barrita de  navegación --> 
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="Pichy.png" alt="Mascota P-Chy" class="logo-mascota">
+      <span class="logo-nombre">P-Chy</span>
+    </div>
+    <ul class="navbar-links">
+      <li><a href="#" class="activo">Inicio</a></li>
+      <li><a href="#">Crear clase</a></li>
+      <li><a href="#">Mis clases</a></li>
+      <li><a href="#">Perfil</a></li>
+    </ul>
+    <div class="navbar-acciones">
+      <button class="btn-notif" aria-label="Notificaciones">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+      </button>
+      <div class="avatar"></div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="contenido">
+
+    <!-- Apartado de saludo para el maestro -->
+    <section class="bienvenida">
+      <div class="bienvenida-texto">
+        <h1>Hola, Prof. Elaine</h1>
+        <p>Administra tus clases y competencias de C++ y Python.</p>
+      </div>
+      <div class="bienvenida-icono">
+        <img src="upiiz.png" alt="Mascota Pichy" class="bienvenida-pichy">
+      </div>
+    </section>
+
+    <!-- Resumen -->
+    <section class="resumen">
+      <h2>Resumen rápido</h2>
+      <div class="resumen-cards">
+
+        <div class="card-stat">
+          <div>
+            <p class="stat-label">Clases activas</p>
+            <p class="stat-numero">5</p>
+          </div>
+          <div class="stat-icono">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="20" height="12" rx="1"/>
+            <circle cx="12" cy="6" r="1.5"/>
+            <path stroke-linecap="round" d="M9 11c0-1.657 1.343-2 3-2s3 .343 3 2"/>
+            <circle cx="6" cy="19" r="1.5"/>
+            <circle cx="12" cy="19" r="1.5"/>
+            <circle cx="18" cy="19" r="1.5"/>
+            <path stroke-linecap="round" d="M3.5 23c0-1.381 1.119-2 2.5-2s2.5.619 2.5 2"/>
+            <path stroke-linecap="round" d="M9.5 23c0-1.381 1.119-2 2.5-2s2.5.619 2.5 2"/>
+            <path stroke-linecap="round" d="M15.5 23c0-1.381 1.119-2 2.5-2s2.5.619 2.5 2"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card-stat">
+          <div>
+            <p class="stat-label">Solicitudes pendientes</p>
+            <p class="stat-numero">12</p>
+          </div>
+          <div class="stat-icono">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3M13 7a4 4 0 11-8 0 4 4 0 018 0zM3 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card-stat">
+          <div>
+            <p class="stat-label">Competencias activas</p>
+            <p class="stat-numero">3</p>
+          </div>
+          <div class="stat-icono">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
+</svg>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RECORDATORIOS -->
+    <div class="grid-medio">
+
+      <!-- RECORDATORIOS -->
+      <div class="card">
+        <h3>Recordatorios</h3>
+        <ul class="lista-recordatorios">
+          <li>
+            <span class="badge">12</span>
+            <span>Tienes 12 solicitudes por revisar</span>
+          </li>
+          <li>
+            <span class="punto"></span>
+            <span>La clase 'Programación 1' no tiene competencias asignadas</span>
+          </li>
+          <li>
+            <span class="punto"></span>
+            <span>Revisa alumnos nuevos en 'Estructuras de Datos'</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- COMPETENCIAS PROXIMAS -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Competencias próximas</h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <ul class="lista-competencias">
+          <li>
+            <span class="comp-nombre">Competencia: Bucles en Python</span>
+            <span class="comp-fecha">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Jue 18 Abr, 10:00
+            </span>
+          </li>
+          <li>
+            <span class="comp-nombre">Competencia: Arreglos en C++</span>
+            <span class="comp-fecha">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Vie 19 Abr, 12:30
+            </span>
+          </li>
+          <li>
+            <span class="comp-nombre">Competencia: Funciones</span>
+            <span class="comp-fecha">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Lun 22 Abr, 09:00
+            </span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- PRIMERA VEZ AQUI -->
+    <section class="onboarding">
+      <h3>¿Primera vez aquí?</h3>
+      <ol class="pasos">
+        <li><span class="paso-num">1</span> Crea una clase</li>
+        <li><span class="paso-num">2</span> Comparte el código o URL</li>
+        <li><span class="paso-num">3</span> Aprueba solicitudes</li>
+        <li><span class="paso-num">4</span> Crea una competencia y niveles</li>
+      </ol>
+      <div class="onboarding-acciones">
+        <button class="btn-primario">Empezar</button>
+        <a href="#" class="btn-omitir">Omitir por ahora</a>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

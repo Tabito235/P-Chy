@@ -1,0 +1,391 @@
+/* Detallitos de sombra y colores generales*/
+:root {
+  --color-primario: #1646a9;
+  --color-primario-oscuro: #0e0b64;
+  --color-fondo: #EEEDF4;
+  --color-blanco: #FFFFFF;
+  --color-texto: #1C1C2E;
+  --color-texto-suave: #6B6B80;
+  --color-borde: #E0DFF0;
+  --color-acento: #13239e;
+  --sombra: 0 2px 12px rgba(0, 0, 0, 0.07);
+  --radio: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  min-height: 100vh;
+}
+
+/* barra de navegacion */
+.navbar {
+  background-color: var(--color-primario);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mascota {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.logo-nombre {
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+}
+
+.navbar-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 4px;
+  transition: color 0.2s;
+}
+
+.navbar-links a:hover {
+  color: white;
+}
+
+.navbar-links a.activo {
+  color: white;
+  border-bottom: 2px solid white;
+}
+
+.navbar-acciones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-notif {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.btn-notif:hover {
+  opacity: 1;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #c9c9d8;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+/* contenido principal */
+.contenido {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* BIENVENIDA */
+.bienvenida {
+  background-color: var(--color-blanco);
+  border-radius: var(--radio);
+  padding: 32px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--sombra);
+}
+
+.bienvenida-texto h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: 6px;
+}
+
+.bienvenida-texto p {
+  color: var(--color-texto-suave);
+  font-size: 14px;
+}
+
+.bienvenida-pichy {
+  width: 90px;
+  height: 80px;
+  object-fit: contain;
+}
+
+/*RESUMEN */
+.resumen h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--color-texto);
+}
+
+.resumen-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card-stat {
+  background-color: var(--color-blanco);
+  border-radius: var(--radio);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--sombra);
+  transition: transform 0.2s;
+}
+
+.card-stat:hover {
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--color-texto-suave);
+  margin-bottom: 6px;
+}
+
+.stat-numero {
+  font-family: 'Sora', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.stat-icono {
+  color: var(--color-primario);
+  opacity: 0.85;
+}
+
+/* Recordatorios y competencias*/
+.grid-medio {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  background-color: var(--color-blanco);
+  border-radius: var(--radio);
+  padding: 22px 24px;
+  box-shadow: var(--sombra);
+}
+
+.card h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--color-texto);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  color: var(--color-texto-suave);
+}
+
+.card-header h3 {
+  margin-bottom: 0;
+}
+
+/* RECORDATORIOS */
+.lista-recordatorios {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lista-recordatorios li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--color-texto);
+  line-height: 1.4;
+}
+
+.badge {
+  background-color: var(--color-acento);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-borde);
+  flex-shrink: 0;
+  margin-left: 7px;
+}
+
+/* COMPETENCIAS  */
+.lista-competencias {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lista-competencias li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.lista-competencias li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.comp-nombre {
+  color: var(--color-texto);
+}
+
+.comp-fecha {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-texto-suave);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+/* Lo de "primera vez aqui" */
+.onboarding {
+  background-color: var(--color-blanco);
+  border: 2px solid var(--color-primario);
+  border-radius: var(--radio);
+  padding: 28px 32px;
+  box-shadow: var(--sombra);
+}
+
+.onboarding h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: var(--color-texto);
+}
+
+.pasos {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.pasos li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-texto-suave);
+}
+
+.paso-num {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  font-weight: 600;
+  font-size: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.onboarding-acciones {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-primario {
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primario:hover {
+  background-color: var(--color-primario-oscuro);
+}
+
+.btn-omitir {
+  color: var(--color-texto-suave);
+  font-size: 13.5px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-omitir:hover {
+  color: var(--color-texto);
+}
