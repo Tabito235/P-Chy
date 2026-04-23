@@ -16,5 +16,14 @@ public class adminController {
         return "administrador/perfilAdmin"; 
     }
 
+    @GetMapping("/clasesadmin")
+        public String clasesAdmin() {
+    return "administrador/Clases/clasesadmin";
+    }
+
+    @GetMapping("/enclase")
+    public String enclase() {
+        return "administrador/Clases/Enclase";
+    }
 }
 

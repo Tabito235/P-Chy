@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Estructuras de Datos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/Administrador/Inicio" class="nav-logo">
+    <div class="nav-logo-icon">P.C</div>
+    P-Chy
+  </a>
+  <div class="nav-links">
+    <a href="/Administrador/Inicio">Inicio</a>
+    <a href="#">Crear clase</a>
+    <a href="/clasesadmin" class="active">Mis clases</a>
+    <a href="/Administrador/Perfil">Perfil</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-bell">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+      </svg>
+    </div>
+    <div class="nav-avatar"></div>
+  </div>
+</nav>
+
+<!-- HEADER DE CLASE -->
+<div class="clase-header">
+  <div class="clase-header-inner">
+    <div class="clase-title-row">
+      <div>
+        <h1 class="clase-title">Estructuras de Datos</h1>
+        <div class="clase-meta">
+          <span>Código: <strong>A1B2C3</strong></span>
+          <span class="sep">|</span>
+          <span>Alumnos: <strong>30</strong></span>
+          <span class="sep">|</span>
+          <span>Competencias: <strong>5</strong></span>
+          <button class="meta-btn" onclick="copyText('A1B2C3', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copiar código
+          </button>
+          <button class="meta-btn" onclick="copyText('p-chy.app/clase/A1B2C3', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            Copiar URL
+          </button>
+        </div>
+      </div>
+      <button class="btn-editar">Editar clase</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab" data-tab="alumnos">Alumnos</button>
+      <button class="tab" data-tab="solicitudes">Solicitudes <span class="badge">12</span></button>
+      <button class="tab active" data-tab="competencias">Competencias</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO -->
+<main class="clase-main">
+
+  <!-- ── TAB: ALUMNOS ── -->
+  <div id="tab-alumnos" class="tab-panel hidden">
+    <div class="alumnos-layout">
+      <div class="alumnos-left">
+        <div class="panel-header">
+          <h2>Alumnos inscritos</h2>
+          <div class="search-wrap" style="max-width:220px;margin-bottom:0">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Buscar alumno..." id="searchAlumno"/>
+          </div>
+        </div>
+        <div class="alumnos-grid" id="alumnosGrid"></div>
+      </div>
+
+      <div class="solicitudes-panel">
+        <h2>Solicitudes pendientes</h2>
+        <div class="solicitudes-list" id="solicitudesList"></div>
+        <button class="ver-todas">Ver todas las solicitudes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: SOLICITUDES ── -->
+  <div id="tab-solicitudes" class="tab-panel hidden">
+    <div class="panel-card">
+      <div class="panel-header">
+        <h2>Todas las solicitudes</h2>
+      </div>
+      <div class="solicitudes-full" id="solicitudesFull"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: COMPETENCIAS ── -->
+  <div id="tab-competencias" class="tab-panel">
+    <div class="comp-toolbar">
+      <button class="btn-nueva-comp">+ Nueva competencia</button>
+    </div>
+    <div class="grid" id="compGrid"></div>
+  </div>
+
+</main>
+
+<script>
+/* ── DATOS ── */
+const alumnos = [
+  { name:"Ana López",     user:"@username" },
+  { name:"Juan Pérez",    user:"@username" },
+  { name:"María Gómez",   user:"@username" },
+  { name:"Pedro Silva",   user:"@username" },
+  { name:"Carmen Díaz",   user:"@username" },
+  { name:"Miguel Ruiz",   user:"@username" },
+  { name:"Luis García",   user:"@username" },
+  { name:"Sofía Torres",  user:"@username" },
+  { name:"Javier Vargas", user:"@username" },
+];
+
+const solicitudes = [
+  { name:"Ana López",     user:"@ana_lopez" },
+  { name:"Sofía Torres",  user:"@sofia_t"  },
+  { name:"Elena Sánchez", user:"@elena_s"  },
+  { name:"Marcos Reyes",  user:"@marcos_r" },
+];
+
+const competencias = [
+  { title:"Bucles en Python",           lang:"Python", date:"Oct 26, 2026, 10:00 AM", status:"Activa",     levels:[10,15,20] },
+  { title:"Arreglos en C++",            lang:"C++",    date:"Nov 1, 2026, 2:00 PM",   status:"Programada", levels:[]        },
+  { title:"Funciones",                  lang:"Python", date:"Oct 20, 2026, 9:00 AM",  status:"Cerrada",    levels:[15,20]   },
+  { title:"Recursividad",               lang:"C++",    date:"Nov 5, 2026, 11:30 AM",  status:"Activa",     levels:[20]      },
+  { title:"POO básica",                 lang:"Python", date:"Nov 10, 2026, 3:00 PM",  status:"Programada", levels:[15,25]   },
+  { title:"Estructuras: Pilas y Colas", lang:"C++",    date:"Nov 15, 2026, 1:00 PM",  status:"Activa",     levels:[10,15,20]},
+];
+
+const langColor = { Python:"#818cf8", "C++":"#34d399" };
+const statusColor = {
+  Activa:     { bg:"#dcfce7", color:"#15803d" },
+  Programada: { bg:"#fef9c3", color:"#a16207" },
+  Cerrada:    { bg:"#f1f5f9", color:"#64748b"  },
+};
+
+/* ── RENDER ALUMNOS ── */
+function renderAlumnos(filter="") {
+  const grid = document.getElementById("alumnosGrid");
+  const filtered = alumnos.filter(a => a.name.toLowerCase().includes(filter.toLowerCase()));
+  grid.innerHTML = filtered.map(a => `
+    <div class="alumno-card">
+      <div class="avatar"></div>
+      <div>
+        <div class="alumno-name">${a.name}</div>
+        <div class="alumno-user">${a.user}</div>
+        <span class="status-badge activo">Activo</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderSolicitudes() {
+  document.getElementById("solicitudesList").innerHTML =
+    solicitudes.slice(0,3).map(s => solicitudHTML(s)).join("");
+  document.getElementById("solicitudesFull").innerHTML =
+    solicitudes.map(s => solicitudHTML(s, true)).join("");
+}
+
+function solicitudHTML(s, full=false) {
+  return `
+    <div class="solicitud-item ${full ? 'full' : ''}">
+      <div class="avatar sm"></div>
+      <div class="sol-info">
+        <div class="alumno-name">${s.name}</div>
+        ${full ? `<div class="alumno-user">${s.user}</div>` : ""}
+      </div>
+      <div class="sol-actions">
+        <button class="btn-aceptar">Aceptar</button>
+        <button class="btn-rechazar">Rechazar</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ── RENDER COMPETENCIAS ── */
+function renderCompetencias() {
+  document.getElementById("compGrid").innerHTML = competencias.map(c => {
+    const sc = statusColor[c.status];
+    const lc = langColor[c.lang] || "#a78bfa";
+    const levelsHTML = c.levels.length
+      ? c.levels.map((l,i) => `<div class="nivel">Nivel ${i+1}: ${l} min</div>`).join("")
+      : `<div class="nivel muted">Sin niveles</div>`;
+    return `
+      <div class="card comp-card">
+        <div class="comp-top">
+          <span class="comp-title">${c.title}</span>
+          <span class="lang-tag" style="background:${lc}22;color:${lc}">${c.lang}</span>
+        </div>
+        <div class="comp-date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          ${c.date}
+        </div>
+        <span class="status-pill" style="background:${sc.bg};color:${sc.color}">${c.status}</span>
+        <div class="niveles">${levelsHTML}</div>
+        <div class="comp-actions">
+          <button class="btn-enter">Entrar</button>
+          <button class="btn-outline">Ver niveles y crear niveles</button>
+          <button class="btn-outline">Editar</button>
+          <button class="menu-btn" style="font-size:1.1rem">⋮</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* ── TABS ── */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+    tab.classList.add("active");
+    document.getElementById("tab-" + tab.dataset.tab).classList.remove("hidden");
+  });
+});
+
+document.getElementById("searchAlumno").addEventListener("input", e => {
+  renderAlumnos(e.target.value);
+});
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).catch(()=>{});
+  btn.style.color = "#22c55e";
+  setTimeout(() => btn.style.color = "", 1200);
+}
+
+renderAlumnos();
+renderSolicitudes();
+renderCompetencias();
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Mis clases</title>
+  <link rel="stylesheet" href="/Estilos/clasesadmn.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/Administrador/Inicio" class="nav-logo">
+    <div class="nav-logo-icon">P.C</div>
+    P-Chy
+  </a>
+  <div class="nav-links">
+    <a href="/Administrador/Inicio">Inicio</a>
+    <a href="#">Crear clase</a>
+    <a href="/clasesadmin" class="active">Mis clases</a>
+    <a href="/Administrador/Perfil">Perfil</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-bell">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+      </svg>
+    </div>
+    <div class="nav-avatar"></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <h1>Mis clases</h1>
+  <p class="subtitle">Busca, administra y entra a tus clases.</p>
+
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" placeholder="Buscar por nombre de la clase..."/>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+  const classes = [
+    { name: "Programación 1",        color: "#2352d8", students: 28, comps: 3,    hasComps: true,  link: ""         },
+    { name: "Estructuras de Datos",  color: "#2352d8", students: 30, comps: 5,    hasComps: true,  link: "/enclase" },
+    { name: "Algoritmos",            color: "#22c55e", students: 15, comps: 4,    hasComps: true,  link: ""         },
+    { name: "Programación Avanzada", color: "#a78bfa", students: 15, comps: null, hasComps: false, link: ""         },
+    { name: "Introducción a Python", color: "#c084fc", students: 32, comps: 2,    hasComps: true,  link: ""         },
+    { name: "Competencias C++",      color: "#2dd4bf", students: 20, comps: 6,    hasComps: true,  link: ""         },
+  ];
+
+  function randCode() {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let c = "";
+    for (let i = 0; i < 6; i++) c += letters[Math.floor(Math.random() * letters.length)];
+    return c;
+  }
+
+  const grid = document.getElementById("grid");
+
+  classes.forEach((cls, i) => {
+    const code = randCode();
+    const url  = `p-chy.app/clase/${code}`;
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="dot" style="background:${cls.color}"></div>
+          <span class="card-title">${cls.name}</span>
+        </div>
+        <button class="menu-btn" data-idx="${i}" aria-label="Opciones">⋮
+          <div class="dropdown" id="drop-${i}">
+            <div class="dropdown-code">
+              <div class="dropdown-code-label">Código de clase</div>
+              <div class="dropdown-code-row">
+                <span class="dropdown-code-val">${code}</span>
+                <button class="copy-btn" title="Copiar código" onclick="copyText('${code}', this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="dropdown-code">
+              <div class="dropdown-code-label">URL de la clase</div>
+              <div class="dropdown-code-row">
+                <span class="dropdown-code-val" style="font-weight:400;font-size:.82rem;">${url}</span>
+                <button class="copy-btn" title="Copiar URL" onclick="copyText('${url}', this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <hr class="dropdown-divider"/>
+            <div class="dropdown-item">Editar clase</div>
+            <div class="dropdown-item danger">Borrar clase</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="card-meta">
+        <span>Alumnos: ${cls.students}</span>
+        ${cls.hasComps
+          ? `<span>Competencias: ${cls.comps}</span>`
+          : `<span>
+               <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+               </svg>
+               Sin competencias asignadas
+             </span>`
+        }
+      </div>
+
+      <button class="btn-enter" data-link="${cls.link}">Entrar</button>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  document.getElementById("grid").addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-enter");
+    if (!btn) return;
+    const link = btn.dataset.link;
+    if (link) window.location.href = link;
+  });
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".menu-btn");
+    document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("open"));
+    if (btn) {
+      e.stopPropagation();
+      document.getElementById(`drop-${btn.dataset.idx}`).classList.add("open");
+    }
+  });
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    btn.style.color = "#22c55e";
+    setTimeout(() => btn.style.color = "", 1200);
+  }
+
+  document.querySelector("input").addEventListener("input", function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll(".card").forEach((card, i) => {
+      card.style.display = classes[i].name.toLowerCase().includes(q) ? "" : "none";
+    });
+  });
+</script>
+</body>
+</html>

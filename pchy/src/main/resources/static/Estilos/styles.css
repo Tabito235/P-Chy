@@ -389,3 +389,30 @@ body {
 .btn-omitir:hover {
   color: var(--color-texto);
 }
+
+:root {
+  /* tus variables existentes */
+  --color-primario: #1646a9;
+  --color-primario-oscuro: #0e0b64;
+  --color-fondo: #EEEDF4;
+  --color-blanco: #FFFFFF;
+  --color-texto: #1C1C2E;
+  --color-texto-suave: #6B6B80;
+  --color-borde: #E0DFF0;
+  --color-acento: #13239e;
+  --sombra: 0 2px 12px rgba(0, 0, 0, 0.07);
+  --radio: 12px;
+
+  /* ← agrega estas para enclase.css */
+  --blue:      #1646a9;
+  --blue-dark: #0e0b64;
+  --blue-btn:  #1646a9;
+  --bg:        #EEEDF4;
+  --card-bg:   #FFFFFF;
+  --text:      #1C1C2E;
+  --text-sub:  #6B6B80;
+  --border:    #E0DFF0;
+  --danger:    #d93636;
+  --radius:    12px;
+  --shadow:    0 2px 12px rgba(0,0,0,0.07);
+}
