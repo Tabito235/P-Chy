@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> P-chy </title>
+</head>
+
+<body>
+    <!-- Barra superior, se uso la clase navar para no cambiar estilos-->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="/Imagenes/Pichy.png" alt="Mascota P-Chy" class="logo-mascota">
+            <span class="logo-nombre">P-Chy</span>
+        </div>
+    </nav>
+
+    <!-- Formulario de inicio -->
+    <div class="formulario">
+        <h1>Regitrate</h1>
+        <h2>Ingresa tus datos para ser registrado</h2>
+
+        <form action="" method="post">
+            <div class="correo">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+            </div>
+            <div class="correo">
+                <input type="text" name="apellidopaterno" placeholder="Apellido paterno" required>
+            </div>
+            <div class="correo">
+                <input type="text" name="apellidomaterno" placeholder="Apellido materno" required>
+            </div>
+            
+            <div class="correo">
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+            </div>
+            <div>
+                <select id="escuela" placeholder="Escuela">
+                    <option selected disabled>Escuela de procedencia</option>
+                    <option value="upiiz">UPIIZ</option>
+                    <option value="escom">ESCOM</option>
+                    <option value="upiita">UPIITA</option>
+                    <option value="esime">ESIME</option>
+                    <option value="upiip">UPIIP</option>
+                    <option value="unam">UNAM</option>
+                </select>
+            </div>
+            
+            <input type="submit" value="Registrar">
+        </form>
+
+        <p>Una vez registrado deberas esperar la confirmación de tus datos y te enviaremos un correo con la contraseña de tu nuevo perfil</p>
+        <p>Ya tienes una cuenta?</p>
+        <a href="/inicioSesionA.html">
+            <input type="button" value="Iniciar sesión">
+        </a>
+        
+    </div>
+</body>
+
+</html>
