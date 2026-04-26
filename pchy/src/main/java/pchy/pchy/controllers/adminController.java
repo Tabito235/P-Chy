@@ -36,6 +36,11 @@ public class adminController {
         return "Administrador/registroAdmin";
     }
 
+     @GetMapping("/Administrador/Revision")
+    public String revisionCompetencia() {
+        return "Administrador/Clases/revisionCompetencia";
+    }
+
 
 }
 
