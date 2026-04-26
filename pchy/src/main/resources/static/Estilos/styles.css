@@ -453,16 +453,21 @@ form .correo{
 
 form .password{
     position: relative;
-    margin: 30px 0;
+    margin-top: 5px;
+    margin-bottom: 30px;
 }
 
 input[type="button"]{
-    width: 100%;
-    margin-bottom: 30px;
-    background: var(--color-primario-oscuro);
-    border: 0px;
-    height: 25px;
+    background: var(--color-primario);
     color: var(--color-blanco);
+    border:none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    
 }
   --shadow:    0 2px 12px rgba(0,0,0,0.07);
 }
