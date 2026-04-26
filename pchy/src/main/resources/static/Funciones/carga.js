@@ -1,3 +1,3 @@
     setTimeout(function() {
-      window.location.href = "/temporal";
+      window.location.href = "/Login";
     }, 5000);
