@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear clase — P-Chy</title>
+
+  <link rel="stylesheet" href="/Estilos/crearClase.css">
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css">
+</head>
+<body>
+
+<div th:replace="~{administrador/navbar :: navbar}"></div>
+
+<main class="contenido">
+
+  <div class="page-header">
+    <h1 class="page-titulo">Crear clase</h1>
+    <p class="page-subtitulo">Define la información básica para tu clase.</p>
+  </div>
+
+  <div class="crear-layout">
+
+    <div class="card">
+
+      <form action="/Administrador/Clases" method="post">
+
+        <div class="campo-grupo">
+          <label class="campo-label" for="nombre">Nombre de la clase</label>
+          <input
+            class="campo-input"
+            id="nombre"
+            name="nombre"
+            type="text"
+            placeholder="Ej. Programación 1"
+            required>
+        </div>
+
+        <div class="campo-grupo">
+          <label class="campo-label" for="descripcion">Descripción</label>
+          <textarea
+            class="campo-textarea"
+            id="descripcion"
+            name="descripcion"
+            placeholder="Describe objetivos, temas y reglas de la clase..."></textarea>
+        </div>
+
+        <div class="campo-grupo">
+          <label class="campo-label">Color de etiqueta</label>
+
+          <div class="color-opciones">
+            <button type="button" class="color-opcion seleccionado" data-color="#3b82f6"></button>
+            <button type="button" class="color-opcion" data-color="#22c55e"></button>
+            <button type="button" class="color-opcion" data-color="#06b6d4"></button>
+            <button type="button" class="color-opcion" data-color="#e879f9"></button>
+          </div>
+
+          <input type="hidden" name="color" id="colorElegido" value="#3b82f6">
+        </div>
+
+        <div class="campo-grupo">
+          <label class="campo-label" for="totalEstudiantes">Número total de estudiantes</label>
+          <input
+            class="campo-input campo-number"
+            id="totalEstudiantes"
+            name="totalEstudiantes"
+            type="number"
+            placeholder="Ej. 30"
+            min="1">
+        </div>
+
+        <div class="form-acciones">
+          <a href="/Administrador/Clases" class="btn-cancelar">Cancelar</a>
+          <button type="submit" class="btn-crear">Crear clase</button>
+        </div>
+
+      </form>
+
+    </div>
+ <!-- ── SIDEBAR ── -->
+      <aside class="sidebar">
+ 
+        <!-- Siguiente paso -->
+        <div class="card">
+          <h2 class="sidebar-titulo">Siguiente paso</h2>
+          <ol class="pasos-lista">
+ 
+            <li class="paso-item">
+              <span class="paso-num">1.</span>
+              <!-- link icon -->
+              <svg class="paso-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+              <span>Comparte el código o URL con tus alumnos.</span>
+            </li>
+ 
+            <li class="paso-item">
+              <span class="paso-num">2.</span>
+              <!-- check-circle icon -->
+              <svg class="paso-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="9 12 11 14 15 10"/>
+              </svg>
+              <span>Aprueba solicitudes manualmente.</span>
+            </li>
+ 
+            <li class="paso-item">
+              <span class="paso-num">3.</span>
+              <!-- trophy icon -->
+              <svg class="paso-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4a2 2 0 0 1-2-2V5h4"/>
+                <path d="M18 9h2a2 2 0 0 0 2-2V5h-4"/>
+                <path d="M12 17v4"/>
+                <path d="M8 21h8"/>
+                <path d="M6 5h12v7a6 6 0 0 1-12 0V5z"/>
+              </svg>
+              <span>Crea la primera competencia y niveles.</span>
+            </li>
+ 
+          </ol>
+        </div>
+ 
+        <!-- Consejo -->
+        <div class="card">
+          <p class="consejo-titulo">
+            <!-- bulb icon -->
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 14c.2-1 .7-1.7 1.5-2.5C17.7 10.3 18 9 18 8a6 6 0 0 0-12 0c0 1 .3 2.3 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/>
+              <path d="M9 18h6"/><path d="M10 22h4"/>
+            </svg>
+            Consejo
+          </p>
+          <p class="consejo-texto">
+            Después de crear la clase verás el código y la URL para invitar.
+          </p>
+        </div>
+ 
+      </aside><!-- /sidebar -->
+  </div>
+
+</main>
+
+<script src="/Funciones/colores.js"></script>
+
+</body>
+</html>

@@ -15,4 +15,9 @@ public class HomeController {
     public String temporal() {
         return "temporal"; 
     }
+
+    @GetMapping("/Login")
+    public String login() {
+        return "inicioSesionA";
+    }
 }

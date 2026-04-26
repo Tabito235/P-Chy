@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/Estilos/login.css">
+<link rel="stylesheet" href="/Estilos/navbarStyles.css">
+<title>P-Chy Registro</title>
+</head>
+
+<body>
+
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
+
+<main class="auth-page">
+
+<section class="formulario">
+
+<img src="/Imagenes/Pichy.png" class="formulario-mascota">
+
+<h1 class="formulario-titulo">Registro</h1>
+<p class="formulario-subtitulo">
+Ingresa los datos del nuevo profesorn para crear su cuenta
+</p>
+
+<form action="" method="post">
+
+<div class="campo-grupo">
+<label class="campo-label">Nombre</label>
+<input type="text" class="campo-input" required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Apellido paterno</label>
+<input type="text" class="campo-input" required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Apellido materno</label>
+<input type="text" class="campo-input" required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Correo electrónico</label>
+<input type="email" class="campo-input" required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Boleta/Matricula</label>
+<input type="boleta" class="campo-input" required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Escuela</label>
+
+<div class="campo-select-wrap">
+<select class="campo-select">
+<option selected disabled>Escuela de procedencia</option>
+<option>UPIIZ</option>
+<option>ESCOM</option>
+<option>UPIITA</option>
+<option>ESIME</option>
+<option>UPIIP</option>
+<option>UNAM</option>
+</select>
+</div>
+
+</div>
+
+<button type="submit" class="btn-primario">
+Registrarlo
+</button>
+
+</form>
+
+<div class="formulario-aviso">
+Una vez registrado, se enviara la contraseña al correo ingresado.
+</div>
+
+</section>
+
+</main>
+
+</body>
+</html>

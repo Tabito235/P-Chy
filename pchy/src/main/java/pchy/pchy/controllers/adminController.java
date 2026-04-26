@@ -8,22 +8,34 @@ public class adminController {
 
     @GetMapping("/Administrador/Inicio")
     public String principalAdmin() {
-        return "administrador/principalAdmin"; 
+        return "Administrador/principalAdmin"; 
     }
 
     @GetMapping("/Administrador/Perfil")
     public String perfilAdmin() {
-        return "administrador/perfilAdmin"; 
+        return "Administrador/perfilAdmin"; 
     }
 
-    @GetMapping("/clasesadmin")
+    @GetMapping("/Administrador/Clases")
         public String clasesAdmin() {
-    return "administrador/Clases/clasesadmin";
+    return "Administrador/Clases/clasesadmin";
     }
 
-    @GetMapping("/enclase")
-    public String enclase() {
-        return "administrador/Clases/Enclase";
+    @GetMapping("/Administrador/Nueva/Clase")
+    public String nuevaClase() {
+        return "Administrador/Clases/nuevaClase";
     }
+
+    @GetMapping("/Administrador/En/Clase")
+    public String enclase() {
+        return "Administrador/Clases/Enclase";
+    }
+
+     @GetMapping("/Administrador/Registro")
+    public String registroAdmin() {
+        return "Administrador/registroAdmin";
+    }
+
+
 }
 

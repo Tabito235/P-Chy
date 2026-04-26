@@ -4,31 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>P-Chy – Mis clases</title>
-  <link rel="stylesheet" href="/Estilos/clasesadmn.css"/>
+ <link rel="stylesheet" href="/Estilos/clasesadmn.css">
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css">
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
-  <a href="/Administrador/Inicio" class="nav-logo">
-    <div class="nav-logo-icon">P.C</div>
-    P-Chy
-  </a>
-  <div class="nav-links">
-    <a href="/Administrador/Inicio">Inicio</a>
-    <a href="#">Crear clase</a>
-    <a href="/clasesadmin" class="active">Mis clases</a>
-    <a href="/Administrador/Perfil">Perfil</a>
-  </div>
-  <div class="nav-right">
-    <div class="nav-bell">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-      </svg>
-    </div>
-    <div class="nav-avatar"></div>
-  </div>
-</nav>
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
 
 <!-- MAIN -->
 <main>
@@ -47,12 +29,12 @@
 
 <script>
   const classes = [
-    { name: "Programación 1",        color: "#2352d8", students: 28, comps: 3,    hasComps: true,  link: ""         },
-    { name: "Estructuras de Datos",  color: "#2352d8", students: 30, comps: 5,    hasComps: true,  link: "/enclase" },
-    { name: "Algoritmos",            color: "#22c55e", students: 15, comps: 4,    hasComps: true,  link: ""         },
-    { name: "Programación Avanzada", color: "#a78bfa", students: 15, comps: null, hasComps: false, link: ""         },
-    { name: "Introducción a Python", color: "#c084fc", students: 32, comps: 2,    hasComps: true,  link: ""         },
-    { name: "Competencias C++",      color: "#2dd4bf", students: 20, comps: 6,    hasComps: true,  link: ""         },
+    { name: "Programación 1",        color: "#2352d8", students: 28, comps: 3,    hasComps: true,  link: "/Administrador/En/Clase"         },
+    { name: "Estructuras de Datos",  color: "#2352d8", students: 30, comps: 5,    hasComps: true,  link: "/Administrador/En/Clase" },
+    { name: "Algoritmos",            color: "#22c55e", students: 15, comps: 4,    hasComps: true,  link: "/Administrador/En/Clase"         },
+    { name: "Programación Avanzada", color: "#a78bfa", students: 15, comps: null, hasComps: false, link: "/Administrador/En/Clase"         },
+    { name: "Introducción a Python", color: "#c084fc", students: 32, comps: 2,    hasComps: true,  link: "/Administrador/En/Clase"         },
+    { name: "Competencias C++",      color: "#2dd4bf", students: 20, comps: 6,    hasComps: true,  link: "/Administrador/En/Clase"         },
   ];
 
   function randCode() {

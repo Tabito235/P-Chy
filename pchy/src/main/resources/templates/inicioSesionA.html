@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="Estilos/login.css">
+<title>P-Chy</title>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="navbar-logo">
+    <img src="/Imagenes/Pichy.png" class="logo-mascota">
+    <span class="logo-nombre">P-Chy</span>
+  </div>
+</nav>
+
+<main class="auth-page">
+
+<section class="formulario">
+
+<h1 class="formulario-titulo">Bienvenido a P-Chy</h1>
+<p class="formulario-subtitulo">
+Inicia sesión como administrador
+</p>
+
+<form action="/Administrador/Inicio" method="get">
+
+<div class="campo-grupo">
+<label class="campo-label">Correo electrónico</label>
+<input type="email" class="campo-input" required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Contraseña</label>
+<input type="password" class="campo-input" required>
+</div>
+
+<button type="submit" class="btn-primario">
+Ingresar
+</button>
+
+</form>
+
+<div class="divisor">o</div>
+
+<p class="formulario-pie">
+¿No tienes cuenta?
+</p>
+
+<center>
+<div class="btn-grupo">
+<a href="/Usuario/Registro" style="flex:2;">
+<button class="btn-outline" type="button">Registrarte</button>
+</ceter>
+</a>
+
+</div>
+
+
+</section>
+
+</main>
+
+</body>
+</html>

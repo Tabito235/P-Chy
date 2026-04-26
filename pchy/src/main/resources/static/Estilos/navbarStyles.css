@@ -1,0 +1,88 @@
+/* barra de navegacion */
+.navbar {
+  background-color: var(--color-primario);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mascota {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.logo-nombre {
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.navbar-links {
+  display:flex;
+  list-style:none;
+  gap:32px;
+  margin-left:auto;
+}
+
+.navbar-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 4px;
+  transition: color 0.2s;
+}
+
+
+.navbar-links a:hover {
+  color: white;
+}
+
+.navbar-links a.activo {
+  color: white;
+  border-bottom: 2px solid white;
+}
+
+.navbar-acciones {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: 40px;
+}
+
+.btn-notif {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.btn-notif:hover {
+  opacity: 1;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #c9c9d8;
+  border: 2px solid rgba(255,255,255,0.4);
+}
