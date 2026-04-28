@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="/Estilos/login.css">
 <link rel="stylesheet" href="/Estilos/navbarStyles.css">
-<title>P-Chy Registro</title>
+
+<title>Registrar Profesor - P-Chy</title>
 </head>
 
 <body>
@@ -16,65 +18,83 @@
 
 <section class="formulario">
 
-<img src="/Imagenes/Pichy.png" class="formulario-mascota">
+<img src="/Imagenes/Pichy.png"
+     class="formulario-mascota"
+     alt="Pichy">
 
-<h1 class="formulario-titulo">Registro</h1>
+<h1 class="formulario-titulo">
+Registro de Profesor
+</h1>
+
 <p class="formulario-subtitulo">
-Ingresa los datos del nuevo profesorn para crear su cuenta
+Ingresa los datos del nuevo profesor para crear su cuenta.
 </p>
 
-<form action="" method="post">
+<form action="/Profesor/Registro" method="post">
 
 <div class="campo-grupo">
 <label class="campo-label">Nombre</label>
-<input type="text" class="campo-input" required>
+<input type="text"
+       name="nombre"
+       class="campo-input"
+       required>
 </div>
 
 <div class="campo-grupo">
-<label class="campo-label">Apellido paterno</label>
-<input type="text" class="campo-input" required>
-</div>
-
-<div class="campo-grupo">
-<label class="campo-label">Apellido materno</label>
-<input type="text" class="campo-input" required>
+<label class="campo-label">Apellido</label>
+<input type="text"
+       name="apellido"
+       class="campo-input"
+       required>
 </div>
 
 <div class="campo-grupo">
 <label class="campo-label">Correo electrónico</label>
-<input type="email" class="campo-input" required>
+<input type="email"
+       name="correo"
+       class="campo-input"
+       required>
 </div>
 
 <div class="campo-grupo">
-<label class="campo-label">Boleta/Matricula</label>
-<input type="boleta" class="campo-input" required>
+<label class="campo-label">Matrícula / Nómina</label>
+<input type="text"
+       name="matricula"
+       class="campo-input"
+       required>
 </div>
 
 <div class="campo-grupo">
 <label class="campo-label">Escuela</label>
 
 <div class="campo-select-wrap">
-<select class="campo-select">
-<option selected disabled>Escuela de procedencia</option>
-<option>UPIIZ</option>
-<option>ESCOM</option>
-<option>UPIITA</option>
-<option>ESIME</option>
-<option>UPIIP</option>
-<option>UNAM</option>
+<select name="institucion"
+        class="campo-select"
+        required>
+
+<option value="" disabled selected>
+Selecciona una escuela
+</option>
+
+<option value="UPIIZ">UPIIZ</option>
+<option value="ESCOM">ESCOM</option>
+<option value="UPIITA">UPIITA</option>
+<option value="ESIME">ESIME</option>
+<option value="UPIIP">UPIIP</option>
+<option value="UNAM">UNAM</option>
+
 </select>
 </div>
-
 </div>
 
 <button type="submit" class="btn-primario">
-Registrarlo
+Registrar Profesor
 </button>
 
 </form>
 
 <div class="formulario-aviso">
-Una vez registrado, se enviara la contraseña al correo ingresado.
+Una vez registrado, la contraseña será enviada automáticamente al correo ingresado.
 </div>
 
 </section>

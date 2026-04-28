@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="Estilos/login.css">
+<link rel="stylesheet" href="/Estilos/login.css">
 <title>P-Chy</title>
 </head>
 
@@ -22,19 +22,25 @@
 
 <h1 class="formulario-titulo">Bienvenido a P-Chy</h1>
 <p class="formulario-subtitulo">
-Inicia sesión como administrador
+Inicia sesión en P-chy
 </p>
 
-<form action="/Administrador/Inicio" method="get">
+<form action="/Login" method="post">
 
 <div class="campo-grupo">
-<label class="campo-label">Correo electrónico</label>
-<input type="email" class="campo-input" required>
+<label>Correo electrónico</label>
+<input type="email"
+       name="correo"
+       class="campo-input"
+       required>
 </div>
 
 <div class="campo-grupo">
-<label class="campo-label">Contraseña</label>
-<input type="password" class="campo-input" required>
+<label>Contraseña</label>
+<input type="password"
+       name="contrasena"
+       class="campo-input"
+       required>
 </div>
 
 <button type="submit" class="btn-primario">
@@ -49,15 +55,11 @@ Ingresar
 ¿No tienes cuenta?
 </p>
 
-<center>
 <div class="btn-grupo">
-<a href="/Usuario/Registro" style="flex:2;">
-<button class="btn-outline" type="button">Registrarte</button>
-</ceter>
+<a href="/Usuario/Registro" class="btn-outline">
+Registrarte
 </a>
-
 </div>
-
 
 </section>
 
