@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Registrar Profesor - P-Chy</title>
+
+<link rel="stylesheet" href="/Estilos/login.css">
+<link rel="stylesheet" href="/Estilos/navbarStyles.css">
+</head>
+
+<body>
+
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
+
+<main class="auth-page">
+
+<section class="formulario formulario-horizontal">
+
+
+<h1 class="formulario-titulo">
+Registrar Profesor
+</h1>
+
+<p class="formulario-subtitulo">
+Completa los datos para crear una nueva cuenta docente.
+</p>
+
+<form action="/Profesor/Registro"
+      method="post"
+      onsubmit="prepararInstitucion()">
+
+<!-- FILA 1 -->
+<div class="fila-doble">
+
+<div class="campo-grupo">
+<label class="campo-label">Nombre(s)</label>
+<input type="text"
+       name="nombre"
+       class="campo-input"
+       required>
+</div>
+
+<div class="campo-grupo">
+<label class="campo-label">Apellido(s)</label>
+<input type="text"
+       name="apellido"
+       class="campo-input"
+       required>
+</div>
+
+</div>
+
+<!-- FILA 2 -->
+<div class="campo-grupo">
+<label class="campo-label">Correo electrónico</label>
+<input type="email"
+       name="correo"
+       class="campo-input"
+       required>
+</div>
+
+<!-- FILA 3 -->
+<div class="campo-grupo">
+<label class="campo-label">Nómina / Matrícula</label>
+<input type="text"
+       name="matricula"
+       class="campo-input"
+       required>
+</div>
+
+<!-- FILA 4 -->
+<div class="fila-doble">
+
+<div class="campo-grupo">
+<label class="campo-label">Universidad</label>
+
+<select id="universidad"
+        class="campo-select"
+        onchange="actualizarCampus()"
+        required>
+
+<option value="" disabled selected>
+Selecciona una universidad
+</option>
+
+<option value="IPN">IPN</option>
+<option value="UNAM">UNAM</option>
+<option value="TecNM">TecNM</option>
+<option value="UAZ">UAZ</option>
+<option value="UANL">UANL</option>
+<option value="UDG">UDG</option>
+<option value="BUAP">BUAP</option>
+<option value="UAM">UAM</option>
+<option value="Tec de Monterrey">Tec de Monterrey</option>
+<option value="Otra">Otra</option>
+
+</select>
+</div>
+
+<div class="campo-grupo"
+     id="campusBox"
+     style="display:none;">
+
+<label class="campo-label">Campus / Facultad</label>
+
+<select id="campus"
+        class="campo-select">
+</select>
+
+</div>
+
+</div>
+
+<input type="hidden"
+       name="institucion"
+       id="institucionFinal">
+
+<button type="submit" class="btn-primario">
+Registrar Profesor
+</button>
+
+</form>
+
+<p th:if="${param.error}" style="color:red;">
+Ese correo o matrícula ya está registrado.
+</p>
+
+<p th:if="${param.ok}" style="color:green;">
+Profesor registrado correctamente.
+</p>
+
+<div class="formulario-aviso">
+La contraseña será enviada automáticamente al correo del profesor.
+</div>
+
+</section>
+
+</main>
+
+<script src="/Funciones/escuelas.js"></script>
+
+</body>
+</html>

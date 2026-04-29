@@ -34,6 +34,8 @@ public class UsuarioService {
 
     public void registrarAlumno(Usuario usuario){
 
+        validarDuplicados(usuario);
+
         usuario.setContrasena(
             encoder.encode(
                 usuario.getContrasena()
@@ -47,12 +49,16 @@ public class UsuarioService {
                 usuario.getCorreo()
             );
 
-        rolRepository.asignarRol(idUsuario, ALUMNO);
+        rolRepository.asignarRol(
+            idUsuario,
+            ALUMNO
+        );
     }
-
 
     public void registrarAdmin(Usuario usuario){
 
+        validarDuplicados(usuario);
+
         usuario.setContrasena(
             encoder.encode(
                 usuario.getContrasena()
@@ -66,11 +72,15 @@ public class UsuarioService {
                 usuario.getCorreo()
             );
 
-        rolRepository.asignarRol(idUsuario, ADMIN);
+        rolRepository.asignarRol(
+            idUsuario,
+            ADMIN
+        );
     }
 
-
     public void registrarProfesor(Usuario usuario){
+
+        validarDuplicados(usuario);
 
         String passwordPlano =
                 generarPassword();
@@ -97,6 +107,25 @@ public class UsuarioService {
         );
     }
 
+    private void validarDuplicados(
+            Usuario usuario){
+
+        if(usuarioRepository.existeCorreo(
+                usuario.getCorreo())){
+
+            throw new RuntimeException(
+                "Correo ya registrado"
+            );
+        }
+
+        if(usuarioRepository.existeMatricula(
+                usuario.getMatricula())){
+
+            throw new RuntimeException(
+                "Matrícula ya registrada"
+            );
+        }
+    }
 
     private String generarPassword(){
 
@@ -105,7 +134,6 @@ public class UsuarioService {
                 .replace("-", "")
                 .substring(0,10);
     }
-
 
     private void enviarCorreoProfesor(
             String correo,
@@ -129,31 +157,19 @@ public class UsuarioService {
             mensaje.setText(
                 "Hola y bienvenido al sistema P-Chy.\n\n" +
 
-                "Tu cuenta de profesor fue creada correctamente.\n\n" +
+                "Tu cuenta de profesor a sido creada de forma exitosamente correcta.\n\n" +
 
                 "Datos de acceso:\n" +
                 "Correo: " + correo + "\n" +
                 "Contraseña: " + password + "\n\n" +
 
-                "Recuerda cambiar tu contraseña al iniciar sesión.\n\n" +
-
-                "Equipo P-Chy"
+                "Recuerda cambiar tu contraseña al iniciar sesión... ¡Oye! ¿Sabias que el primer correo electronico fue: QWERTYUIOP? ¡Yo tampoco lo sabia! Lo acabo de ver en google" 
             );
 
             mailSender.send(mensaje);
 
-            System.out.println(
-                "Correo enviado correctamente a: "
-                + correo
-            );
-
         }catch(Exception e){
-
-            System.out.println(
-                "Error al enviar correo:"
-            );
-
-            e.printStackTrace();
-        }
+    throw new RuntimeException("No se pudo enviar correo");
+}
     }
 }

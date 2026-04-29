@@ -21,9 +21,8 @@
 
 <main class="auth-page">
 
-<section class="formulario">
+<section class="formulario formulario-horizontal">
 
-<img src="/Imagenes/Pichy.png" class="formulario-mascota">
 
 <h1 class="formulario-titulo">Registro</h1>
 
@@ -31,77 +30,80 @@
 Ingresa tus datos para registrarte
 </p>
 
-<form action="/Usuario/Registro" method="post">
+<form action="/Usuario/Registro" method="post" onsubmit="prepararInstitucion()">
+
+<div class="fila-doble">
 
 <div class="campo-grupo">
-<label class="campo-label">Nombre</label>
-<input type="text"
-       name="nombre"
-       class="campo-input"
-       required>
+<label>Nombre(s)</label>
+<input type="text" name="nombre" class="campo-input" required>
 </div>
 
 <div class="campo-grupo">
-<label class="campo-label">Apellido paterno</label>
-<input type="text"
-       name="apellido"
-       class="campo-input"
-       required>
+<label>Apellido(s)</label>
+<input type="text" name="apellido" class="campo-input" required>
+</div>
+
 </div>
 
 <div class="campo-grupo">
-<label class="campo-label">Correo electrónico</label>
-<input type="email"
-       name="correo"
-       class="campo-input"
-       required>
+<label>Correo</label>
+<input type="email" name="correo" class="campo-input" required>
+</div>
+
+<div class="fila-doble">
+
+<div class="campo-grupo">
+<label>Contraseña</label>
+<input type="password" name="contrasena" class="campo-input" required>
 </div>
 
 <div class="campo-grupo">
-<label class="campo-label">Boleta / Matrícula</label>
-<input type="text"
-       name="matricula"
-       class="campo-input"
-       required>
+<label>Boleta / Matrícula</label>
+<input type="text" name="matricula" class="campo-input" required>
 </div>
 
-<div class="campo-grupo">
-<label class="campo-label">Contraseña</label>
-<input type="password"
-       name="contrasena"
-       class="campo-input"
-       required>
 </div>
 
+<div class="fila-doble">
+
 <div class="campo-grupo">
-<label class="campo-label">Escuela</label>
+<label>Universidad</label>
+<select id="universidad" class="campo-select" onchange="actualizarCampus()">
+<option value="">Selecciona</option>
 
-<div class="campo-select-wrap">
-<select name="institucion"
-        class="campo-select"
-        required>
-
-<option value="" disabled selected>
-Escuela de procedencia
-</option>
-
-<option value="UPIIZ">UPIIZ</option>
-<option value="ESCOM">ESCOM</option>
-<option value="UPIITA">UPIITA</option>
-<option value="ESIME">ESIME</option>
-<option value="UPIIP">UPIIP</option>
+<option value="IPN">IPN</option>
 <option value="UNAM">UNAM</option>
+<option value="TecNM">TecNM</option>
+<option value="UAZ">UAZ</option>
+<option value="UANL">UANL</option>
+<option value="UDG">UDG</option>
+<option value="BUAP">BUAP</option>
+<option value="UAM">UAM</option>
+<option value="Tec Monterrey">Tec de Monterrey</option>
+<option value="Otra">Otra</option>
 
 </select>
 </div>
 
+<div class="campo-grupo" id="campusBox" style="display:none;">
+<label>Campus / Escuela</label>
+<select id="campus" class="campo-select"></select>
 </div>
 
+</div>
+
+<input type="hidden" name="institucion" id="institucionFinal">
+
 <button type="submit" class="btn-primario">
-Registrate
+Registrarte
 </button>
 
 </form>
+
+<p th:if="${param.error}" style="color:red;">
+Ese correo o matrícula ya está registrado.
+</p>
 
 <div class="formulario-aviso">
 Una vez registrado, podrás iniciar sesión con tu correo y contraseña
@@ -110,6 +112,6 @@ Una vez registrado, podrás iniciar sesión con tu correo y contraseña
 </section>
 
 </main>
-
+<script src="/Funciones/escuelas.js"></script>
 </body>
 </html>

@@ -19,10 +19,18 @@ public class UsuarioController {
     }
 
     @PostMapping("/Usuario/Registro")
-    public String registrarAlumno(Usuario usuario){
+public String registrarAlumno(
+        Usuario usuario){
+
+    try{
 
         usuarioService.registrarAlumno(usuario);
 
         return "redirect:/Login";
+
+    }catch(Exception e){
+
+        return "redirect:/Usuario/Registro?error";
     }
+}
 }

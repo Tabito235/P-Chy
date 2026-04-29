@@ -19,10 +19,18 @@ public class ProfesorController {
     }
 
     @PostMapping("/Profesor/Registro")
-    public String registrarProfesor(Usuario usuario){
+    public String registrarProfesor(
+            Usuario usuario){
 
-        usuarioService.registrarProfesor(usuario);
+        try{
 
-        return "redirect:/Login";
+            usuarioService.registrarProfesor(usuario);
+
+            return "redirect:/Profesor/Registro?ok";
+
+        }catch(Exception e){
+
+            return "redirect:/Profesor/Registro?error";
+        }
     }
 }

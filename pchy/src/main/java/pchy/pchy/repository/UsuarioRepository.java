@@ -116,4 +116,38 @@ public class UsuarioRepository {
             idUsuario
         );
     }
+
+    public boolean existeCorreo(String correo){
+
+    String sql = """
+    SELECT COUNT(*)
+    FROM usuario
+    WHERE correo = ?
+    """;
+
+    Integer total = jdbcTemplate.queryForObject(
+        sql,
+        Integer.class,
+        correo
+    );
+
+    return total > 0;
+}
+
+public boolean existeMatricula(String matricula){
+
+    String sql = """
+    SELECT COUNT(*)
+    FROM usuario
+    WHERE matricula = ?
+    """;
+
+    Integer total = jdbcTemplate.queryForObject(
+        sql,
+        Integer.class,
+        matricula
+    );
+
+    return total > 0;
+}
 }

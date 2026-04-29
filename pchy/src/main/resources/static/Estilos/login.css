@@ -304,3 +304,32 @@ body {
     flex-direction: column;
   }
 }
+
+.fila-2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+@media(max-width:700px){
+.fila-2{
+grid-template-columns:1fr;
+}
+}
+
+.formulario-horizontal{
+    max-width: 900px;
+    width: 100%;
+}
+
+.fila-doble{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 768px){
+    .fila-doble{
+        grid-template-columns: 1fr;
+    }
+}
