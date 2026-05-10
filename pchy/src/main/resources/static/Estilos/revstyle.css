@@ -1,0 +1,264 @@
+/* ═══════════════════════════════════════════
+   LAYOUT PRINCIPAL
+═══════════════════════════════════════════ */
+.rev-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 2rem 40px;
+}
+
+/* breadcrumb */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: #6B6B80; margin-bottom: 10px;
+}
+.breadcrumb a { color: #1646a9; text-decoration: none; font-weight: 600; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { color: #c7c7d4; }
+
+/* header página */
+.rev-page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.rev-page-titulo {
+  font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; color: #1C1C2E;
+}
+.rev-page-meta {
+  font-size: 13px; color: #6B6B80; margin-top: 4px;
+}
+.rev-estado-badge {
+  font-size: 12px; font-weight: 700; padding: 5px 14px;
+  border-radius: 8px; background: #f1f5f9; color: #475569;
+  border: 1px solid #E0DFF0; white-space: nowrap; margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   GRID DOS COLUMNAS
+═══════════════════════════════════════════ */
+.rev-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-top: 20px;
+}
+
+/* ═══════════════════════════════════════════
+   COLUMNA IZQUIERDA
+═══════════════════════════════════════════ */
+.rev-col-left { display: flex; flex-direction: column; gap: 16px; }
+
+/* panel box */
+.panel-box {
+  background: #fff; border: 1px solid #E0DFF0;
+  border-radius: 12px; padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+.panel-box-titulo {
+  font-family: 'Sora', sans-serif; font-size: 14px;
+  font-weight: 700; color: #1C1C2E; margin-bottom: 12px;
+}
+
+/* buscador */
+.rev-search { position: relative; margin-bottom: 10px; }
+.rev-search svg {
+  position: absolute; left: 10px; top: 50%;
+  transform: translateY(-50%); width: 14px; height: 14px;
+  stroke: #6B6B80; fill: none; stroke-width: 2;
+}
+.rev-search input {
+  width: 100%; padding: 8px 10px 8px 32px;
+  border: 1px solid #E0DFF0; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: #1C1C2E; outline: none; transition: border-color .15s;
+}
+.rev-search input:focus { border-color: #1646a9; }
+
+/* fila alumno */
+.alumno-rev-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 8px; cursor: pointer;
+  transition: background .15s; border: 1px solid transparent;
+}
+.alumno-rev-item:hover { background: #f8fafc; }
+.alumno-rev-item.activo { background: #eef2fb; border-color: #1646a9; }
+.alumno-rev-nombre { flex: 1; font-size: 13px; font-weight: 600; color: #1C1C2E; }
+.alumno-rev-estado {
+  font-size: 11px; font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; white-space: nowrap;
+}
+.alumno-rev-estado.entregado { background: #dcfce7; color: #15803d; }
+.alumno-rev-estado.pendiente { background: #fef9c3; color: #a16207; }
+.alumno-rev-niveles { font-size: 11px; color: #6B6B80; white-space: nowrap; }
+
+/* resumen alumno */
+.resumen-tabla { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 14px; }
+.resumen-tabla td { padding: 4px 0; color: #374151; }
+.resumen-tabla td:first-child { color: #6B6B80; width: 80px; }
+.api-tag {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  padding: 1px 7px; border-radius: 4px;
+}
+.api-tag.aceptada  { background: #dcfce7; color: #15803d; }
+.api-tag.rechazada { background: #fee2e2; color: #b91c1c; }
+
+.resumen-footer { display: flex; flex-direction: column; gap: 8px; }
+.resumen-fila { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.resumen-label { color: #6B6B80; font-size: 12.5px; min-width: 140px; }
+.resumen-input {
+  border: 1px solid #E0DFF0; border-radius: 6px;
+  padding: 5px 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; width: 70px; outline: none; text-align: center;
+}
+.resumen-input:focus { border-color: #1646a9; }
+.resumen-select {
+  border: 1px solid #E0DFF0; border-radius: 6px;
+  padding: 5px 8px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; outline: none; cursor: pointer;
+}
+.btn-guardar-cal {
+  width: 100%; background: #1646a9; color: #fff;
+  border: none; border-radius: 8px; padding: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+  font-weight: 700; cursor: pointer; margin-top: 4px;
+  transition: background .15s;
+}
+.btn-guardar-cal:hover { background: #0e39a0; }
+
+/* ranking */
+.ranking-lista { display: flex; flex-direction: column; gap: 6px; }
+.ranking-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; border-radius: 8px; font-size: 13px;
+}
+.ranking-item.destacado { background: #eef2fb; font-weight: 700; }
+.ranking-pos { font-weight: 800; color: #6B6B80; width: 18px; font-size: 13px; text-align: right; }
+.ranking-pos.oro    { color: #ca8a04; }
+.ranking-pos.plata  { color: #64748b; }
+.ranking-pos.bronce { color: #b45309; }
+.ranking-nombre { flex: 1; color: #1C1C2E; }
+.ranking-pts { font-weight: 800; color: #1646a9; }
+.btn-publicar {
+  width: 100%; background: #fff; border: 1.5px solid #1646a9;
+  color: #1646a9; border-radius: 8px; padding: 9px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 700; cursor: pointer; margin-top: 12px;
+  transition: all .15s;
+}
+.btn-publicar:hover { background: #1646a9; color: #fff; }
+
+/* ═══════════════════════════════════════════
+   COLUMNA DERECHA — Problemas
+═══════════════════════════════════════════ */
+.rev-col-right { display: flex; flex-direction: column; gap: 16px; }
+
+.nivel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.nivel-titulo { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: #1C1C2E; }
+.nivel-meta   { font-size: 12.5px; color: #6B6B80; }
+.nivel-total  {
+  font-size: 12px; font-weight: 700; background: #f1f5f9;
+  color: #475569; padding: 4px 12px; border-radius: 20px;
+}
+
+/* problema card revisión */
+.prob-rev-card {
+  background: #fff; border: 1px solid #E0DFF0;
+  border-radius: 12px; padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.prob-rev-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.prob-rev-titulo { font-size: 14px; font-weight: 700; color: #1C1C2E; }
+.sintaxis-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+}
+.sintaxis-badge.aceptada  { background: #dcfce7; color: #15803d; }
+.sintaxis-badge.rechazada { background: #fee2e2; color: #b91c1c; }
+.sintaxis-badge.pendiente { background: #f1f5f9; color: #475569; }
+
+/* tabs problema */
+.prob-rev-tabs {
+  display: flex; border-bottom: 1px solid #E0DFF0; margin-bottom: 14px;
+}
+.prob-rev-tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  padding: 7px 14px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; font-weight: 600; color: #6B6B80;
+  cursor: pointer; transition: color .15s, border-color .15s;
+}
+.prob-rev-tab.active { color: #1C1C2E; border-bottom-color: #1C1C2E; }
+.prob-rev-tab:hover  { color: #1C1C2E; }
+
+/* paneles */
+.prob-rev-panel         { display: none; }
+.prob-rev-panel.visible { display: block; }
+
+/* archivo recibido */
+.archivo-recibido {
+  display: flex; align-items: center; gap: 10px;
+  background: #f8fafc; border: 1px solid #E0DFF0;
+  border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
+}
+.archivo-icono {
+  width: 36px; height: 36px; background: #E2E8F0;
+  border-radius: 8px; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.archivo-info { flex: 1; }
+.archivo-nombre-txt { font-size: 13px; font-weight: 700; color: #1E293B; display: block; }
+.archivo-meta-txt   { font-size: 11px; color: #64748B; }
+.archivo-top {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: #6B6B80; margin-bottom: 6px;
+}
+.archivo-btns { display: flex; gap: 6px; }
+.btn-archivo {
+  background: #fff; border: 1px solid #E0DFF0; color: #1C1C2E;
+  padding: 4px 12px; border-radius: 6px; font-size: 12px;
+  font-weight: 600; cursor: pointer; transition: border-color .15s;
+}
+.btn-archivo:hover       { border-color: #1646a9; color: #1646a9; }
+.btn-archivo.ver-completo { border-color: #1646a9; color: #1646a9; }
+
+/* campos revisión */
+.rev-seccion-titulo { font-size: 12.5px; font-weight: 700; color: #1C1C2E; margin-bottom: 8px; }
+.rev-textarea {
+  width: 100%; border: 1px solid #E0DFF0; border-radius: 8px;
+  padding: 8px 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; color: #1C1C2E; background: #f8fafc;
+  resize: vertical; min-height: 60px; outline: none; transition: border-color .15s;
+}
+.rev-textarea:focus { border-color: #1646a9; background: #fff; }
+.rev-input-pts {
+  border: 1px solid #E0DFF0; border-radius: 6px;
+  padding: 6px 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; width: 80px; outline: none; margin-bottom: 8px;
+}
+.rev-input-pts:focus { border-color: #1646a9; }
+.rev-pts-hint  { font-size: 11px; color: #6B6B80; margin-bottom: 8px; }
+.rev-select {
+  width: 100%; border: 1px solid #E0DFF0; border-radius: 6px;
+  padding: 6px 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px; color: #1C1C2E; outline: none;
+  margin-bottom: 8px; cursor: pointer;
+}
+.rev-select:focus { border-color: #1646a9; }
+
+/* avatar con letra */
+.avatar-letra {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  font-family: 'Nunito', sans-serif; flex-shrink: 0;
+}
+.avatar-letra.sm { width: 32px; height: 32px; font-size: 11px; }
+
+@media (max-width: 900px) {
+  .rev-grid { grid-template-columns: 1fr; }
+}

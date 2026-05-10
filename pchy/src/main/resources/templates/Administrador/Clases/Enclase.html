@@ -5,632 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>P-Chy – Estructuras de Datos</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/Estilos/enclase.css">
-  <link rel="stylesheet" href="/Estilos/navbarStyles.css">
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/comstyle.css"/>
   <style>
-    /* ================================================
-       MODAL — Nueva competencia
-    ================================================ */
+    /* ── MODAL ── */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      backdrop-filter: blur(3px);
-      z-index: 300;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .22s ease;
+      position: fixed; inset: 0; background: rgba(15,23,42,.45);
+      backdrop-filter: blur(3px); z-index: 300;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      opacity: 0; pointer-events: none; transition: opacity .22s ease;
     }
-
-    .modal-overlay.visible {
-      opacity: 1;
-      pointer-events: all;
-    }
-
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
     .modal-card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.18);
-      width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
-      overflow-y: auto;
+      background: #fff; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.18);
+      width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
       padding: 32px 36px 28px;
-      transform: translateY(12px) scale(.98);
-      transition: transform .22s ease;
+      transform: translateY(12px) scale(.98); transition: transform .22s ease;
     }
-
-    .modal-overlay.visible .modal-card {
-      transform: translateY(0) scale(1);
+    .modal-overlay.visible .modal-card { transform: translateY(0) scale(1); }
+    .modal-titulo { font-family:'Sora',sans-serif; font-size:20px; font-weight:700; color:#1C1C2E; margin-bottom:24px; }
+    .m-campo { display:flex; flex-direction:column; gap:5px; margin-bottom:16px; }
+    .m-label { font-size:12.5px; font-weight:600; color:#1C1C2E; }
+    .m-input, .m-select {
+      border:1.5px solid #E0DFF0; border-radius:8px; padding:9px 13px;
+      font-family:'DM Sans',sans-serif; font-size:13.5px; color:#1C1C2E;
+      background:#EEEDF4; outline:none; width:100%; transition:border-color .18s,box-shadow .18s;
     }
-
-    .modal-titulo {
-      font-family: 'Sora', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: #1C1C2E;
-      margin-bottom: 24px;
-    }
-
-    /* campos del modal */
-    .m-campo {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      margin-bottom: 16px;
-    }
-
-    .m-label {
-      font-size: 12.5px;
-      font-weight: 600;
-      color: #1C1C2E;
-    }
-
-    .m-input,
-    .m-select {
-      border: 1.5px solid #E0DFF0;
-      border-radius: 8px;
-      padding: 9px 13px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      color: #1C1C2E;
-      background: #EEEDF4;
-      outline: none;
-      width: 100%;
-      transition: border-color .18s, box-shadow .18s;
-    }
-
-    .m-input:focus,
-    .m-select:focus {
-      border-color: #1646a9;
-      box-shadow: 0 0 0 3px rgba(22,70,169,.10);
-      background: #fff;
-    }
-
-    .m-input.error,
-    .m-select.error {
-      border-color: #d93636;
-      box-shadow: 0 0 0 3px rgba(217,54,54,.10);
-    }
-
-    .m-error-msg {
-      font-size: 11.5px;
-      color: #d93636;
-      display: none;
-    }
-
-    .m-campo.tiene-error .m-error-msg { display: block; }
-
-    /* fila fecha + hora */
-    .m-fila {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    /* niveles dinámicos */
-    .m-niveles-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    .m-niveles-sub {
-      font-size: 11.5px;
-      color: #6B6B80;
-      margin-bottom: 10px;
-    }
-
-    .m-niveles-lista {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .m-nivel-fila {
-      display: grid;
-      grid-template-columns: 1fr 120px 32px;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .m-nivel-fila .m-tiempo-label {
-      font-size: 11px;
-      color: #6B6B80;
-      margin-bottom: 2px;
-    }
-
+    .m-input:focus, .m-select:focus { border-color:#1646a9; box-shadow:0 0 0 3px rgba(22,70,169,.10); background:#fff; }
+    .m-error-msg { font-size:11.5px; color:#d93636; display:none; }
+    .m-campo.tiene-error .m-error-msg { display:block; }
+    .m-campo.tiene-error .m-input, .m-campo.tiene-error .m-select { border-color:#d93636; }
+    .m-fila { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .m-niveles-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+    .m-niveles-sub { font-size:11.5px; color:#6B6B80; margin-bottom:10px; }
+    .m-niveles-lista { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
+    .m-nivel-fila { display:grid; grid-template-columns:1fr 120px 32px; gap:8px; align-items:center; }
     .btn-add-nivel {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: none;
-      border: 1.5px dashed #E0DFF0;
-      border-radius: 8px;
-      padding: 7px 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: #1646a9;
-      cursor: pointer;
-      width: 100%;
-      justify-content: center;
-      transition: border-color .15s, background .15s;
+      display:inline-flex; align-items:center; gap:6px; background:none;
+      border:1.5px dashed #E0DFF0; border-radius:8px; padding:7px 14px;
+      font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; color:#1646a9;
+      cursor:pointer; width:100%; justify-content:center; transition:border-color .15s,background .15s;
     }
-
-    .btn-add-nivel:hover {
-      border-color: #1646a9;
-      background: #eef2fb;
-    }
-
+    .btn-add-nivel:hover { border-color:#1646a9; background:#eef2fb; }
     .btn-del-nivel {
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      border: 1.5px solid #E0DFF0;
-      background: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6B6B80;
-      transition: border-color .15s, color .15s;
-      flex-shrink: 0;
+      width:30px; height:30px; border-radius:6px; border:1.5px solid #E0DFF0;
+      background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      color:#6B6B80; transition:border-color .15s,color .15s; flex-shrink:0;
     }
-
-    .btn-del-nivel:hover {
-      border-color: #d93636;
-      color: #d93636;
-    }
-
-    .m-aviso {
-      font-size: 11.5px;
-      color: #6B6B80;
-      background: #f1f5f9;
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-top: 4px;
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    /* acciones del modal */
-    .modal-acciones {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid #E0DFF0;
-    }
-
-    .btn-modal-cancel {
-      background: #fff;
-      border: 1.5px solid #E0DFF0;
-      color: #1C1C2E;
-      padding: 9px 20px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: border-color .15s;
-    }
-
-    .btn-modal-cancel:hover { border-color: #1C1C2E; }
-
-    .btn-modal-submit {
-      background: #1646a9;
-      color: #fff;
-      border: none;
-      padding: 9px 22px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .15s, box-shadow .15s;
-    }
-
-    .btn-modal-submit:hover {
-      background: #0e0b64;
-      box-shadow: 0 4px 14px rgba(22,70,169,.28);
-    }
-
-    /* ================================================
-       VISTA EDITAR COMPETENCIA
-    ================================================ */
-    .vista-editar {
-      display: none;
-    }
-
-    .vista-editar.visible {
-      display: block;
-    }
-
-    /* breadcrumb */
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: #6B6B80;
-      margin-bottom: 10px;
-    }
-
-    .breadcrumb a,
-    .breadcrumb button {
-      background: none;
-      border: none;
-      color: #1646a9;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0;
-      text-decoration: none;
-    }
-
-    .breadcrumb a:hover,
-    .breadcrumb button:hover { text-decoration: underline; }
-
-    .breadcrumb-sep {
-      color: #E0DFF0;
-      font-size: 15px;
-    }
-
-    .breadcrumb-actual {
-      color: #1C1C2E;
-      font-weight: 600;
-    }
-
-    .editar-titulo {
-      font-family: 'Sora', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: #1C1C2E;
-      margin-bottom: 22px;
-    }
-
-    /* layout dos paneles */
-    .editar-layout {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 20px;
-      align-items: start;
-    }
-
-    /* panel niveles */
-    .panel-niveles {
-      background: #fff;
-      border: 1px solid #E0DFF0;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.07);
-    }
-
-    .panel-niveles-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    .panel-niveles-header h2 {
-      font-family: 'Sora', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      color: #1C1C2E;
-    }
-
-    .panel-niveles-sub {
-      font-size: 12px;
-      color: #6B6B80;
-      margin-bottom: 16px;
-    }
-
-    .nivel-item {
-      border: 1px solid #E0DFF0;
-      border-radius: 8px;
-      padding: 12px 14px;
-      cursor: pointer;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: border-color .15s, background .15s;
-      background: #fff;
-    }
-
-    .nivel-item:hover { border-color: #1646a9; }
-
-    .nivel-item.activo {
-      border-color: #1646a9;
-      background: #eef2fb;
-    }
-
-    .nivel-item-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .nivel-nombre {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #1C1C2E;
-    }
-
-    .nivel-tiempo-tag {
-      font-size: 11px;
-      font-weight: 700;
-      background: #E0DFF0;
-      color: #6B6B80;
-      border-radius: 999px;
-      padding: 2px 8px;
-    }
-
-    .nivel-problemas {
-      font-size: 12px;
-      color: #6B6B80;
-    }
-
-    .btn-add-nivel-panel {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      background: none;
-      border: 1.5px dashed #E0DFF0;
-      border-radius: 8px;
-      padding: 9px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: #1646a9;
-      cursor: pointer;
-      margin-top: 4px;
-      transition: border-color .15s, background .15s;
-    }
-
-    .btn-add-nivel-panel:hover {
-      border-color: #1646a9;
-      background: #eef2fb;
-    }
-
-    /* panel problemas */
-    .panel-problemas {
-      background: #fff;
-      border: 1px solid #E0DFF0;
-      border-radius: 12px;
-      padding: 22px 24px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.07);
-    }
-
-    .panel-prob-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-    }
-
-    .panel-prob-titulo {
-      font-family: 'Sora', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: #1C1C2E;
-    }
-
-    .panel-prob-tiempo {
-      font-size: 13px;
-      color: #6B6B80;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 2px;
-    }
-
-    .btn-editar-tiempo {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #6B6B80;
-      padding: 0;
-      display: inline-flex;
-    }
-
-    .btn-editar-tiempo:hover { color: #1646a9; }
-
-    /* tarjeta de problema */
-    .problema-card {
-      border: 1px solid #E0DFF0;
-      border-radius: 10px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
-      background: #fff;
-    }
-
-    .prob-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .prob-titulo {
-      font-size: 14px;
-      font-weight: 700;
-      color: #1C1C2E;
-      flex: 1;
-    }
-
-    .prob-badge {
-      font-size: 11px;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 2px 10px;
-    }
-
-    .prob-badge.guardado {
-      background: #dcfce7;
-      color: #15803d;
-    }
-
-    .prob-badge.sin-guardar {
-      background: #fef9c3;
-      color: #a16207;
-    }
-
-    /* sub-tabs del problema */
-    .prob-tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid #E0DFF0;
-      margin-bottom: 12px;
-    }
-
-    .prob-tab {
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      padding: 6px 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: #6B6B80;
-      cursor: pointer;
-      transition: color .15s, border-color .15s;
-    }
-
-    .prob-tab.active {
-      color: #1C1C2E;
-      border-bottom-color: #1C1C2E;
-    }
-
-    .prob-tab:hover { color: #1C1C2E; }
-
-    .prob-textarea {
-      width: 100%;
-      border: 1.5px solid #E0DFF0;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: #1C1C2E;
-      background: #EEEDF4;
-      resize: vertical;
-      min-height: 82px;
-      outline: none;
-      transition: border-color .18s;
-      line-height: 1.5;
-    }
-
-    .prob-textarea:focus {
-      border-color: #1646a9;
-      background: #fff;
-    }
-
-    .prob-acciones {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .btn-prob-cancel {
-      background: #fff;
-      border: 1.5px solid #E0DFF0;
-      color: #1C1C2E;
-      padding: 7px 16px;
-      border-radius: 7px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: border-color .15s;
-    }
-
-    .btn-prob-cancel:hover { border-color: #1C1C2E; }
-
-    .btn-prob-save {
-      background: #1646a9;
-      color: #fff;
-      border: none;
-      padding: 7px 18px;
-      border-radius: 7px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .15s;
-    }
-  
-    
-    .btn-prob-save:hover { background: #0e0b64; }
-
-    .btn-prob-edit {
-      background: none;
-      border: 1.5px solid #E0DFF0;
-      color: #1C1C2E;
-      padding: 7px 16px;
-      border-radius: 7px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: border-color .15s;
-    }
-
-    .btn-prob-edit:hover { border-color: #1646a9; color: #1646a9; }
-
-    .prob-nota {
-      font-size: 11.5px;
-      color: #6B6B80;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid #E0DFF0;
-    }
-
-    .btn-add-problema {
-      background: #1646a9;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 18px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background .15s;
-    }
-
-    .btn-add-problema:hover { background: #0e0b64; }
-
-    /* ================================================
-       RESPONSIVE
-    ================================================ */
-    @media (max-width: 860px) {
-      .editar-layout { grid-template-columns: 1fr; }
-      .m-fila { grid-template-columns: 1fr; }
-    }
+    .btn-del-nivel:hover { border-color:#d93636; color:#d93636; }
+    .m-aviso { font-size:11.5px; color:#6B6B80; background:#f1f5f9; border-radius:6px; padding:8px 12px; margin-bottom:16px; line-height:1.5; }
+    .modal-acciones { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; padding-top:16px; border-top:1px solid #E0DFF0; }
+    .btn-modal-cancel { background:#fff; border:1.5px solid #E0DFF0; color:#1C1C2E; padding:9px 20px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; cursor:pointer; }
+    .btn-modal-cancel:hover { border-color:#1C1C2E; }
+    .btn-modal-submit { background:#1646a9; color:#fff; border:none; padding:9px 22px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:700; cursor:pointer; }
+    .btn-modal-submit:hover { background:#0e0b64; }
+    @media (max-width:860px) { .m-fila { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <div th:replace="~{Administrador/navbar :: navbar}"></div>
 
-<!-- HEADER DE CLASE -->
 <div class="clase-header">
   <div class="clase-header-inner">
     <div class="clase-title-row">
@@ -642,11 +78,11 @@
           <span>Alumnos: <strong>30</strong></span>
           <span class="sep">|</span>
           <span>Competencias: <strong>5</strong></span>
-          <button class="meta-btn" onclick="copyText('A1B2C3', this)">
+          <button class="meta-btn" onclick="copyText('A1B2C3',this)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             Copiar código
           </button>
-          <button class="meta-btn" onclick="copyText('p-chy.app/clase/A1B2C3', this)">
+          <button class="meta-btn" onclick="copyText('p-chy.app/clase/A1B2C3',this)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
             Copiar URL
           </button>
@@ -654,8 +90,6 @@
       </div>
       <button class="btn-editar">Editar clase</button>
     </div>
-
-    <!-- TABS -->
     <div class="tabs">
       <button class="tab" data-tab="alumnos">Alumnos</button>
       <button class="tab" data-tab="solicitudes">Solicitudes <span class="badge">12</span></button>
@@ -664,17 +98,16 @@
   </div>
 </div>
 
-<!-- CONTENIDO PRINCIPAL -->
 <main class="clase-main">
 
-  <!-- ── TAB: ALUMNOS ── -->
+  <!-- TAB: ALUMNOS -->
   <div id="tab-alumnos" class="tab-panel hidden">
     <div class="alumnos-layout">
       <div class="alumnos-left">
         <div class="panel-header">
           <h2>Alumnos inscritos</h2>
           <div class="search-wrap" style="max-width:220px;margin-bottom:0">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" placeholder="Buscar alumno..." id="searchAlumno"/>
           </div>
         </div>
@@ -688,83 +121,25 @@
     </div>
   </div>
 
-  <!-- ── TAB: SOLICITUDES ── -->
+  <!-- TAB: SOLICITUDES -->
   <div id="tab-solicitudes" class="tab-panel hidden">
     <div class="panel-card">
-      <div class="panel-header">
-        <h2>Todas las solicitudes</h2>
-      </div>
+      <div class="panel-header"><h2>Todas las solicitudes</h2></div>
       <div class="solicitudes-full" id="solicitudesFull"></div>
     </div>
   </div>
 
-  <!-- ── TAB: COMPETENCIAS ── -->
+  <!-- TAB: COMPETENCIAS -->
   <div id="tab-competencias" class="tab-panel">
-
-    <!-- Vista A: grid de competencias -->
-    <div id="vista-grid">
-      <div class="comp-toolbar">
-        <button class="btn-nueva-comp" id="btnNuevaComp">+ Nueva competencia</button>
-      </div>
-      <div class="grid" id="compGrid"></div>
+    <div class="comp-toolbar">
+      <button class="btn-nueva-comp" id="btnNuevaComp">+ Nueva competencia</button>
     </div>
+    <div class="grid" id="compGrid"></div>
+  </div>
 
-    <!-- Vista B: editar competencia (oculta por defecto) -->
-    <div id="vista-editar" class="vista-editar">
-      <nav class="breadcrumb">
-        <button onclick="volverAGrid()">Competencias</button>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-actual" id="breadcrumbNombre">—</span>
-      </nav>
-      <h2 class="editar-titulo">Editar competencia</h2>
-
-      <div class="editar-layout">
-
-        <!-- Panel izquierdo: Niveles -->
-        <div class="panel-niveles">
-          <div class="panel-niveles-header">
-            <h2>Niveles</h2>
-            <button class="btn-add-nivel-panel" style="width:auto;padding:6px 14px;font-size:12.5px" onclick="agregarNivelPanel()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Añadir nivel
-            </button>
-          </div>
-          <p class="panel-niveles-sub">Selecciona un nivel para gestionar sus problemas</p>
-          <div id="nivelesPanel"></div>
-        </div>
-
-        <!-- Panel derecho: Problemas del nivel -->
-        <div class="panel-problemas">
-          <div class="panel-prob-header">
-            <div>
-              <div class="panel-prob-titulo" id="probPanelTitulo">Nivel 1</div>
-              <div class="panel-prob-tiempo">
-                Tiempo: <span id="probPanelTiempo">10 min</span>
-                <button class="btn-editar-tiempo" title="Editar tiempo">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-              </div>
-            </div>
-            <button class="btn-add-problema" onclick="agregarProblema()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Añadir problema
-            </button>
-          </div>
-
-          <div id="problemasContainer"></div>
-
-          <p class="prob-nota">Los problemas se guardan por nivel. Puedes cambiar de nivel en cualquier momento.</p>
-        </div>
-
-      </div>
-    </div>
-
-  </div><!-- /tab-competencias -->
 </main>
 
-<!-- ================================================
-     MODAL — Nueva competencia
-================================================ -->
+<!-- MODAL — Nueva competencia -->
 <div class="modal-overlay" id="modalNuevaComp">
   <div class="modal-card">
     <h2 class="modal-titulo">Nueva competencia</h2>
@@ -814,6 +189,7 @@
     </div>
   </div>
 </div>
- <script src="/Funciones/clases.js"></script>
+
+<script src="/Funciones/comfun.js"></script>
 </body>
 </html>

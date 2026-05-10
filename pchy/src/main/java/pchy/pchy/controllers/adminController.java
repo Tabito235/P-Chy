@@ -41,6 +41,16 @@ public class adminController {
         return "Administrador/Clases/revisionCompetencia";
     }
 
+    @GetMapping("/Administrador/Competencias/competencia")
+    public String EditarCompetencia() {
+    return "Administrador/Competencias/competencia";
+    }
 
+    @GetMapping("/Administrador/Competencias/Revision")
+        public String revisionCompetenciaDetalle() {
+    return "Administrador/Competencias/revision";
 }
+}
+
+
 

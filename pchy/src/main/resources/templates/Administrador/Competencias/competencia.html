@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Editar Competencia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/comstyle.css"/>
+</head>
+<body>
+
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
+
+<div class="clase-header">
+  <div class="clase-header-inner">
+    <div class="clase-title-row">
+      <div>
+        <h1 class="clase-title">Estructuras de Datos</h1>
+        <div class="clase-meta">
+          <span>Código: <strong>A1B2C3</strong></span>
+          <span class="sep">|</span>
+          <span>Alumnos: <strong>30</strong></span>
+          <span class="sep">|</span>
+          <span>Competencias: <strong>5</strong></span>
+        </div>
+      </div>
+      <button class="btn-editar" onclick="window.location.href='/Administrador/En/Clase'">Editar clase</button>
+    </div>
+    <div class="tabs">
+      <button class="tab" onclick="window.location.href='/Administrador/En/Clase?tab=alumnos'">Alumnos</button>
+      <button class="tab" onclick="window.location.href='/Administrador/En/Clase?tab=solicitudes'">Solicitudes <span class="badge">12</span></button>
+      <button class="tab active">Competencias</button>
+      <button class="tab" id="tabRevision">Revisión</button>
+    </div>
+  </div>
+</div>
+
+<main class="comp-main">
+
+  <nav class="breadcrumb">
+    <a href="/Administrador/En/Clase">Competencias</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-actual" id="breadcrumbNombre">Cargando...</span>
+  </nav>
+
+  <h1 class="editar-titulo">Editar competencia</h1>
+
+  <div class="editar-layout">
+
+    <div class="panel-niveles">
+      <div class="panel-niveles-header">
+        <h2>Niveles</h2>
+        <button class="btn-add-nivel-sm" onclick="agregarNivelPanel()">+ Añadir nivel</button>
+      </div>
+      <p class="panel-niveles-sub">Selecciona un nivel para gestionar sus problemas</p>
+      <div id="nivelesContainer"></div>
+    </div>
+
+    <div class="panel-problemas">
+      <div class="panel-prob-header">
+        <div>
+          <div class="panel-prob-titulo" id="probTitulo">Nivel 1</div>
+          <div class="panel-prob-tiempo">
+            Tiempo: <span id="probTiempo">10 min</span>
+            <button class="btn-editar-tiempo">✏️</button>
+          </div>
+        </div>
+        <button class="btn-add-problema" onclick="agregarProblema()">+ Añadir problema</button>
+      </div>
+      <div id="problemasContainer"></div>
+      <p class="problemas-footer" id="problemasFooter" style="display:none">
+        Los problemas se guardan por nivel. Puedes cambiar de nivel en cualquier momento.
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<script src="/Funciones/comfun.js"></script>
+<script src="/Funciones/comfun.js"></script>
+<script>
+  const urlParams  = new URLSearchParams(window.location.search);
+  const compId     = urlParams.get("id");
+  const compNombre = urlParams.get("nombre") || "Competencia";
+
+  document.getElementById("breadcrumbNombre").textContent = compNombre;
+
+  // ✅ Tab Revisión
+  document.getElementById("tabRevision").onclick = () => {
+    window.location.href = `/Administrador/Competencias/Revision?id=${compId}&nombre=${encodeURIComponent(compNombre)}`;
+  };
+</script>
+</body>
+</html>

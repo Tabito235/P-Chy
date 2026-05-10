@@ -1,0 +1,318 @@
+/* ================================================
+   ESTILOS – Editar Competencia / Capturas
+   Archivo: Estilos/comstyle.css
+================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #f8fafc; color: #1C1C2E; }
+
+/* ── NAVBAR (demo) ── */
+.navbar { background: #1646a9; color: #fff; padding: 0 5%; display: flex; align-items: center; height: 52px; gap: 24px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 15px; }
+.navbar-brand { display: flex; align-items: center; gap: 8px; font-size: 18px; }
+.navbar-links { display: flex; gap: 20px; margin-left: auto; font-size: 13px; font-weight: 600; opacity: .85; }
+
+/* ── CLASE HEADER ── */
+.clase-header { background: #fff; border-bottom: 1px solid #E0DFF0; }
+.clase-header-inner { padding: 20px 5% 0; max-width: 1200px; margin: 0 auto; }
+.clase-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.clase-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; }
+.clase-meta { font-size: 13px; color: #6B6B80; margin-top: 4px; }
+.clase-meta strong { color: #1C1C2E; }
+.clase-meta span + span { margin-left: 8px; }
+.btn-editar { border: 1px solid #1646a9; color: #1646a9; background: #fff; padding: 7px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; }
+.btn-copy { border: 1px solid #ccc; background: #fff; color: #333; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; margin-left: 6px; }
+.tabs { display: flex; gap: 4px; }
+.tab { background: none; border: none; padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #6B6B80; cursor: pointer; border-bottom: 2px solid transparent; }
+.tab.active { color: #1646a9; border-bottom-color: #1646a9; }
+.badge { background: #1646a9; color: #fff; font-size: 11px; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+
+/* ── MAIN ── */
+.comp-main { padding: 28px 5%; max-width: 1200px; margin: 0 auto; }
+.breadcrumb { font-size: 13px; color: #6B6B80; margin-bottom: 8px; }
+.breadcrumb a { color: #1646a9; text-decoration: none; font-weight: 600; }
+.breadcrumb-sep { margin: 0 6px; }
+.editar-titulo { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+
+/* ── LAYOUT ── */
+.editar-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+
+/* ── PANEL NIVELES ── */
+.panel-niveles { background: #fff; border: 1px solid #E0DFF0; border-radius: 12px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+.panel-niveles-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.panel-niveles-header h2 { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; }
+.panel-niveles-sub { font-size: 12px; color: #6B6B80; margin-bottom: 14px; }
+.btn-add-nivel-sm { background: none; border: 1px solid #E0DFF0; border-radius: 7px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: #1646a9; }
+.nivel-item {
+  border: 1px solid #E0DFF0; border-radius: 8px; padding: 11px 14px; margin-bottom: 8px;
+  cursor: pointer; transition: all 0.18s; display: flex; justify-content: space-between; align-items: center;
+}
+.nivel-item:hover { background: #f1f5f9; }
+.nivel-item.activo { border-color: #1646a9; background: #eef2fb; }
+.nivel-info { display: flex; flex-direction: column; gap: 2px; }
+.nivel-nombre { font-weight: 700; color: #1C1C2E; font-size: 14px; }
+.nivel-probs { font-size: 11px; color: #6B6B80; }
+.nivel-tiempo-tag { font-size: 11px; background: #E0DFF0; padding: 3px 9px; border-radius: 12px; color: #6B6B80; font-weight: 700; }
+.nivel-item.activo .nivel-tiempo-tag { background: #c7d4f5; color: #1646a9; }
+
+/* ── PANEL PROBLEMAS ── */
+.panel-problemas { background: #fff; border: 1px solid #E0DFF0; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+.panel-prob-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.panel-prob-titulo { font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; }
+.panel-prob-tiempo { font-size: 13px; color: #6B6B80; margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+.btn-editar-tiempo { background: none; border: none; cursor: pointer; color: #1646a9; font-size: 14px; }
+.btn-add-problema { background: #1646a9; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.btn-add-problema:hover { background: #0e39a0; }
+
+/* ── PROBLEMA CARD ── */
+.problema-card { border: 1px solid #E0DFF0; border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.prob-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.prob-titulo { font-weight: 700; color: #1C1C2E; font-size: 14px; }
+.prob-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
+.prob-badge.guardado { background: #dcfce7; color: #15803d; }
+.prob-badge.sin-guardar { background: #fef9c3; color: #a16207; }
+
+/* ── TABS ── */
+.prob-tabs { display: flex; border-bottom: 1px solid #E0DFF0; margin-bottom: 14px; }
+.prob-tab {
+  background: none; border: none; padding: 9px 14px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: #6B6B80;
+  border-bottom: 2px solid transparent; transition: color 0.15s;
+}
+.prob-tab.active { color: #1C1C2E; border-bottom-color: #1646a9; }
+
+/* ── TEXTAREA ── */
+.prob-textarea {
+  width: 100%; min-height: 100px; border: 1px solid #E0DFF0; border-radius: 8px;
+  padding: 11px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: #f8fafc;
+  resize: vertical; outline: none; transition: border-color 0.15s;
+}
+.prob-textarea:focus { border-color: #1646a9; }
+
+/* ── CAPTURAS ── */
+.capturas-seccion { padding: 2px 0; }
+.capturas-titulo { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: #1C1C2E; }
+.captura-item {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px;
+  padding: 11px 15px; margin-bottom: 9px;
+}
+.captura-info { display: flex; align-items: center; gap: 12px; }
+.captura-icon {
+  background: #E2E8F0; width: 38px; height: 38px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.archivo-nombre { display: block; font-size: 13px; font-weight: 700; color: #1E293B; }
+.alumno-nombre { font-size: 12px; color: #64748B; }
+.captura-acciones { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.btn-captura-ver {
+  background: #fff; border: 1px solid #E2E8F0; padding: 6px 13px;
+  border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-captura-ver:hover { background: #f1f5f9; }
+.btn-captura-habilitar {
+  background: #fff; border: 1px solid #1646A9; color: #1646A9;
+  padding: 6px 13px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.btn-captura-habilitar:hover { background: #1646A9; color: #fff; }
+.capturas-footer-msg { font-size: 12px; color: #64748B; margin-top: 12px; font-style: italic; }
+.capturas-empty { font-size: 13px; color: #94a3b8; text-align: center; padding: 24px 0; }
+
+/* ── FOOTER MSG ── */
+.problemas-footer { font-size: 12px; color: #64748B; text-align: center; margin-top: 8px; font-style: italic; }
+
+/* ══════════════════════════════════════════════════
+   TARJETAS DE COMPETENCIA — compGrid
+══════════════════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+@media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .grid { grid-template-columns: 1fr; } }
+
+.comp-card {
+  background: #fff;
+  border: 1px solid #E0DFF0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow .18s;
+}
+
+.comp-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); }
+
+.comp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.comp-card-titulo {
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1C1C2E;
+  flex: 1;
+}
+
+.comp-lang-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.comp-card-fecha {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #6B6B80;
+}
+
+.comp-estado-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.comp-niveles-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.comp-nivel-row {
+  font-size: 12.5px;
+  color: #374151;
+}
+
+.comp-nivel-row.sin-niveles {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.comp-card-acciones {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.btn-comp-entrar {
+  background: #1646a9;
+  color: #fff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.btn-comp-entrar:hover { background: #0e39a0; }
+
+.btn-comp-niveles, .btn-comp-editar {
+  background: #fff;
+  border: 1px solid #E0DFF0;
+  color: #1C1C2E;
+  padding: 7px 12px;
+  border-radius: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.btn-comp-niveles:hover, .btn-comp-editar:hover { border-color: #1646a9; color: #1646a9; }
+
+.btn-comp-mas {
+  background: none;
+  border: 1px solid #E0DFF0;
+  color: #6B6B80;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.comp-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 18px;
+}
+
+.btn-nueva-comp {
+  background: #1646a9;
+  color: #fff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.btn-nueva-comp:hover { background: #0e39a0; }
+
+/* ══════════════════════════════════════════════════
+   AVATAR CON LETRA (alumnos y solicitudes)
+══════════════════════════════════════════════════ */
+.avatar-letra {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  flex-shrink: 0;
+}
+
+.avatar-letra.sm {
+  width: 32px;
+  height: 32px;
+  font-size: 11px;
+}
+
+/* ══════════════════════════════════════════════════
+   BOTÓN REVISIÓN
+══════════════════════════════════════════════════ */
+.btn-revision {
+  border-color: #1646a9 !important;
+  color: #1646a9 !important;
+  font-weight: 700 !important;
+}
+
+.btn-revision:hover {
+  background: #1646a9 !important;
+  color: #fff !important;
+}
