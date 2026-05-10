@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P-Chy / Perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/Estilos/perfil-styles.css">
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css">
+</head>
+<body>
+
+  <!-- Navbar condicional por rol -->
+  <!-- Reemplaza las dos líneas del navbar en perfil.html -->
+<div th:replace="${rol == 3} ? ~{Usuario/navbar :: navbar} : ~{Administrador/navbar :: navbar}"></div>
+  <main class="contenido">
+
+    <!-- ── HERO / AVATAR ────────────────────────────── -->
+    <div class="perfil-hero">
+      <div class="perfil-banner"></div>
+      <div class="perfil-info">
+
+        <div class="perfil-avatar-wrap">
+          <div class="avatar-contenedor">
+
+            <!-- Avatar: foto real o iniciales -->
+            <div class="perfil-avatar" id="previewAvatar"
+                 th:style="${usuario.fotoPerfil != null}
+                            ? 'background-image: url(' + ${usuario.fotoPerfil} + '); background-size: cover; background-position: center;'
+                            : ''">
+              <!-- Iniciales si no hay foto -->
+              <span class="avatar-iniciales"
+                    th:if="${usuario.fotoPerfil == null}"
+                    th:text="${#strings.substring(usuario.nombre,0,1) + #strings.substring(usuario.apellido,0,1)}">
+              </span>
+            </div>
+
+            <!-- Botón para cambiar foto (abre form oculto) -->
+            <label for="inputFoto" class="btn-foto" title="Cambiar foto">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                   fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86
+                         a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9
+                         a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </label>
+
+            <!-- Form invisible para subir foto -->
+            <form id="formFoto" method="post"
+                  action="/Perfil/Foto"
+                  enctype="multipart/form-data"
+                  style="display:none;">
+              <input type="hidden" th:name="${_csrf.parameterName}"
+                     th:value="${_csrf.token}" th:if="${_csrf != null}">
+              <input type="file" id="inputFoto"
+                     name="foto" accept="image/*">
+            </form>
+
+          </div>
+
+          <div class="perfil-nombre-wrap">
+            <div class="perfil-nombre"
+                 th:text="${usuario.nombre + ' ' + usuario.apellido}">
+            </div>
+            <!-- Etiqueta de rol -->
+            <span class="perfil-rol" th:switch="${rol}">
+              <span th:case="1">Administrador</span>
+              <span th:case="2">Profesor</span>
+              <span th:case="3">Alumno</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Botón que activa el modo edición -->
+        <button class="btn-editar" id="btnEditar"
+                onclick="toggleEdicion(true)">
+          Editar perfil
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ALERTAS ───────────────────────────────────── -->
+    <div th:if="${param.ok}"       class="alerta alerta-ok">✓ Perfil actualizado correctamente.</div>
+    <div th:if="${param.passOk}"   class="alerta alerta-ok">✓ Contraseña cambiada correctamente.</div>
+    <div th:if="${param.fotoOk}"   class="alerta alerta-ok">✓ Foto actualizada correctamente.</div>
+    <div th:if="${param.passError}"
+         class="alerta alerta-error"
+         th:text="'✗ ' + ${param.passError}">
+    </div>
+    <div th:if="${param.fotoError}" class="alerta alerta-error">✗ No se pudo subir la foto.</div>
+
+    <div class="grid-perfil">
+
+      <!-- ── DATOS PERSONALES ──────────────────────── -->
+      <div class="card">
+        <div class="card-titulo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          Datos personales
+        </div>
+
+        <!-- ── MODO LECTURA ── -->
+        <div id="vistaLectura">
+          <div class="dato-fila">
+            <span class="dato-label">Nombre completo</span>
+            <span class="dato-valor"
+                  th:text="${usuario.nombre + ' ' + usuario.apellido}">
+            </span>
+          </div>
+          <div class="dato-fila">
+            <span class="dato-label">Matrícula</span>
+            <span class="dato-valor" th:text="${usuario.matricula}"></span>
+          </div>
+          <div class="dato-fila">
+            <span class="dato-label">Correo electrónico</span>
+            <span class="dato-valor" th:text="${usuario.correo}"></span>
+          </div>
+          <div class="dato-fila">
+            <span class="dato-label">Institución</span>
+            <span class="dato-valor" th:text="${usuario.institucion}"></span>
+          </div>
+          <div class="dato-fila" th:if="${usuario.fechaNacimiento != null}">
+            <span class="dato-label">Fecha de nacimiento</span>
+            <span class="dato-valor"
+                  th:text="${#dates.format(usuario.fechaNacimiento,'dd/MM/yyyy')}">
+            </span>
+          </div>
+          <div class="dato-fila">
+            <span class="dato-label">Puntaje total</span>
+            <span class="dato-valor" th:text="${usuario.puntaje} + ' pts'"></span>
+          </div>
+          <div class="dato-fila">
+            <span class="dato-label">Miembro desde</span>
+            <span class="dato-valor"
+                  th:text="${#dates.format(usuario.fechaRegistro,'dd/MM/yyyy')}">
+            </span>
+          </div>
+        </div>
+
+        <!-- ── MODO EDICIÓN ── -->
+<!-- ── MODO EDICIÓN ── -->
+<form id="formEdicion" method="post"
+      action="/Perfil/Actualizar" style="display:none;">
+  <input type="hidden" th:name="${_csrf.parameterName}"
+         th:value="${_csrf.token}" th:if="${_csrf != null}">
+
+  <div class="campo-grupo">
+    <label class="campo-label">Nombre</label>
+    <input type="text" name="nombre" class="campo-input"
+           th:value="${usuario.nombre}" required>
+  </div>
+  <div class="campo-grupo">
+    <label class="campo-label">Apellido</label>
+    <input type="text" name="apellido" class="campo-input"
+           th:value="${usuario.apellido}" required>
+  </div>
+
+  <!-- Institución eliminada -->
+
+  <div class="campo-grupo">
+    <label class="campo-label">Fecha de nacimiento</label>
+    <input type="date" name="fechaNacimiento" class="campo-input"
+           th:value="${usuario.fechaNacimiento}">
+  </div>
+
+  <div class="edicion-botones">
+    <button type="submit" class="btn-guardar">Guardar cambios</button>
+    <button type="button" class="btn-cancelar"
+            onclick="toggleEdicion(false)">
+      Cancelar
+    </button>
+  </div>
+</form>
+
+      </div>
+
+      <!-- ── CAMBIAR CONTRASEÑA ─────────────────────── -->
+      <div class="card">
+        <div class="card-titulo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6
+                     a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          Cambiar contraseña
+        </div>
+
+        <form method="post" action="/Perfil/Password">
+          <input type="hidden" th:name="${_csrf.parameterName}"
+                 th:value="${_csrf.token}" th:if="${_csrf != null}">
+
+          <div class="campo-grupo">
+            <label class="campo-label">Contraseña actual</label>
+            <input type="password" name="actual"
+                   class="campo-input" placeholder="••••••••" required>
+          </div>
+          <div class="campo-grupo">
+            <label class="campo-label">Nueva contraseña</label>
+            <input type="password" name="nueva"
+                   class="campo-input" placeholder="••••••••" required>
+          </div>
+          <div class="campo-grupo">
+            <label class="campo-label">Confirmar nueva contraseña</label>
+            <input type="password" name="confirmar"
+                   class="campo-input" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-guardar">Guardar cambios</button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // ── Toggle modo edición ──────────────────────────
+    function toggleEdicion(activar) {
+      document.getElementById('vistaLectura').style.display =
+        activar ? 'none' : 'block';
+      document.getElementById('formEdicion').style.display =
+        activar ? 'block' : 'none';
+      document.getElementById('btnEditar').style.display =
+        activar ? 'none' : 'inline-flex';
+    }
+
+    // ── Preview y auto-submit de foto ────────────────
+    const inputFoto    = document.getElementById('inputFoto');
+    const previewAvatar = document.getElementById('previewAvatar');
+
+    inputFoto.addEventListener('change', function () {
+      const archivo = this.files[0];
+      if (!archivo) return;
+
+      // Preview instantáneo
+      const lector = new FileReader();
+      lector.onload = e => {
+        previewAvatar.style.backgroundImage = `url(${e.target.result})`;
+        previewAvatar.style.backgroundSize  = 'cover';
+        previewAvatar.style.backgroundPosition = 'center';
+        const iniciales = previewAvatar.querySelector('.avatar-iniciales');
+        if (iniciales) iniciales.style.display = 'none';
+      };
+      lector.readAsDataURL(archivo);
+
+      // Subir automáticamente
+      document.getElementById('formFoto').submit();
+    });
+  </script>
+
+</body>
+</html>

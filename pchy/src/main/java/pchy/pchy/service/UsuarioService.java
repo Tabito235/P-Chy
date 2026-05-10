@@ -172,4 +172,58 @@ public class UsuarioService {
     throw new RuntimeException("No se pudo enviar correo");
 }
     }
+
+    public Usuario obtenerPerfil(String correo){
+
+    Usuario u = usuarioRepository.obtenerPerfilCompleto(correo);
+
+    if(u == null){
+        throw new RuntimeException("Usuario no encontrado");
+    }
+
+    return u;
+}
+
+public void actualizarPerfil(String correo, Usuario datos) {
+
+    Usuario u = usuarioRepository.buscarPorCorreo(correo);
+    if (u == null) throw new RuntimeException("Usuario no encontrado");
+
+    u.setNombre(datos.getNombre());
+    u.setApellido(datos.getApellido());
+    // u.setInstitucion() — no se modifica
+
+    if (datos.getFechaNacimiento() != null) {
+        u.setFechaNacimiento(datos.getFechaNacimiento());
+    }
+
+    usuarioRepository.actualizarPerfil(u);
+}
+
+public void cambiarPassword(String correo, String actual, String nueva, String confirmar){
+
+    Usuario u = usuarioRepository.buscarPorCorreo(correo);
+
+    if(!encoder.matches(actual, u.getContrasena())){
+        throw new RuntimeException("Contraseña incorrecta");
+    }
+
+    if(!nueva.equals(confirmar)){
+        throw new RuntimeException("No coinciden");
+    }
+
+    String nuevaHash = encoder.encode(nueva);
+
+    usuarioRepository.actualizarPassword(correo, nuevaHash);
+}
+
+// Agregar en UsuarioService.java
+
+public void actualizarFoto(String correo, String ruta) {
+    usuarioRepository.actualizarFoto(correo, ruta);
+}
+
+// Reemplaza actualizarPerfil en UsuarioService
+
+
 }

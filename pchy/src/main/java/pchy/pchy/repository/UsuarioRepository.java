@@ -150,4 +150,90 @@ public boolean existeMatricula(String matricula){
 
     return total > 0;
 }
+
+public Usuario obtenerPerfilCompleto(String correo){
+
+    String sql = """
+    SELECT *
+    FROM usuario
+    WHERE correo = ?
+    """;
+
+    return jdbcTemplate.query(
+        sql,
+        rs -> {
+
+            if(rs.next()){
+
+                Usuario u = new Usuario();
+
+                u.setIdUsuario(rs.getInt("idUsuario"));
+                u.setMatricula(rs.getString("matricula"));
+                u.setCorreo(rs.getString("correo"));
+                u.setNombre(rs.getString("nombre"));
+                u.setApellido(rs.getString("apellido"));
+                u.setInstitucion(rs.getString("institucion"));
+                u.setFotoPerfil(rs.getString("fotoPerfil"));
+                u.setFechaNacimiento(rs.getDate("fechaNacimiento"));
+                u.setAsistente(rs.getBoolean("asistente"));
+                u.setPuntaje(rs.getInt("puntaje"));
+                u.setActivo(rs.getBoolean("activo"));
+                u.setFechaRegistro(rs.getTimestamp("fechaRegistro"));
+
+                return u;
+            }
+
+            return null;
+        },
+        correo
+    );
+}
+
+public void actualizarPerfil(Usuario u) {
+
+    String sql = """
+        UPDATE usuario
+        SET nombre = ?, apellido = ?, fechaNacimiento = ?
+        WHERE correo = ?
+        """;
+
+    jdbcTemplate.update(
+        sql,
+        u.getNombre(),
+        u.getApellido(),
+        u.getFechaNacimiento(),
+        u.getCorreo()
+    );
+}
+
+public void actualizarPassword(String correo, String nueva){
+
+    String sql = """
+    UPDATE usuario
+    SET contrasena = ?
+    WHERE correo = ?
+    """;
+
+    jdbcTemplate.update(
+        sql,
+        nueva,
+        correo
+    );
+}
+
+public void actualizarFoto(String correo, String ruta){
+
+    String sql = """
+    UPDATE usuario
+    SET fotoPerfil = ?
+    WHERE correo = ?
+    """;
+
+    jdbcTemplate.update(
+        sql,
+        ruta,
+        correo
+    );
+}
+
 }

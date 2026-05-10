@@ -6,9 +6,9 @@
     </div>
 
     <ul class="navbar-links">
-      <li><a href="/Administrador/Inicio">Inicio</a></li>
-      <li><a href="/Administrador/Nueva/Clase">Crear clase</a></li>
-      <li><a href="/Administrador/Clases">Mis clases</a></li>
+      <li><a href="/Alumno/Inicio">Inicio</a></li>
+      <li><a href="/Alumno/Clases">Mis clases</a></li>
+      <li><a href="/Alumno/Competencias">Competencias</a></li>
       <li><a href="/Perfil">Perfil</a></li>
     </ul>
 
@@ -21,19 +21,16 @@
 
       <a href="/Perfil" class="navbar-usuario">
 
-        <!-- Con foto -->
         <div class="avatar"
              th:if="${usuario != null and usuario.fotoPerfil != null}"
              th:style="'background-image: url(' + ${usuario.fotoPerfil} + '); background-size: cover; background-position: center;'">
         </div>
 
-        <!-- Sin foto: iniciales -->
         <div class="avatar avatar-iniciales-nav"
              th:if="${usuario == null or usuario.fotoPerfil == null}"
              th:text="${usuario != null} ? ${usuario.nombre?.substring(0,1)} + ${usuario.apellido?.substring(0,1)} : '?'">
         </div>
 
-        <!-- Nombre -->
         <span class="navbar-nombre"
               th:text="${usuario != null} ? ${usuario.nombre} : 'Usuario'">
         </span>

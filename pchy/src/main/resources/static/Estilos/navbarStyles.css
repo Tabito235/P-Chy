@@ -86,3 +86,26 @@
   background-color: #c9c9d8;
   border: 2px solid rgba(255,255,255,0.4);
 }
+
+/* ── Usuario en navbar ─────────────────────── */
+.navbar-usuario {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-nombre {
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+.avatar-iniciales-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}

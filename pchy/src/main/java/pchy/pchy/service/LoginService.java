@@ -39,17 +39,18 @@ public class LoginService {
 
         session.setAttribute("usuario", usuario);
 
-        int rol =
-            usuarioRepository.obtenerRol(
-                usuario.getIdUsuario()
-            );
-//Cuando tengan sus paginas acomoodoEsta vaina
-        if(rol == 1)
-            return "redirect:/Administrador/Inicio";
+int rol = usuarioRepository.obtenerRol(usuario.getIdUsuario());
 
-        if(rol == 2)
-            return "redirect:/Administrador/Inicio"; //esta debe ser profe
+session.setAttribute("rol", rol); // ← solo aquí, no antes
 
-        return "redirect:/Administrador/Inicio";
+if (rol == 1)
+    return "redirect:/Administrador/Inicio";
+
+if (rol == 2)
+    return "redirect:/Administrador/Inicio";
+
+return "redirect:/Alumno/Inicio"; 
     }
+
+    
 }

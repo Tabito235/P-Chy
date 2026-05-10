@@ -275,9 +275,6 @@ body {
   background: var(--color-primario-oscuro);
 }
 
-/* ==================================================
-   RESPONSIVE
-================================================== */
 @media (max-width: 768px) {
   .grid-perfil {
     grid-template-columns: 1fr;
@@ -288,3 +285,46 @@ body {
     align-items: flex-start;
   }
 }
+
+
+.alerta {
+  padding: .75rem 1.25rem;
+  border-radius: .5rem;
+  margin-bottom: 1.25rem;
+  font-size: .9rem;
+  font-weight: 500;
+}
+.alerta-ok    { background: #d1fae5; color: #065f46; }
+.alerta-error { background: #fee2e2; color: #991b1b; }
+
+
+.avatar-iniciales {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primario, #6366f1);
+  background: var(--color-fondo-card, #f1f5f9);
+  border-radius: 50%;
+  text-transform: uppercase;
+}
+
+
+.edicion-botones {
+  display: flex;
+  gap: .75rem;
+  margin-top: 1rem;
+}
+.btn-cancelar {
+  padding: .55rem 1.25rem;
+  border-radius: .5rem;
+  border: 1.5px solid var(--color-borde, #e2e8f0);
+  background: transparent;
+  color: var(--color-texto, #334155);
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-cancelar:hover { background: var(--color-fondo, #f8fafc); }
