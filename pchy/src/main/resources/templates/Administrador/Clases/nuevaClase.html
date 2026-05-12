@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
 
     <div class="card">
 
-      <form action="/Administrador/Clases" method="post">
+     <form action="/Administrador/Nueva/Clase" method="post">
 
         <div class="campo-grupo">
           <label class="campo-label" for="nombre">Nombre de la clase</label>
@@ -45,18 +45,18 @@
             placeholder="Describe objetivos, temas y reglas de la clase..."></textarea>
         </div>
 
-        <div class="campo-grupo">
+      <!--   <div class="campo-grupo">
           <label class="campo-label">Color de etiqueta</label>
 
-          <div class="color-opciones">
+            <div class="color-opciones">
             <button type="button" class="color-opcion seleccionado" data-color="#3b82f6"></button>
             <button type="button" class="color-opcion" data-color="#22c55e"></button>
             <button type="button" class="color-opcion" data-color="#06b6d4"></button>
             <button type="button" class="color-opcion" data-color="#e879f9"></button>
-          </div>
+          </div> 
 
           <input type="hidden" name="color" id="colorElegido" value="#3b82f6">
-        </div>
+        </div> -->
 
         <div class="campo-grupo">
           <label class="campo-label" for="totalEstudiantes">Número total de estudiantes</label>

@@ -1,142 +1,148 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>P-Chy – Mis clases</title>
- <link rel="stylesheet" href="/Estilos/clasesadmn.css">
+  <link rel="stylesheet" href="/Estilos/clasesadmn.css">
   <link rel="stylesheet" href="/Estilos/navbarStyles.css">
+     <link rel="stylesheet" href="/Estilos/modalStyle.css"/>
 </head>
 <body>
 
-<!-- NAV -->
 <div th:replace="~{Administrador/navbar :: navbar}"></div>
 
-<!-- MAIN -->
 <main>
   <h1>Mis clases</h1>
   <p class="subtitle">Busca, administra y entra a tus clases.</p>
+
+  <!-- Alertas -->
+  <div th:if="${param.ok}"       class="alerta alerta-ok">✓ Clase creada correctamente.</div>
+  <div th:if="${param.eliminada}" class="alerta alerta-ok">✓ Clase eliminada.</div>
 
   <div class="search-wrap">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
-    <input type="text" placeholder="Buscar por nombre de la clase..."/>
+    <input type="text" id="buscador" placeholder="Buscar por nombre de la clase..."/>
   </div>
 
-  <div class="grid" id="grid"></div>
-</main>
+  <!-- Sin clases -->
+  <div th:if="${#lists.isEmpty(clases)}" class="empty-state">
+    <p>Aún no tienes clases. <a href="/Administrador/Nueva/Clase">Crea tu primera clase</a>.</p>
+  </div>
 
-<script>
-  const classes = [
-    { name: "Programación 1",        color: "#2352d8", students: 28, comps: 3,    hasComps: true,  link: "/Administrador/En/Clase"         },
-    { name: "Estructuras de Datos",  color: "#2352d8", students: 30, comps: 5,    hasComps: true,  link: "/Administrador/En/Clase" },
-    { name: "Algoritmos",            color: "#22c55e", students: 15, comps: 4,    hasComps: true,  link: "/Administrador/En/Clase"         },
-    { name: "Programación Avanzada", color: "#a78bfa", students: 15, comps: null, hasComps: false, link: "/Administrador/En/Clase"         },
-    { name: "Introducción a Python", color: "#c084fc", students: 32, comps: 2,    hasComps: true,  link: "/Administrador/En/Clase"         },
-    { name: "Competencias C++",      color: "#2dd4bf", students: 20, comps: 6,    hasComps: true,  link: "/Administrador/En/Clase"         },
-  ];
+  <!-- Grid de clases -->
+  <div class="grid" id="grid">
+    <div class="card" th:each="clase : ${clases}" th:attr="data-nombre=${clase.nombre}">
 
-  function randCode() {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let c = "";
-    for (let i = 0; i < 6; i++) c += letters[Math.floor(Math.random() * letters.length)];
-    return c;
-  }
-
-  const grid = document.getElementById("grid");
-
-  classes.forEach((cls, i) => {
-    const code = randCode();
-    const url  = `p-chy.app/clase/${code}`;
-
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
       <div class="card-header">
         <div class="card-title-wrap">
-          <div class="dot" style="background:${cls.color}"></div>
-          <span class="card-title">${cls.name}</span>
+          <div class="dot"></div>
+          <span class="card-title" th:text="${clase.nombre}"></span>
         </div>
-        <button class="menu-btn" data-idx="${i}" aria-label="Opciones">⋮
-          <div class="dropdown" id="drop-${i}">
-            <div class="dropdown-code">
-              <div class="dropdown-code-label">Código de clase</div>
-              <div class="dropdown-code-row">
-                <span class="dropdown-code-val">${code}</span>
-                <button class="copy-btn" title="Copiar código" onclick="copyText('${code}', this)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="dropdown-code">
-              <div class="dropdown-code-label">URL de la clase</div>
-              <div class="dropdown-code-row">
-                <span class="dropdown-code-val" style="font-weight:400;font-size:.82rem;">${url}</span>
-                <button class="copy-btn" title="Copiar URL" onclick="copyText('${url}', this)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
+
+        <!-- Menú opciones -->
+        <div class="menu-wrap">
+          <button class="menu-btn" aria-label="Opciones">⋮</button>
+          <div class="dropdown">
+
+           <div class="dropdown-code">
+  <div class="dropdown-code-label">Código de clase</div>
+  <div class="dropdown-code-row">
+    <span class="dropdown-code-val" th:text="${clase.codigo}"></span>
+    <button class="copy-btn"
+            th:data-codigo="${clase.codigo}"
+            onclick="copyText(this.dataset.codigo, this)"
+            title="Copiar código">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div class="dropdown-code">
+  <div class="dropdown-code-label">URL de la clase</div>
+  <div class="dropdown-code-row">
+    <span class="dropdown-code-val"
+          th:text="${baseUrl} + '/unirse/' + ${clase.codigo}"
+          style="font-size:.82rem;font-weight:400">
+    </span>
+    <button class="copy-btn"
+            th:data-url="${baseUrl} + '/unirse/' + ${clase.codigo}"
+            onclick="copyText(this.dataset.url, this)"
+            title="Copiar URL">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+      </svg>
+    </button>
+  </div>
+</div>
             <hr class="dropdown-divider"/>
-            <div class="dropdown-item">Editar clase</div>
-            <div class="dropdown-item danger">Borrar clase</div>
+            <a th:href="'/Administrador/Clase/' + ${clase.idClase}" class="dropdown-item">Entrar a la clase</a>
+<div class="dropdown-item"
+     th:data-id="${clase.idClase}"
+     th:data-nombre="${clase.nombre}"
+     th:data-descripcion="${clase.descripcion} ?: ''"
+     onclick="abrirEditar(this.dataset.id, this.dataset.nombre, this.dataset.descripcion)">
+  Editar clase
+</div>
+
+
+            <!-- Formulario de eliminación -->
+            <form th:action="'/Administrador/Clase/' + ${clase.idClase} + '/Eliminar'"
+                  method="post" style="display:inline"
+                  onsubmit="return confirm('¿Eliminar esta clase? Esta acción no se puede deshacer.')">
+              <button type="submit" class="dropdown-item danger">Borrar clase</button>
+            </form>
+
           </div>
-        </button>
+        </div>
       </div>
 
       <div class="card-meta">
-        <span>Alumnos: ${cls.students}</span>
-        ${cls.hasComps
-          ? `<span>Competencias: ${cls.comps}</span>`
-          : `<span>
-               <svg class="info-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-               </svg>
-               Sin competencias asignadas
-             </span>`
-        }
+        <span th:text="'Alumnos: ' + ${clase.totalAlumnos}"></span>
+        <span th:if="${clase.totalCompetencias > 0}"
+              th:text="'Competencias: ' + ${clase.totalCompetencias}"></span>
+        <span th:if="${clase.totalCompetencias == 0}" class="sin-comp">
+          Sin competencias asignadas
+        </span>
       </div>
 
-      <button class="btn-enter" data-link="${cls.link}">Entrar</button>
-    `;
+      <a class="btn-enter" th:href="'/Administrador/Clase/' + ${clase.idClase}">Entrar</a>
 
-    grid.appendChild(card);
-  });
+    </div>
+  </div>
+</main>
 
-  document.getElementById("grid").addEventListener("click", (e) => {
-    const btn = e.target.closest(".btn-enter");
-    if (!btn) return;
-    const link = btn.dataset.link;
-    if (link) window.location.href = link;
-  });
+<!-- Modal editar clase -->
+<div class="modal-overlay" id="modalEditar">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Editar clase</h2>
+    <form id="formEditar" method="post">
 
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".menu-btn");
-    document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("open"));
-    if (btn) {
-      e.stopPropagation();
-      document.getElementById(`drop-${btn.dataset.idx}`).classList.add("open");
-    }
-  });
+      <div class="campo-grupo">
+        <label class="campo-label">Nombre</label>
+        <input type="text" name="nombre" id="editNombre" class="campo-input" required>
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label">Descripción</label>
+        <textarea name="descripcion" id="editDescripcion" class="campo-textarea"></textarea>
+      </div>
 
-  function copyText(text, btn) {
-    navigator.clipboard.writeText(text).catch(() => {});
-    btn.style.color = "#22c55e";
-    setTimeout(() => btn.style.color = "", 1200);
-  }
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="cerrarModalEditar()">Cancelar</button>
+        <button type="submit" class="btn-modal-submit">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-  document.querySelector("input").addEventListener("input", function () {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll(".card").forEach((card, i) => {
-      card.style.display = classes[i].name.toLowerCase().includes(q) ? "" : "none";
-    });
-  });
-</script>
+<script src="/Funciones/clasesadmin.js"></script>
+
 </body>
 </html>
