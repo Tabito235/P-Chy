@@ -16,40 +16,72 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping("/Usuario/Registro")
-    public String vistaRegistroAlumno(){
+    public String vistaRegistroAlumno() {
         return "Usuario/registroUsuario";
     }
 
     @GetMapping("/Alumno/Inicio")
-public String principalAlumno(HttpSession session, Model model) {
+    public String principalAlumno(HttpSession session, Model model) {
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    model.addAttribute("usuario", usuario);
-    model.addAttribute("rol", 3);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("rol", 3);
 
-    return "Usuario/principalAlumno";
-}
+        return "Usuario/principalAlumno";
+    }
 
-@GetMapping("/Alumno/Perfil")
-public String perfilAlumno() {
-    return "redirect:/Perfil";
-}
+    @GetMapping("/Alumno/Perfil")
+    public String perfilAlumno() {
+        return "redirect:/Perfil";
+    }
 
     @PostMapping("/Usuario/Registro")
-public String registrarAlumno(
-        Usuario usuario){
+    public String registrarAlumno(
+            Usuario usuario) {
 
-    try{
+        try {
 
-        usuarioService.registrarAlumno(usuario);
+            usuarioService.registrarAlumno(usuario);
 
-        return "redirect:/Login";
+            return "redirect:/Login";
 
-    }catch(Exception e){
+        } catch (Exception e) {
 
-        return "redirect:/Usuario/Registro?error";
+            return "redirect:/Usuario/Registro?error";
+        }
     }
-}
+
+    @GetMapping("/Alumno/Competencias")
+    public String vistaCompetencias(HttpSession session, Model model) {
+
+        return "Usuario/competencias/compUsuario";
+    }
+
+    @GetMapping("/Alumno/Competencias/Niveles")
+    public String vistaNiveles(HttpSession session, Model model) {
+
+        return "Usuario/competencias/lvlUsuario";
+    }
+
+    @GetMapping("/Alumno/Competencias/Problema")
+    public String vistaProblema(HttpSession session, Model model) {
+
+        return "Usuario/competencias/problemaU";
+    }
+
+    @GetMapping("/Alumno/Competencias/Ranks")
+    public String vistaRanks(HttpSession session, Model model) {
+
+        return "Usuario/competencias/RanksU";
+    }
+
+    @GetMapping("/Alumno/Competencias/Resultado")
+    public String vistaResultado(HttpSession session, Model model) {
+
+        return "Usuario/competencias/ResultU";
+    }
+
 }

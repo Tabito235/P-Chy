@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Problema</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/usuario.css"/>
+  <style>
+    /* ── HEADER PROBLEMA ── */
+    .prob-hero {
+      background: var(--color-blanco);
+      border-bottom: 1px solid var(--color-borde);
+      padding: 1rem 0;
+      margin-bottom: 1.4rem;
+    }
+    .prob-hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .prob-hero-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--color-texto);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .pts-badge {
+      background: #ede9fe;
+      color: #6d28d9;
+      font-size: .78rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: .2rem .7rem;
+    }
+
+    /* ── STATS BAR ── */
+    .prob-stats {
+      background: var(--color-blanco);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radius);
+      padding: .75rem 1.4rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+    .prob-stat-label { font-size: .73rem; color: var(--color-texto-suave); }
+    .prob-stat-val   { font-size: .88rem; font-weight: 700; color: var(--color-texto); }
+    .prob-stat-val.pendiente { color: var(--yellow-fg); }
+    .prob-stat-val.enviado   { color: var(--green-dark); }
+
+    /* ── SECCIÓN ENUNCIADO ── */
+    .enunciado-card {
+      background: var(--color-blanco);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    .enunciado-card h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--color-texto);
+      margin-bottom: .8rem;
+    }
+
+    .enunciado-texto {
+      font-size: .88rem;
+      color: var(--color-texto);
+      line-height: 1.65;
+      white-space: pre-line;
+    }
+
+    /* ── DOS COLUMNAS CODIGO + CASOS ── */
+    .codigo-casos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .code-card {
+      background: var(--color-blanco);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .code-card h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--color-texto);
+      margin-bottom: .75rem;
+    }
+
+    .code-block {
+      background: #1e1e2e;
+      border-radius: 8px;
+      padding: .9rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: #cdd6f4;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Tabla casos de prueba */
+    .casos-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+
+    .casos-table th {
+      text-align: left;
+      padding: .4rem .6rem;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--color-texto-suave);
+      border-bottom: 1.5px solid var(--color-borde);
+    }
+
+    .casos-table td {
+      padding: .45rem .6rem;
+      border-bottom: 1px solid var(--color-borde);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--color-texto);
+    }
+
+    .casos-table tr:last-child td { border-bottom: none; }
+
+    /* ── NAVEGACIÓN ANTERIOR / SIGUIENTE ── */
+    .prob-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    /* ── SIDEBAR ENTREGA ── */
+    .upload-area {
+      border: 2px dashed var(--color-borde);
+      border-radius: 9px;
+      padding: .9rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      margin-bottom: .6rem;
+    }
+
+    .upload-area:hover { border-color: var(--color-primario); background: #eef2fb; }
+
+    .upload-area.done {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .upload-label { font-size: .82rem; font-weight: 600; color: var(--color-texto-suave); }
+    .upload-label.done { color: var(--green-dark); }
+    .upload-sub   { font-size: .72rem; color: var(--color-texto-suave); margin-top: 2px; }
+
+    .comentario-input {
+      width: 100%;
+      border: 1.5px solid var(--color-borde);
+      border-radius: 8px;
+      padding: .6rem .8rem;
+      font-family: inherit;
+      font-size: .83rem;
+      color: var(--color-texto);
+      background: var(--color-fondo);
+      resize: none;
+      min-height: 60px;
+      outline: none;
+      transition: border-color .18s;
+      margin-bottom: .75rem;
+    }
+
+    .comentario-input:focus { border-color: var(--color-primario); background: var(--color-blanco); }
+
+    .pasos-list { margin-bottom: .8rem; }
+
+    .paso {
+      display: flex;
+      gap: .6rem;
+      font-size: .82rem;
+      color: var(--color-texto-suave);
+      margin-bottom: .45rem;
+      align-items: flex-start;
+    }
+
+    .paso-num {
+      min-width: 20px;
+      height: 20px;
+      background: var(--color-primario);
+      color: #fff;
+      border-radius: 50%;
+      font-size: .7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Toast envio */
+    .toast-envio {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.5rem;
+      background: var(--color-blanco);
+      border: 1.5px solid var(--green);
+      border-radius: 10px;
+      padding: .75rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      box-shadow: var(--shadow-md);
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+    }
+
+    .toast-envio.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<div th:replace="~{Usuario/navbar :: navbar}"></div>
+
+<!-- TOAST -->
+<div class="toast-envio" id="toastEnvio">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  Enviado para revisión
+</div>
+
+<main class="u-main">
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a href="/clasesadmin">Clases</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="/enclase">Estructuras de Datos</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="/Alumno/Competencias">Listas enlazadas en Python</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="/Alumno/Competencias/Niveles">Nivel 1</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-actual">Problema 2</span>
+  </nav>
+
+  <!-- HERO -->
+  <div class="prob-hero" style="margin:-1.6rem -2rem 1.4rem">
+    <div class="prob-hero-inner">
+      <div class="prob-hero-title">
+        Problema 2: Eliminar nodo
+        <span class="tag tag-oblig">Obligatorio ★</span>
+        <span class="pts-badge">40 pts</span>
+      </div>
+      <button class="btn-secondary" onclick="window.location.href='/Alumno/Competencias/Niveles'">Volver al nivel</button>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="prob-stats">
+    <div>
+      <div class="prob-stat-label">Estado</div>
+      <div class="prob-stat-val pendiente">Pendiente</div>
+    </div>
+    <div>
+      <div class="prob-stat-label">Tiempo restante del nivel</div>
+      <div class="prob-stat-val azul" id="timer2">08:12</div>
+    </div>
+    <div>
+      <div class="prob-stat-label">Obligatorios completados</div>
+      <div class="prob-stat-val">1/3</div>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="u-layout">
+
+    <!-- CONTENIDO -->
+    <div>
+      <!-- Enunciado -->
+      <div class="enunciado-card">
+        <h2>Enunciado</h2>
+        <div class="enunciado-texto">Descripción: Elimina el primer nodo con valor X de una lista enlazada.
+Entrada: Cabeza de lista y valor X.
+Salida: Nueva cabeza.
+Restricciones: La lista puede estar vacía. El valor X puede no estar en la lista.
+
+Ejemplo:
+  Entrada: [1→2→3], X=2.
+  Salida: [1→3]</div>
+      </div>
+
+      <!-- Código + Casos -->
+      <div class="codigo-casos-grid">
+        <div class="code-card">
+          <h2>Código de ejemplo (del profesor)</h2>
+          <div class="code-block">class Node:
+  def __init__(self, head):
+    ...
+
+def remove_node(head, x):
+  # TODO: Implementar lógica</div>
+        </div>
+        <div class="code-card">
+          <h2>Casos de prueba (del profesor)</h2>
+          <table class="casos-table">
+            <thead>
+              <tr><th>Entrada</th><th>Salida esperada</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>[1→2→3], X=2</td><td>[1→3]</td></tr>
+              <tr><td>[1→2→3], X=4</td><td>[1→2→3]</td></tr>
+              <tr><td>[], X=1</td><td>[]</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Navegación -->
+      <div class="prob-nav">
+        <button class="btn-secondary">← Anterior</button>
+        <button class="btn-secondary">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR ENTREGA -->
+    <div class="u-sidebar">
+      <div class="sidebar-card">
+        <h3>Entregar solución</h3>
+
+        <div class="pasos-list">
+          <div class="paso">
+            <span class="paso-num">1</span>
+            <span>Subir captura de tu código (PNG/JPG)</span>
+          </div>
+        </div>
+
+        <div class="upload-area" id="uploadCaptura" onclick="simularUpload('uploadCaptura','labelCaptura')">
+          <div class="upload-label" id="labelCaptura"> Subir captura</div>
+          <div class="upload-sub">Asegúrate de que se vea el código completo.</div>
+        </div>
+
+        <div class="pasos-list">
+          <div class="paso">
+            <span class="paso-num">2</span>
+            <span>Subir archivo .txt (código)</span>
+          </div>
+        </div>
+
+        <div class="upload-area" id="uploadTxt" onclick="simularUpload('uploadTxt','labelTxt')">
+          <div class="upload-label" id="labelTxt"> Subir .txt</div>
+          <div class="upload-sub">Nombre sugerido: problema2.txt</div>
+        </div>
+
+        <div class="pasos-list" style="margin-top:.7rem">
+          <div class="paso">
+            <span class="paso-num">3</span>
+            <span>Comentario opcional</span>
+          </div>
+        </div>
+
+        <textarea class="comentario-input" placeholder="¿Algo que el profe deba notar?"></textarea>
+
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:.5rem" onclick="enviarSolucion()">
+          Enviar para revisión
+        </button>
+        <button class="btn-secondary" style="width:100%;justify-content:center">
+          Guardar y continuar después
+        </button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="/Funciones/competenciasU/problemaU.js"></script>
+</body>
+</html>

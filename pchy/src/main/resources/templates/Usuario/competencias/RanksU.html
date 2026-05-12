@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Rankings</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/usuario.css"/>
+  <style>
+    /* ── PAGE TITLE ── */
+    .rank-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--color-texto);
+      margin-bottom: .25rem;
+    }
+    .rank-sub {
+      font-size: .88rem;
+      color: var(--color-texto-suave);
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── FILTROS ── */
+    .rank-filtros {
+      background: var(--color-blanco);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radius);
+      padding: .9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .filtro-group { display: flex; flex-direction: column; gap: 3px; }
+    .filtro-label { font-size: .73rem; font-weight: 700; color: var(--color-texto-suave); }
+
+    .filtro-select {
+      border: 1.5px solid var(--color-borde);
+      border-radius: 8px;
+      padding: .38rem .8rem;
+      font-family: inherit;
+      font-size: .84rem;
+      color: var(--color-texto);
+      background: var(--color-fondo);
+      outline: none;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+
+    .filtro-select:focus { border-color: var(--color-primario); }
+
+    /* Toggle solo mi clase */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .84rem;
+      font-weight: 600;
+      color: var(--color-texto);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-input { display: none; }
+
+    .toggle-slider {
+      width: 38px;
+      height: 21px;
+      background: var(--color-borde);
+      border-radius: 999px;
+      position: relative;
+      transition: background .2s;
+    }
+
+    .toggle-slider::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: left .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+
+    .toggle-input:checked + .toggle-slider { background: var(--color-primario); }
+    .toggle-input:checked + .toggle-slider::after { left: 20px; }
+
+    /* Search input */
+    .search-rank {
+      flex: 1;
+      min-width: 160px;
+      position: relative;
+    }
+
+    .search-rank svg {
+      position: absolute;
+      left: .65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      stroke: var(--color-texto-suave);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .search-rank input {
+      width: 100%;
+      border: 1.5px solid var(--color-borde);
+      border-radius: 8px;
+      padding: .4rem .75rem .4rem 2rem;
+      font-family: inherit;
+      font-size: .84rem;
+      color: var(--color-texto);
+      background: var(--color-fondo);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .search-rank input:focus { border-color: var(--color-primario); background: var(--color-blanco); }
+
+    /* ── TABLA RANKING ── */
+    .rank-table-wrap {
+      background: var(--color-blanco);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+
+    .rank-table thead tr {
+      background: var(--color-fondo);
+      border-bottom: 1.5px solid var(--color-borde);
+    }
+
+    .rank-table th {
+      text-align: left;
+      padding: .65rem 1rem;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--color-texto-suave);
+      white-space: nowrap;
+    }
+
+    .rank-table td {
+      padding: .65rem 1rem;
+      border-bottom: 1px solid var(--color-borde);
+      color: var(--color-texto);
+    }
+
+    .rank-table tr:last-child td { border-bottom: none; }
+
+    .rank-table tbody tr:hover { background: #fafafe; }
+    .rank-table tr.yo td { background: #eef2fb; }
+
+    .rank-pos { font-weight: 800; color: var(--color-texto-suave); font-size: .9rem; }
+    .rank-pos.top1 { color: #f59e0b; }
+    .rank-pos.top2 { color: #94a3b8; }
+    .rank-pos.top3 { color: #b45309; }
+    .rank-pos.yo   { color: var(--color-primario); }
+
+    .rank-nombre {
+      font-weight: 600;
+      color: var(--color-texto);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .rank-avatar-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-borde);
+      flex-shrink: 0;
+    }
+
+    .emoji-icon { font-size: 1rem; }
+
+    .rank-pts  { font-weight: 700; color: var(--color-primario); }
+    .rank-comp { font-weight: 600; color: var(--color-texto); }
+    .rank-racha{ color: var(--color-texto-suave); }
+    .rank-act  { font-size: .78rem; color: var(--color-texto-suave); }
+
+    /* ── SIDEBAR RESUMEN ── */
+    .mi-pos-grande {
+      font-family: 'Sora', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--color-primario);
+      line-height: 1;
+      margin-bottom: .25rem;
+    }
+
+    .stats-list { display: flex; flex-direction: column; gap: 0; }
+
+    /* Cómo se calcula */
+    .calculo-item {
+      font-size: .8rem;
+      color: var(--color-texto-suave);
+      padding: .25rem 0;
+      padding-left: .9rem;
+      position: relative;
+      line-height: 1.4;
+    }
+
+    .calculo-item::before {
+      content: "+";
+      position: absolute;
+      left: 0;
+      color: var(--color-primario);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div th:replace="~{Usuario/navbar :: navbar}"></div>
+
+<main class="u-main">
+
+  <h1 class="rank-title">Rankings</h1>
+  <p class="rank-sub">Competencias ganadas + puntos de desafíos diarios.</p>
+
+  <!-- FILTROS -->
+  <div class="rank-filtros">
+    <div class="filtro-group">
+      <span class="filtro-label">Clase</span>
+      <select class="filtro-select" id="filtroClase">
+        <option>Estructuras de Datos</option>
+        <option>Programación 1</option>
+        <option>Algoritmos</option>
+      </select>
+    </div>
+    <div class="filtro-group">
+      <span class="filtro-label">Período</span>
+      <select class="filtro-select" id="filtroPeriodo">
+        <option>Este semestre</option>
+        <option>Último mes</option>
+        <option>Todo el tiempo</option>
+      </select>
+    </div>
+    <label class="toggle-wrap">
+      <input type="checkbox" class="toggle-input" id="toggleClase" checked/>
+      <span class="toggle-slider"></span>
+      Solo mi clase
+    </label>
+    <div class="search-rank">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Buscar alumno..." id="searchRank"/>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="u-layout">
+
+    <!-- TABLA -->
+    <div class="rank-table-wrap">
+      <table class="rank-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Alumno</th>
+            <th>Puntos totales</th>
+            <th>Competencias ganadas</th>
+            <th>Racha</th>
+            <th>Última actividad</th>
+          </tr>
+        </thead>
+        <tbody id="rankBody"></tbody>
+      </table>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="u-sidebar">
+
+      <!-- Tu resumen -->
+      <div class="sidebar-card">
+        <h3>Tu resumen</h3>
+        <div class="mi-pos-grande">#7</div>
+        <div class="stats-list">
+          <div class="stat-row"><span class="stat-label">Puntos totales</span><span class="stat-val">1150</span></div>
+          <div class="stat-row"><span class="stat-label">Competencias ganadas</span><span class="stat-val">8</span></div>
+          <div class="stat-row"><span class="stat-label">Racha actual</span><span class="stat-val">5 días</span></div>
+        </div>
+        <button class="btn-secondary" style="width:100%;justify-content:center;margin-top:.9rem">
+          Ver mis estadísticas
+        </button>
+      </div>
+
+      <!-- Cómo se calcula -->
+      <div class="sidebar-card">
+        <h3>Cómo se calcula</h3>
+        <div class="calculo-item">Puntos por problemas correctos</div>
+        <div class="calculo-item">Bonos por ganar competencia</div>
+        <div class="calculo-item">Puntos por desafío diario y racha</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="/Funciones/competenciasU/rankU.js"></script>
+</body>
+</html>

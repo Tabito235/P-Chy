@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="'P-Chy – ' + ${nivel.titulo}">P-Chy – Nivel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/comstyle.css"/>
+  <link rel="stylesheet" href="/Estilos/modalStyle.css"/>
+</head>
+<body>
+
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
+
+<div class="clase-header">
+  <div class="clase-header-inner">
+    <div class="clase-title-row">
+      <div>
+        <h1 class="clase-title" th:text="${clase.nombre}">Clase</h1>
+        <div class="clase-meta">
+          <span th:text="'Competencia: ' + ${competencia.nombre}"></span>
+        </div>
+      </div>
+      <a class="btn-editar"
+         th:href="'/Administrador/Clase/' + ${clase.idClase} +
+                  '/Competencia/' + ${competencia.idCompetencia}">
+        Volver
+      </a>
+    </div>
+  </div>
+</div>
+
+<main class="comp-main">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a th:href="'/Administrador/Clase/' + ${clase.idClase}">
+      <span th:text="${clase.nombre}"></span>
+    </a>
+    <span class="breadcrumb-sep">/</span>
+    <a th:href="'/Administrador/Clase/' + ${clase.idClase} +
+                '/Competencia/' + ${competencia.idCompetencia}"
+       th:text="${competencia.nombre}"></a>
+    <span class="breadcrumb-sep">/</span>
+    <span th:text="${nivel.titulo}"></span>
+  </nav>
+
+  <!-- Alertas -->
+  <div th:if="${param.ok}"        class="alerta alerta-ok">✓ Nivel actualizado.</div>
+  <div th:if="${param.error}"     class="alerta alerta-error">✗ Error al guardar.</div>
+  <div th:if="${param.casoError}" class="alerta alerta-error">✗ Error al agregar caso.</div>
+
+  <div class="editar-layout">
+
+    <!-- Panel izquierdo: enunciado -->
+    <div class="panel-niveles">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <h2 th:text="${nivel.titulo}"></h2>
+        <span style="font-size:13px;color:#6B6B80"
+              th:text="${nivel.tiempoLimite} + ' min'"></span>
+      </div>
+
+      <!-- Form editar nivel -->
+      <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                       '/Competencia/' + ${competencia.idCompetencia} +
+                       '/Nivel/' + ${nivel.idNivel} + '/Editar'"
+            method="post">
+
+        <div class="m-campo">
+          <label class="m-label">Título del problema</label>
+          <input type="text" name="titulo" class="m-input"
+                 th:value="${nivel.titulo}" required>
+        </div>
+
+        <div class="m-campo">
+          <label class="m-label">Enunciado</label>
+          <textarea name="enunciado" class="m-input"
+                    style="resize:vertical;min-height:140px"
+                    th:text="${nivel.enunciado}"
+                    placeholder="Describe el problema..."></textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="m-campo">
+            <label class="m-label">Tiempo límite (min)</label>
+            <input type="number" name="tiempoLimite" class="m-input"
+                   th:value="${nivel.tiempoLimite}" min="1" required>
+          </div>
+          <div class="m-campo">
+            <label class="m-label">Puntaje</label>
+            <input type="number" name="puntaje" class="m-input"
+                   th:value="${nivel.puntaje}" min="0" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-modal-submit"
+                style="width:100%;margin-top:8px">
+          Guardar nivel
+        </button>
+      </form>
+    </div>
+
+    <!-- Panel derecho: casos de prueba -->
+    <div class="panel-problemas">
+
+      <div class="panel-prob-header">
+        <div>
+          <div class="panel-prob-titulo">Casos de prueba</div>
+          <div class="panel-prob-tiempo">
+            El alumno verá estos casos como referencia
+          </div>
+        </div>
+        <button class="btn-add-problema"
+                onclick="document.getElementById('modalNuevoCaso').classList.add('visible')">
+          + Agregar caso
+        </button>
+      </div>
+
+      <!-- Sin casos -->
+      <div th:if="${#lists.isEmpty(casos)}"
+           style="text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">
+        Aún no hay casos de prueba.
+      </div>
+
+      <!-- Lista de casos -->
+      <div th:each="caso, stat : ${casos}" class="problema-card">
+        <div class="prob-header">
+          <span class="prob-titulo"
+                th:text="'Caso ' + ${stat.count}"></span>
+          <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                           '/Competencia/' + ${competencia.idCompetencia} +
+                           '/Nivel/' + ${nivel.idNivel} +
+                           '/Caso/' + ${caso.idCaso} + '/Eliminar'"
+                method="post" style="display:inline"
+                onsubmit="return confirm('¿Eliminar este caso?')">
+            <button type="submit" class="btn-del-nivel"
+                    title="Eliminar">✕</button>
+          </form>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+          <div>
+            <div class="m-label" style="margin-bottom:4px">Entrada</div>
+            <pre class="prob-textarea"
+                 style="margin:0;white-space:pre-wrap;font-family:monospace;font-size:13px"
+                 th:text="${caso.entrada}"></pre>
+          </div>
+          <div>
+            <div class="m-label" style="margin-bottom:4px">Salida esperada</div>
+            <pre class="prob-textarea"
+                 style="margin:0;white-space:pre-wrap;font-family:monospace;font-size:13px"
+                 th:text="${caso.salidaEsperada}"></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Modal nuevo caso de prueba -->
+<div class="modal-overlay" id="modalNuevoCaso">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Nuevo caso de prueba</h2>
+    <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                     '/Competencia/' + ${competencia.idCompetencia} +
+                     '/Nivel/' + ${nivel.idNivel} + '/Caso'"
+          method="post">
+
+      <div class="m-campo">
+        <label class="m-label">Entrada</label>
+        <textarea name="entrada" class="m-input"
+                  style="resize:vertical;min-height:80px;font-family:monospace"
+                  placeholder="Ej: 5 3" required></textarea>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Salida esperada</label>
+        <textarea name="salidaEsperada" class="m-input"
+                  style="resize:vertical;min-height:80px;font-family:monospace"
+                  placeholder="Ej: 8" required></textarea>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="document.getElementById('modalNuevoCaso').classList.remove('visible')">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-modal-submit">Agregar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById('modalNuevoCaso').addEventListener('click', function(e) {
+    if (e.target === this)
+      this.classList.remove('visible');
+  });
+</script>
+
+</body>
+</html>

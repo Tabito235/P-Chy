@@ -103,63 +103,118 @@
   </div>
 
   <!-- TAB: COMPETENCIAS -->
-  <div id="tab-competencias" class="tab-panel">
-    <div class="comp-toolbar">
-      <button class="btn-nueva-comp" id="btnNuevaComp">+ Nueva competencia</button>
-    </div>
-    <div class="grid" id="compGrid"></div>
+<!-- TAB: COMPETENCIAS -->
+<div id="tab-competencias" class="tab-panel">
+  <div class="comp-toolbar">
+    <button class="btn-nueva-comp" id="btnNuevaComp">+ Nueva competencia</button>
   </div>
+
+  <!-- Sin competencias -->
+  <div th:if="${#lists.isEmpty(competencias)}"
+       style="text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">
+    Aún no hay competencias en esta clase.
+  </div>
+
+  <!-- Grid de competencias -->
+  <div class="grid" id="compGrid">
+    <div class="card comp-card" th:each="comp : ${competencias}">
+      <div class="comp-top">
+        <span class="comp-title" th:text="${comp.nombre}"></span>
+        <span class="lang-tag" th:text="${comp.lenguaje}"></span>
+      </div>
+      <div class="comp-date">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span th:text="${#dates.format(comp.fechaInicio, 'dd MMM yyyy, HH:mm')}"></span>
+      </div>
+      <span class="status-pill" th:text="${comp.estado}"
+            th:classappend="${comp.estado == 'PUBLICADA'} ? 'activa' :
+                            (${comp.estado == 'CERRADA'} ? 'cerrada' : 'borrador')">
+      </span>
+      <div class="comp-actions">
+        <a class="btn-enter"
+           th:href="'/Administrador/Clase/' + ${clase.idClase} +
+                    '/Competencia/' + ${comp.idCompetencia}">
+          Entrar
+        </a>
+
+        <!-- Publicar (solo si es BORRADOR) -->
+        <form th:if="${comp.estado == 'BORRADOR'}"
+              th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                         '/Competencia/' + ${comp.idCompetencia} + '/Publicar'"
+              method="post" style="display:inline">
+          <button type="submit" class="btn-outline">Publicar</button>
+        </form>
+
+        <!-- Eliminar -->
+        <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                         '/Competencia/' + ${comp.idCompetencia} + '/Eliminar'"
+              method="post" style="display:inline"
+              onsubmit="return confirm('¿Eliminar esta competencia?')">
+          <button type="submit" class="btn-outline danger">Eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 </main>
 
+<!-- MODAL — Nueva competencia -->
 <!-- MODAL — Nueva competencia -->
 <div class="modal-overlay" id="modalNuevaComp">
   <div class="modal-card">
     <h2 class="modal-titulo">Nueva competencia</h2>
 
-    <div class="m-campo" id="mCampoNombre">
-      <label class="m-label">Nombre de la competencia</label>
-      <input class="m-input" id="mNombre" type="text" placeholder="Ej. Bucles en Python">
-      <span class="m-error-msg">El nombre es obligatorio.</span>
-    </div>
+    <form th:action="'/Administrador/Clase/' + ${clase.idClase} + '/Competencia/Nueva'"
+          method="post" id="formNuevaComp">
 
-    <div class="m-campo" id="mCampoLenguaje">
-      <label class="m-label">Lenguaje</label>
-      <select class="m-select" id="mLenguaje">
-        <option value="">Seleccionar lenguaje</option>
-        <option value="Python">Python</option>
-        <option value="C++">C++</option>
-      </select>
-      <span class="m-error-msg">Selecciona un lenguaje.</span>
-    </div>
-
-    <div class="m-campo" id="mCampoFecha">
-      <label class="m-label">Fecha y hora</label>
-      <div class="m-fila">
-        <input class="m-input" id="mFecha" type="date">
-        <input class="m-input" id="mHora" type="time">
+      <div class="m-campo" id="mCampoNombre">
+        <label class="m-label">Nombre</label>
+        <input class="m-input" name="nombre" type="text"
+               placeholder="Ej. Bucles en Python" required>
+        <span class="m-error-msg">El nombre es obligatorio.</span>
       </div>
-      <span class="m-error-msg">La fecha y hora son obligatorias.</span>
-    </div>
 
-    <div class="m-campo">
-      <div class="m-niveles-header">
-        <label class="m-label">Niveles</label>
-        <button type="button" class="btn-add-nivel" style="width:auto;padding:5px 12px;font-size:12px" onclick="agregarNivelModal()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Añadir nivel
-        </button>
+      <div class="m-campo" id="mCampoLenguaje">
+        <label class="m-label">Lenguaje</label>
+        <select class="m-select" name="lenguaje" required>
+          <option value="">Seleccionar lenguaje</option>
+          <option value="Python">Python</option>
+          <option value="C++">C++</option>
+        </select>
+        <span class="m-error-msg">Selecciona un lenguaje.</span>
       </div>
-      <p class="m-niveles-sub">Agrega niveles y asigna un tiempo por nivel</p>
-      <div id="mNivelesLista" class="m-niveles-lista"></div>
-    </div>
 
-    <p class="m-aviso">Podrás agregar problemas dentro de cada nivel después de crear la competencia.</p>
+      <div class="m-campo">
+        <label class="m-label">Descripción (opcional)</label>
+        <textarea class="m-input" name="descripcion"
+                  placeholder="Descripción de la competencia..."
+                  style="resize:vertical;min-height:60px"></textarea>
+      </div>
 
-    <div class="modal-acciones">
-      <button class="btn-modal-cancel" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-modal-submit" onclick="crearCompetencia()">Crear competencia</button>
-    </div>
+      <div class="m-campo" id="mCampoFecha">
+        <label class="m-label">Fecha y hora de inicio</label>
+        <input class="m-input" name="fechaInicio" type="datetime-local" required>
+        <span class="m-error-msg">La fecha de inicio es obligatoria.</span>
+      </div>
+
+      <div class="m-campo">
+        <label class="m-label">Fecha y hora de fin</label>
+        <input class="m-input" name="fechaFin" type="datetime-local" required>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-modal-submit">Crear competencia</button>
+      </div>
+
+    </form>
   </div>
 </div>
 
@@ -187,21 +242,6 @@
     </form>
   </div>
 </div>
-
-<script>
-  function abrirEditarClase(id, nombre, descripcion) {
-    document.getElementById('editClaseNombre').value = nombre;
-    document.getElementById('editClaseDesc').value   = descripcion;
-    document.getElementById('formEditarClase').action =
-      '/Administrador/Clase/' + id + '/Editar';
-    document.getElementById('modalEditarClase').classList.add('visible');
-  }
-
-  function cerrarEditarClase() {
-    document.getElementById('modalEditarClase').classList.remove('visible');
-  }
-</script>
-
-<script src="/Funciones/comfun.js"></script>
+<script src="/Funciones/modalCompetencia.js"></script>
 </body>
 </html>

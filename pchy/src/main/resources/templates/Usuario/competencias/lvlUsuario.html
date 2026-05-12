@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Nivel</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/usuario.css"/>
+  <style>
+    /* ── HEADER NIVEL ── */
+    .nivel-hero {
+      background: var(--color-blanco);
+      border-bottom: 1px solid var(--color-borde);
+      padding: 1.2rem 0;
+      margin-bottom: 1.4rem;
+    }
+    .nivel-hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .nivel-hero-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--color-texto);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .nivel-hero-actions { display: flex; gap: .6rem; }
+
+    /* ── STATS BAR ── */
+    .nivel-stats {
+      background: var(--color-blanco);
+      border: 1px solid var(--color-borde);
+      border-radius: var(--radius);
+      padding: .9rem 1.4rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+    .nivel-stat { display: flex; flex-direction: column; gap: 2px; }
+    .nivel-stat-label { font-size: .75rem; color: var(--color-texto-suave); }
+    .nivel-stat-val   { font-size: .92rem; font-weight: 700; color: var(--color-texto); }
+    .nivel-stat-val.azul { color: var(--color-primario); }
+    .nivel-stat-bar   { margin-top: 4px; }
+
+    /* ── LISTA DE PROBLEMAS ── */
+    .prob-list { display: flex; flex-direction: column; gap: .75rem; }
+
+    .prob-item {
+      background: var(--color-blanco);
+      border: 1.5px solid var(--color-borde);
+      border-radius: 11px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      transition: box-shadow .15s, border-color .15s;
+    }
+
+    .prob-item:hover { border-color: var(--color-primario); box-shadow: var(--shadow); }
+
+    .prob-item-left { flex: 1; display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+
+    .prob-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--color-fondo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: .9rem;
+    }
+
+    .prob-info-nombre {
+      font-family: 'Sora', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--color-texto);
+    }
+
+    .prob-info-pts {
+      font-size: .78rem;
+      color: var(--color-texto-suave);
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      margin-top: 2px;
+    }
+
+    .prob-estado {
+      font-size: .8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .prob-estado.enviado  { color: var(--green-dark); }
+    .prob-estado.revision { color: var(--yellow-fg); }
+    .prob-estado.pendiente{ color: var(--color-texto-suave); }
+    .prob-estado.correcto { color: var(--green-dark); }
+
+    .btn-resolver {
+      background: var(--color-primario);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: .38rem 1rem;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s;
+    }
+
+    .btn-resolver:hover { background: var(--color-primario-oscuro); }
+
+    .btn-ver-envio {
+      background: var(--color-blanco);
+      color: var(--color-primario);
+      border: 1.5px solid var(--color-primario);
+      border-radius: 8px;
+      padding: .36rem 1rem;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s;
+    }
+
+    .btn-ver-envio:hover { background: #eef2fb; }
+
+    /* ── CHECKLIST SIDEBAR ── */
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: .82rem;
+      margin-bottom: .6rem;
+      gap: .5rem;
+    }
+    .checklist-label { color: var(--color-texto-suave); }
+    .checklist-val   { font-weight: 700; color: var(--color-texto); }
+
+    /* Acciones sidebar */
+    .acciones-card .btn-danger-outline {
+      width: 100%;
+      background: none;
+      border: 1.5px solid var(--danger);
+      color: var(--danger);
+      border-radius: 8px;
+      padding: .5rem;
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .acciones-card .btn-danger-outline:hover { background: #fee2e2; }
+  </style>
+</head>
+<body>
+
+<div th:replace="~{Usuario/navbar :: navbar}"></div>
+
+<main class="u-main">
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a href="/clasesadmin">Clases</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="/enclase">Estructuras de Datos</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="/Alumno/Competencias">Listas enlazadas en Python</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-actual">Nivel 1</span>
+  </nav>
+
+  <!-- HERO -->
+  <div class="nivel-hero" style="margin:-1.6rem -2rem 1.4rem">
+    <div class="nivel-hero-inner">
+      <div class="nivel-hero-title">
+        Nivel 1: Fundamentos
+        <span class="tag tag-active" style="font-size:.75rem">En curso</span>
+      </div>
+      <div class="nivel-hero-actions">
+        <button class="btn-primary" onclick="window.location.href='/Alumno/Competencias/Problema'">Ir al problema actual</button>
+        <button class="btn-secondary" onclick="window.location.href='/Alumno/Competencias'">Volver a niveles</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="nivel-stats">
+    <div class="nivel-stat">
+      <span class="nivel-stat-label">Tiempo del nivel</span>
+      <span class="nivel-stat-val">20 min</span>
+    </div>
+    <div class="nivel-stat">
+      <span class="nivel-stat-label">Tiempo restante</span>
+      <span class="nivel-stat-val azul" id="timer">08:12</span>
+      <div class="nivel-stat-bar">
+        <div class="progress-bar-wrap" style="width:120px">
+          <div class="progress-bar-fill" style="width:41%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="nivel-stat">
+      <span class="nivel-stat-label">Problemas obligatorios</span>
+      <span class="nivel-stat-val">1/3 completados</span>
+    </div>
+    <div class="nivel-stat">
+      <span class="nivel-stat-label">Puntaje del nivel</span>
+      <span class="nivel-stat-val">60 / 120 pts</span>
+    </div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="u-layout">
+
+    <!-- LISTA DE PROBLEMAS -->
+    <div>
+      <div class="prob-list" id="probList"></div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="u-sidebar">
+
+      <!-- Checklist del nivel -->
+      <div class="sidebar-card">
+        <h3>Checklist del nivel</h3>
+        <div class="checklist-item">
+          <span class="checklist-label">Subir captura por problema</span>
+          <span class="checklist-val">1/5 completado</span>
+        </div>
+        <div class="progress-bar-wrap" style="margin-bottom:.7rem">
+          <div class="progress-bar-fill" style="width:20%"></div>
+        </div>
+        <div class="checklist-item">
+          <span class="checklist-label">Subir .txt por problema</span>
+          <span class="checklist-val">1/5 completado</span>
+        </div>
+        <div class="progress-bar-wrap" style="margin-bottom:.7rem">
+          <div class="progress-bar-fill" style="width:20%"></div>
+        </div>
+        <div class="checklist-item">
+          <span class="checklist-label">Completar 3 obligatorios</span>
+          <span class="checklist-val">1/3</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:33%"></div>
+        </div>
+      </div>
+
+      <!-- Consejo de Pichy -->
+      <div class="sidebar-card">
+        <h3>💡 Consejo de Pichy</h3>
+        <p class="pichy-tip">Empieza por los obligatorios. Si te sobra tiempo, ve por los opcionales para sumar puntos extra.</p>
+      </div>
+
+      <!-- Acciones -->
+      <div class="sidebar-card acciones-card">
+        <h3>Acciones</h3>
+        <button class="btn-danger-outline">Finalizar nivel (si aplica)</button>
+        <p style="font-size:.75rem;color:var(--color-texto-suave);margin-top:.6rem;line-height:1.4">
+          Se habilita al terminar el tiempo o al enviar tus obligatorios.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script src="/Funciones/competenciasU/lvlU.js"></script>
+</body>
+</html>

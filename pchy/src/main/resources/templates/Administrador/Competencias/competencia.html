@@ -1,96 +1,302 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P-Chy – Editar Competencia</title>
+  <title th:text="'P-Chy – ' + ${competencia.nombre}">P-Chy – Competencia</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/Estilos/enclase.css"/>
   <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
   <link rel="stylesheet" href="/Estilos/comstyle.css"/>
+  <link rel="stylesheet" href="/Estilos/modalStyle.css"/>
 </head>
 <body>
 
 <div th:replace="~{Administrador/navbar :: navbar}"></div>
 
+<!-- Header de la clase -->
 <div class="clase-header">
   <div class="clase-header-inner">
     <div class="clase-title-row">
       <div>
-        <h1 class="clase-title">Estructuras de Datos</h1>
+        <h1 class="clase-title" th:text="${clase.nombre}">Clase</h1>
         <div class="clase-meta">
-          <span>Código: <strong>A1B2C3</strong></span>
+          <span>Código: <strong th:text="${clase.codigo}"></strong></span>
           <span class="sep">|</span>
-          <span>Alumnos: <strong>30</strong></span>
+          <span>Alumnos: <strong th:text="${clase.totalAlumnos}"></strong></span>
           <span class="sep">|</span>
-          <span>Competencias: <strong>5</strong></span>
+          <span>Competencias: <strong th:text="${clase.totalCompetencias}"></strong></span>
         </div>
       </div>
-      <button class="btn-editar" onclick="window.location.href='/Administrador/En/Clase'">Editar clase</button>
+      <button class="btn-editar"
+              th:onclick="'window.location.href=\'/Administrador/Clase/' + ${clase.idClase} + '\''">
+        Volver a clase
+      </button>
     </div>
     <div class="tabs">
-      <button class="tab" onclick="window.location.href='/Administrador/En/Clase?tab=alumnos'">Alumnos</button>
-      <button class="tab" onclick="window.location.href='/Administrador/En/Clase?tab=solicitudes'">Solicitudes <span class="badge">12</span></button>
-      <button class="tab active">Competencias</button>
-      <button class="tab" id="tabRevision">Revisión</button>
+      <a class="tab" th:href="'/Administrador/Clase/' + ${clase.idClase}">Competencias</a>
     </div>
   </div>
 </div>
 
 <main class="comp-main">
 
+  <!-- Breadcrumb -->
   <nav class="breadcrumb">
-    <a href="/Administrador/En/Clase">Competencias</a>
+    <a th:href="'/Administrador/Clase/' + ${clase.idClase}">Competencias</a>
     <span class="breadcrumb-sep">/</span>
-    <span class="breadcrumb-actual" id="breadcrumbNombre">Cargando...</span>
+    <span class="breadcrumb-actual" th:text="${competencia.nombre}"></span>
   </nav>
 
-  <h1 class="editar-titulo">Editar competencia</h1>
+  <!-- Alertas -->
+  <div th:if="${param.editOk}"    class="alerta alerta-ok">✓ Competencia actualizada.</div>
+  <div th:if="${param.editError}" class="alerta alerta-error">✗ Error al actualizar.</div>
+  <div th:if="${param.nivelError}" class="alerta alerta-error">✗ Error al guardar el nivel.</div>
+
+  <!-- Header de la competencia -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+    <div>
+      <h1 class="editar-titulo" th:text="${competencia.nombre}"></h1>
+      <div style="font-size:13px;color:#6B6B80;margin-top:4px">
+        <span th:text="${competencia.lenguaje}"></span> ·
+        <span th:text="${competencia.estado}"></span> ·
+        Inicio: <span th:text="${#dates.format(competencia.fechaInicio,'dd/MM/yyyy HH:mm')}"></span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-outline" onclick="abrirModalEditarComp()">Editar competencia</button>
+      <form th:if="${competencia.estado == 'BORRADOR'}"
+            th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                       '/Competencia/' + ${competencia.idCompetencia} + '/Publicar'"
+            method="post" style="display:inline">
+        <button type="submit" class="btn-enter">Publicar</button>
+      </form>
+    </div>
+  </div>
 
   <div class="editar-layout">
 
+    <!-- Panel de niveles -->
     <div class="panel-niveles">
       <div class="panel-niveles-header">
         <h2>Niveles</h2>
-        <button class="btn-add-nivel-sm" onclick="agregarNivelPanel()">+ Añadir nivel</button>
+        <button class="btn-add-nivel-sm"
+                onclick="document.getElementById('modalNuevoNivel').classList.add('visible')">
+          + Añadir nivel
+        </button>
       </div>
       <p class="panel-niveles-sub">Selecciona un nivel para gestionar sus problemas</p>
-      <div id="nivelesContainer"></div>
+
+      <!-- Sin niveles -->
+      <div th:if="${#lists.isEmpty(niveles)}"
+           style="font-size:13px;color:#6B6B80;text-align:center;padding:16px 0">
+        Sin niveles. Añade el primero.
+      </div>
+
+      <!-- Lista de niveles -->
+<a th:each="nivel, stat : ${niveles}"
+class="nivel-item"
+   th:classappend="${stat.index == 0} ? ' activo' : ''"
+   th:href="'/Administrador/Clase/' + ${clase.idClase} +
+            '/Competencia/' + ${competencia.idCompetencia} +
+            '/Nivel/' + ${nivel.idNivel}">
+  <div class="nivel-item-left">
+    <span class="nivel-nombre" th:text="${nivel.titulo}"></span>
+    <span class="nivel-tiempo-tag" th:text="${nivel.tiempoLimite} + ' min'"></span>
+  </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <!-- Editar nivel -->
+          <button class="btn-del-nivel"
+                  th:data-id="${nivel.idNivel}"
+                  th:data-titulo="${nivel.titulo}"
+                  th:data-tiempo="${nivel.tiempoLimite}"
+                  onclick="event.preventDefault(); abrirEditarNivel(this)"
+                  title="Editar">
+            Editar
+          </button>
+          <!-- Eliminar nivel -->
+          <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                           '/Competencia/' + ${competencia.idCompetencia} +
+                           '/Nivel/' + ${nivel.idNivel} + '/Eliminar'"
+                method="post" style="display:inline"
+                onsubmit="event.stopPropagation(); return confirm('¿Eliminar este nivel?')">
+            <button type="submit" class="btn-del-nivel" title="Eliminar">✕</button>
+          </form>
+        </div>
+      </a>
     </div>
 
+    <!-- Panel de problemas (por ahora placeholder) -->
     <div class="panel-problemas">
       <div class="panel-prob-header">
         <div>
-          <div class="panel-prob-titulo" id="probTitulo">Nivel 1</div>
+          <div class="panel-prob-titulo" id="probTitulo">
+            Selecciona un nivel
+          </div>
           <div class="panel-prob-tiempo">
-            Tiempo: <span id="probTiempo">10 min</span>
-            <button class="btn-editar-tiempo">✏️</button>
+            Tiempo: <span id="probTiempo">—</span>
           </div>
         </div>
-        <button class="btn-add-problema" onclick="agregarProblema()">+ Añadir problema</button>
+        <button class="btn-add-problema" id="btnAddProblema" style="display:none">
+          + Añadir problema
+        </button>
       </div>
-      <div id="problemasContainer"></div>
-      <p class="problemas-footer" id="problemasFooter" style="display:none">
-        Los problemas se guardan por nivel. Puedes cambiar de nivel en cualquier momento.
-      </p>
+      <div id="problemasContainer"
+           style="text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">
+        Selecciona un nivel para gestionar sus problemas.
+      </div>
     </div>
 
   </div>
 </main>
 
-<script src="/Funciones/comfun.js"></script>
-<script src="/Funciones/comfun.js"></script>
+<!-- Modal nuevo nivel -->
+<div class="modal-overlay" id="modalNuevoNivel">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Nuevo nivel</h2>
+    <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                     '/Competencia/' + ${competencia.idCompetencia} + '/Nivel/Nuevo'"
+          method="post">
+
+      <div class="m-campo">
+        <label class="m-label">Título del nivel</label>
+        <input type="text" name="titulo" class="m-input"
+               placeholder="Ej. Nivel 1" required>
+      </div>
+
+      <div class="m-campo">
+  <label class="m-label">Enunciado</label>
+  <textarea name="enunciado"
+            class="m-input"
+            style="resize:vertical;min-height:80px"
+            required></textarea>
+</div>
+
+
+      <div class="m-campo">
+        <label class="m-label">Tiempo límite (minutos)</label>
+        <input type="number" name="tiempoLimite" class="m-input"
+               value="10" min="1" required>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="document.getElementById('modalNuevoNivel').classList.remove('visible')">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-modal-submit">Crear nivel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal editar nivel -->
+<div class="modal-overlay" id="modalEditarNivel">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Editar nivel</h2>
+    <form id="formEditarNivel" method="post">
+
+      <div class="m-campo">
+        <label class="m-label">Título</label>
+        <input type="text" name="titulo" id="editNivelTitulo" class="m-input" required>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Tiempo límite (minutos)</label>
+        <input type="number" name="tiempoLimite" id="editNivelTiempo"
+               class="m-input" min="1" required>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="document.getElementById('modalEditarNivel').classList.remove('visible')">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-modal-submit">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal editar competencia -->
+<div class="modal-overlay" id="modalEditarComp">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Editar competencia</h2>
+    <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                     '/Competencia/' + ${competencia.idCompetencia} + '/Editar'"
+          method="post">
+
+      <div class="m-campo">
+        <label class="m-label">Nombre</label>
+        <input type="text" name="nombre" class="m-input"
+               th:value="${competencia.nombre}" required>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Lenguaje</label>
+        <select name="lenguaje" class="m-select">
+          <option value="Python" th:selected="${competencia.lenguaje == 'Python'}">Python</option>
+          <option value="C++" th:selected="${competencia.lenguaje == 'C++'}">C++</option>
+        </select>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Descripción</label>
+        <textarea name="descripcion" class="m-input"
+                  style="resize:vertical;min-height:60px"
+                  th:text="${competencia.descripcion}"></textarea>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Fecha inicio</label>
+        <input type="datetime-local" name="fechaInicio" class="m-input"
+               th:value="${#dates.format(competencia.fechaInicio,'yyyy-MM-dd') + 'T' + #dates.format(competencia.fechaInicio,'HH:mm')}">
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Fecha fin</label>
+        <input type="datetime-local" name="fechaFin" class="m-input"
+               th:value="${#dates.format(competencia.fechaFin,'yyyy-MM-dd') + 'T' + #dates.format(competencia.fechaFin,'HH:mm')}">
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="cerrarModalEditarComp()">Cancelar</button>
+        <button type="submit" class="btn-modal-submit">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
-  const urlParams  = new URLSearchParams(window.location.search);
-  const compId     = urlParams.get("id");
-  const compNombre = urlParams.get("nombre") || "Competencia";
+  function abrirModalEditarComp() {
+    document.getElementById('modalEditarComp').classList.add('visible');
+  }
+  function cerrarModalEditarComp() {
+    document.getElementById('modalEditarComp').classList.remove('visible');
+  }
 
-  document.getElementById("breadcrumbNombre").textContent = compNombre;
+  function abrirEditarNivel(btn) {
+    const id     = btn.dataset.id;
+    const titulo = btn.dataset.titulo;
+    const tiempo = btn.dataset.tiempo;
+    const idClase = /*[[${clase.idClase}]]*/ 0;
+    const idComp  = /*[[${competencia.idCompetencia}]]*/ 0;
 
-  // ✅ Tab Revisión
-  document.getElementById("tabRevision").onclick = () => {
-    window.location.href = `/Administrador/Competencias/Revision?id=${compId}&nombre=${encodeURIComponent(compNombre)}`;
-  };
+    document.getElementById('editNivelTitulo').value = titulo;
+    document.getElementById('editNivelTiempo').value = tiempo;
+    document.getElementById('formEditarNivel').action =
+      `/Administrador/Clase/${idClase}/Competencia/${idComp}/Nivel/${id}/Editar`;
+    document.getElementById('modalEditarNivel').classList.add('visible');
+  }
+
+  function seleccionarNivel(el) {
+    document.querySelectorAll('.nivel-item').forEach(n => n.classList.remove('activo'));
+    el.classList.add('activo');
+    const titulo = el.querySelector('.nivel-nombre').textContent;
+    const tiempo = el.querySelector('.nivel-tiempo-tag').textContent;
+    document.getElementById('probTitulo').textContent = titulo;
+    document.getElementById('probTiempo').textContent = tiempo;
+    document.getElementById('btnAddProblema').style.display = 'inline-flex';
+    document.getElementById('problemasContainer').innerHTML =
+      '<p style="font-size:13px;color:#6B6B80">Los problemas se agregarán próximamente.</p>';
+  }
 </script>
+
 </body>
 </html>
