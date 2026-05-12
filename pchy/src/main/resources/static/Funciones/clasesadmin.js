@@ -26,12 +26,12 @@
   }
 
   // Modal editar
-  function abrirEditar(id, nombre, descripcion) {
+function abrirEditar(id, nombre, descripcion) {
     document.getElementById('editNombre').value = nombre;
     document.getElementById('editDescripcion').value = descripcion || '';
     document.getElementById('formEditar').action = '/Administrador/Clase/' + id + '/Editar';
     document.getElementById('modalEditar').classList.add('visible');
-  }
+}
 
   function cerrarModalEditar() {
     document.getElementById('modalEditar').classList.remove('visible');
