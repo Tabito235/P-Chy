@@ -9,11 +9,15 @@
   <link rel="stylesheet" href="/Estilos/styles.css"/>
   <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
   <link rel="stylesheet" href="/Estilos/usuario.css"/>
+  <style>
+
+</style>
+
 </head>
 <body>
 
   <!-- Barrita de navegación --> 
-  <div th:replace="~{Alumno/navbar :: navbar}"></div>
+<div th:replace="${rol == 3} ? ~{Usuario/navbar :: navbar} : ~{Administrador/navbar :: navbar}"></div>
 
   <main class="contenido">
     <div class="misclases-layout">
@@ -22,21 +26,22 @@
       <div class="misclases-columna-principal">
 
         <!-- TÍTULO Y BOTÓN UNIRME -->
-        <div class="clases-header">
-          <div class="header-top">
-            <div>
-              <h1>Clases</h1>
-              <h3>Únete con un código y revisa tus clases activas.</h3>
-            </div>
-            <button class="btn-unirme-principal">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-              </svg>
-              Unirme a una clase
-            </button>
-          </div>
-        </div>
+       <div class="clases-header">
+  <div class="header-top">
+    <div>
+      <h1>Clases</h1>
+      <h3>Únete con un código y revisa tus clases activas.</h3>
+    </div>
 
+    <a th:href="@{/Alumno/En/Clase}" class="btn-unirme-principal">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+      </svg>
+      Unirme a una clase
+    </a>
+
+  </div>
+</div>
         <!-- LISTA DE CLASES -->
         
         <!-- Tarjeta: Estructuras de Datos -->

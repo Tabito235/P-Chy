@@ -13,7 +13,7 @@
 <body>
 
   <!-- Barrita de navegación -->
-  <div th:replace="~{Administrador/navbar :: navbar}"></div>
+<div th:replace="${rol == 3} ? ~{Usuario/navbar :: navbar} : ~{Administrador/navbar :: navbar}"></div>
 
   <main class="contenido">
     <div class="competencias-layout">
@@ -89,7 +89,9 @@
               </div>
             </div>
             <div class="competencia-acciones">
-              <button class="btn-entrar-competencia">Entrar</button>
+              <a th:href="@{/Alumno/Competencias}" class="btn-entrar-competencia">
+    Entrar
+</a>
             </div>
           </div>
 
