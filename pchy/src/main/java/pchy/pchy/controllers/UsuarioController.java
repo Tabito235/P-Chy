@@ -84,4 +84,16 @@ public class UsuarioController {
         return "Usuario/competencias/ResultU";
     }
 
+    @GetMapping("/Alumno/Mis/Clases")
+    public String misClases(HttpSession session, Model model) {
+
+        return "Usuario/misClases";
+    }
+
+        @GetMapping("/Alumno/En/Clase")
+    public String enClase(HttpSession session, Model model) {
+
+        return "Usuario/enClase";
+    }
+
 }
