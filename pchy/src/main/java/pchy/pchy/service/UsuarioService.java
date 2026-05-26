@@ -8,6 +8,7 @@ import pchy.pchy.models.Usuario;
 import pchy.pchy.repository.UsuarioRepository;
 import pchy.pchy.repository.RolRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -224,6 +225,17 @@ public void actualizarFoto(String correo, String ruta) {
 }
 
 // Reemplaza actualizarPerfil en UsuarioService
+
+// Listar todos los usuarios con su rol
+public List<Usuario> listarUsuariosConRol() {
+    return rolRepository.listarUsuariosConRol();
+}
+
+// Cambiar rol de un usuario
+public void cambiarRol(int idUsuario, int nuevoRol) {
+    rolRepository.eliminarRoles(idUsuario);
+    rolRepository.asignarRol(idUsuario, nuevoRol);
+}
 
 
 }

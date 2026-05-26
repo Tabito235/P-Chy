@@ -20,6 +20,9 @@ public class Usuario {
     private boolean activo;
     private Timestamp fechaRegistro;
 
+private String rolActual;
+private int idRolActual;
+
     public Usuario(){}
 
     public int getIdUsuario() {
@@ -125,4 +128,12 @@ public class Usuario {
     public void setFechaRegistro(Timestamp fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
+
+
+// Y sus getters/setters
+public String getRolActual() { return rolActual; }
+public void setRolActual(String rolActual) { this.rolActual = rolActual; }
+
+public int getIdRolActual() { return idRolActual; }
+public void setIdRolActual(int idRolActual) { this.idRolActual = idRolActual; }
 }

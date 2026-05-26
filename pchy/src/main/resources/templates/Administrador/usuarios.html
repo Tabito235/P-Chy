@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Usuarios</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/styles.css"/>
+  <link rel="stylesheet" href="/Estilos/modalStyle.css"/>
+    <link rel="stylesheet" href="/Estilos/usuarios.css"/>
+
+</head>
+<body>
+
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
+
+<main class="usuarios-main">
+
+  <div class="page-header">
+    <h1>Gestión de usuarios</h1>
+    <p>Consulta y cambia el rol de cualquier usuario del sistema.</p>
+  </div>
+
+  <!-- Alertas -->
+  <div th:if="${param.ok}"    class="alerta alerta-ok"    style="margin-bottom:16px">✓ Rol actualizado correctamente.</div>
+  <div th:if="${param.error}" class="alerta alerta-error" style="margin-bottom:16px">✗ Error al cambiar el rol.</div>
+
+  <!-- Buscador -->
+  <div class="search-bar">
+    <input type="text" id="buscador" class="search-input"
+           placeholder="Buscar por nombre o correo..."/>
+  </div>
+
+  <!-- Tabla -->
+  <div class="tabla-card">
+    <table class="tabla-usuarios">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Matrícula</th>
+          <th>Institución</th>
+          <th>Rol actual</th>
+          <th>Cambiar rol</th>
+        </tr>
+      </thead>
+      <tbody id="tablaBody">
+        <tr th:each="u : ${usuarios}"
+            th:attr="data-nombre=${u.nombre + ' ' + u.apellido},data-correo=${u.correo}">
+
+          <!-- Avatar + nombre -->
+          <td>
+            <div class="usuario-info">
+              <div class="avatar-tabla">
+                <img th:if="${u.fotoPerfil != null}"
+                     th:src="${u.fotoPerfil}" alt="foto"/>
+                <span th:if="${u.fotoPerfil == null}"
+                      th:text="${u.nombre?.substring(0,1) + u.apellido?.substring(0,1)}">
+                </span>
+              </div>
+              <div>
+                <div class="usuario-nombre"
+                     th:text="${u.nombre + ' ' + u.apellido}"></div>
+                <div class="usuario-correo" th:text="${u.correo}"></div>
+              </div>
+            </div>
+          </td>
+
+          <!-- Matrícula -->
+          <td th:text="${u.matricula}"></td>
+
+          <!-- Institución -->
+          <td th:text="${u.institucion}"></td>
+
+          <!-- Rol actual -->
+          <td>
+            <span class="rol-badge"
+                  th:classappend="${u.idRolActual == 1} ? 'admin' :
+                                  (${u.idRolActual == 2} ? 'profesor' : 'alumno')"
+                  th:text="${u.rolActual}">
+            </span>
+          </td>
+
+          <!-- Cambiar rol -->
+          <td>
+            <button class="btn-cambiar-rol"
+                    th:data-id="${u.idUsuario}"
+                    th:data-nombre="${u.nombre + ' ' + u.apellido}"
+                    th:data-rol="${u.idRolActual}"
+                    onclick="abrirModal(this)">
+              Cambiar rol
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- Modal cambiar rol -->
+<div class="modal-overlay" id="modalRol">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Cambiar rol</h2>
+    <p style="font-size:13px;color:#6B6B80;margin-bottom:16px">
+      Usuario: <strong id="modalNombre"></strong>
+    </p>
+
+    <form id="formRol" method="post">
+      <div class="m-campo">
+        <label class="m-label">Nuevo rol</label>
+        <select name="nuevoRol" id="selectRol" class="m-select" required>
+          <option value="1">Administrador</option>
+          <option value="2">Profesor</option>
+          <option value="3">Alumno</option>
+        </select>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-modal-submit">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="/Funciones/usuarios.js"></script>
+</body>
+</html>

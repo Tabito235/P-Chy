@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import pchy.pchy.models.Usuario;
-import pchy.pchy.service.UsuarioService;
+import pchy.pchy.service.CloudinaryService;
 
-import java.io.IOException;
-import java.nio.file.*;
+import pchy.pchy.service.UsuarioService;
 
 @Controller
 public class PerfilController {
@@ -20,11 +19,6 @@ public class PerfilController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Value("${pchy.uploads.ruta}")
-    private String rutaFotos;
-
-    @Value("${pchy.uploads.url}")
-    private String urlPublica;
 
     // ─── Ver perfil ────────────────────────────────────────────────
     @GetMapping("/Perfil")
@@ -99,41 +93,37 @@ public String actualizarPerfil(
     }
 
     // ─── Subir foto de perfil ──────────────────────────────────────
-    @PostMapping("/Perfil/Foto")
-    public String subirFoto(
-            @RequestParam("foto") MultipartFile foto,
-            HttpSession session) {
+    @Autowired
+private CloudinaryService cloudinaryService;
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+@PostMapping("/Perfil/Foto")
+public String subirFoto(
+        @RequestParam("foto") MultipartFile foto,
+        HttpSession session) {
 
-        if (usuario == null) return "redirect:/Login";
-        if (foto.isEmpty())  return "redirect:/Perfil?fotoError";
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        try {
-            // Crea la carpeta si no existe
-            Files.createDirectories(Paths.get(rutaFotos));
+    if (usuario == null) return "redirect:/Login";
+    if (foto.isEmpty())  return "redirect:/Perfil?fotoError";
 
-            // Nombre único por usuario
-            String extension = foto.getOriginalFilename()
-                .substring(foto.getOriginalFilename().lastIndexOf("."));
-            String nombreArchivo = "perfil_" + usuario.getIdUsuario() + extension;
+    try {
+        // Nombre único por usuario (sin extensión, Cloudinary la maneja)
+        String nombreArchivo = "perfil_" + usuario.getIdUsuario();
 
-            // Guarda el archivo físico
-            Path destino = Paths.get(rutaFotos + nombreArchivo);
-            foto.transferTo(destino);
+        // Sube a Cloudinary y obtiene la URL pública
+        String urlPublica = cloudinaryService.subirFoto(foto, nombreArchivo);
 
-            // Ruta que se guarda en BD  (/uploads/perfiles/perfil_5.jpg)
-            String rutaBD = urlPublica + nombreArchivo;
-            usuarioService.actualizarFoto(usuario.getCorreo(), rutaBD);
+        // Guarda la URL en BD
+        usuarioService.actualizarFoto(usuario.getCorreo(), urlPublica);
 
-            // Refresca sesión
-            Usuario actualizado = usuarioService.obtenerPerfil(usuario.getCorreo());
-            session.setAttribute("usuario", actualizado);
+        // Refresca sesión
+        Usuario actualizado = usuarioService.obtenerPerfil(usuario.getCorreo());
+        session.setAttribute("usuario", actualizado);
 
-        } catch (IOException e) {
-            return "redirect:/Perfil?fotoError";
-        }
-
-        return "redirect:/Perfil?fotoOk";
+    } catch (Exception e) {
+        return "redirect:/Perfil?fotoError";
     }
+
+    return "redirect:/Perfil?fotoOk";
+}
 }

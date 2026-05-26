@@ -16,6 +16,7 @@ import pchy.pchy.service.CasoPruebaService;
 import pchy.pchy.service.ClaseService;
 import pchy.pchy.service.CompetenciaService;
 import pchy.pchy.service.NivelesService;
+import pchy.pchy.service.UsuarioService;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class adminController {
     @Autowired private CompetenciaService competenciaService;
     @Autowired private NivelesService nivelesService;
     @Autowired private CasoPruebaService casoPruebaService;
+    @Autowired private UsuarioService usuarioService;
 
     @Value("${pchy.base-url}")
     private String baseUrl;
@@ -384,5 +386,37 @@ public String eliminarCaso(
         return "Administrador/Competencias/revision";
     }
 
+
+    // Ver todos los usuarios
+@GetMapping("/Administrador/Usuarios")
+public String verUsuarios(HttpSession session, Model model) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    model.addAttribute("usuarios",
+        usuarioService.listarUsuariosConRol());
+
+    return "Administrador/usuarios";
+}
+
+
+// Cambiar rol
+@PostMapping("/Administrador/Usuario/{id}/Rol")
+public String cambiarRol(
+        @PathVariable int id,
+        @RequestParam int nuevoRol,
+        HttpSession session) {
+
+    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+
+    try {
+        usuarioService.cambiarRol(id, nuevoRol);
+    } catch (Exception e) {
+        return "redirect:/Administrador/Usuarios?error";
+    }
+
+    return "redirect:/Administrador/Usuarios?ok";
+}
 
 }
