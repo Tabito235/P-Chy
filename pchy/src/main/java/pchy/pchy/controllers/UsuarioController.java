@@ -93,7 +93,7 @@ public class UsuarioController {
         @GetMapping("/Alumno/En/Clase")
     public String enClase(HttpSession session, Model model) {
 
-        return "Usuario/enClase";
+        return "Usuario/EnClase";
     }
 
 }
