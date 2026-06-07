@@ -14,6 +14,7 @@
   --color-texto-suave:    #6B6B80;
   --color-borde:          #E0DFF0;
   --color-acento:         #13239e;
+  --color-fondo-gris:     #5b5b62;
 
   --blue:       #1646a9;
   --blue-dark:  #0e0b64;
@@ -557,4 +558,56 @@ body {
   .alumnos-layout { grid-template-columns: 1fr; }
   .alumnos-grid   { grid-template-columns: repeat(2, 1fr); }
   .clase-title    { font-size: 1.3rem; }
+}
+
+/*CAMBIOS LUPITA*/
+
+/*  BOTON SELECTOR DE LENGUAJE */
+
+.lenguaje-toggle {
+  display: flex;
+  gap: 8px;
+  background-color: var(--color-fondo);
+  border-radius: 40px;
+  padding: 4px;
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  color: var(--color-texto-suave);
+}
+
+.toggle-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+
+.toggle-btn:hover {
+  background-color: rgba(22, 70, 169, 0.1);
+  color: var(--color-primario);
+}
+
+.toggle-btn.active {
+  background-color: var(--color-primario);
+  color: white;
+  box-shadow: 0 2px 6px rgba(22, 70, 169, 0.3);
+}
+
+.toggle-python.active {
+  background-color: #3776AB;
+}
+
+.toggle-cpp.active {
+  background-color: #00599C;
 }

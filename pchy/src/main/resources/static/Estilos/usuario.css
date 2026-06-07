@@ -63,6 +63,14 @@
   box-shadow: var(--shadow);
 }
 
+.sidebar-card2 {
+  background: #dcdcdc;
+  border: 1px solid #ccccd1;
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  box-shadow: var(--shadow);
+}
+
 .sidebar-card h3 {
   font-family: 'Sora', sans-serif;
   font-size: .92rem;
@@ -92,6 +100,7 @@
 .tag-revision{ background: var(--yellow-bg); color: var(--yellow-fg); }
 .tag-correcto{ background: var(--green-light); color: var(--green-dark); }
 .tag-incorrecto { background: #fee2e2; color: #b91c1c; }
+.tag-salida  { background: #c2cfea; color: #000000; }
 
 /* ── BARRA DE PROGRESO ── */
 .progress-bar-wrap {

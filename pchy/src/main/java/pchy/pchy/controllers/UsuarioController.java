@@ -96,4 +96,10 @@ public class UsuarioController {
         return "Usuario/EnClase";
     }
 
+    @GetMapping("/Alumno/DesafioDiario")
+    public String desafioDiario(HttpSession session, Model model) {
+    return "Usuario/desafioDiario";
+    }
+
+
 }

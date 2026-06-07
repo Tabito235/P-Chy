@@ -47,8 +47,4 @@ public List<CasoPrueba> listarPorProblema(int idProblema) {
     public void eliminar(int idCaso) {
         jdbcTemplate.update("DELETE FROM casoPrueba WHERE idCaso = ?", idCaso);
     }
-
-    public void eliminarPorNivel(int idNivel) {
-        jdbcTemplate.update("DELETE FROM casoPrueba WHERE idNivel = ?", idNivel);
-    }
 }

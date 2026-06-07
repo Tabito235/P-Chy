@@ -116,7 +116,15 @@
   <!-- Lista de problemas -->
   <div th:each="prob : ${problemas}" class="problema-card">
     <div class="prob-header">
-      <span class="prob-titulo" th:text="${prob.titulo}"></span>
+      <!-- Reemplaza el span del título por un link -->
+<a class="prob-titulo"
+   th:href="'/Administrador/Clase/' + ${clase.idClase} +
+            '/Competencia/' + ${competencia.idCompetencia} +
+            '/Nivel/' + ${nivel.idNivel} +
+            '/Problema/' + ${prob.idProblema}"
+   th:text="${prob.titulo}"
+   style="text-decoration:none;color:inherit">
+</a>
       <div style="display:flex;gap:6px">
         <button class="btn-del-nivel"
                 th:data-id="${prob.idProblema}"

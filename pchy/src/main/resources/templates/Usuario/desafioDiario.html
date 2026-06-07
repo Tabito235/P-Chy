@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy – Desafío diario</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
+  <link rel="stylesheet" href="/Estilos/usuario.css"/>
+</head>
+<body>
+
+<div th:replace="~{Usuario/navbar :: navbar}"></div>
+
+<main class="u-main">
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a th:href="@{/Alumno/Inicio}">Inicio</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-actual">Desafío diario</span>
+  </nav>
+
+  <!-- HERO -->
+  <div style="margin-bottom:1.4rem">
+    <h1 style="font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;color:var(--color-texto);margin:0 0 .25rem">
+      Desafío diario
+    </h1>
+    <p style="font-size:.88rem;color:var(--color-texto-suave);margin:0"
+       th:text="${subtitulo}">1 problema al día. Suma puntos y mantén tu racha.</p>
+  </div>
+
+  <!-- STATS CARDS -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.85rem;margin-bottom:1.4rem">
+
+    <div class="sidebar-card" style="display:flex;align-items:center;gap:.75rem">
+      <div>
+        <div style="font-size:.75rem;color:var(--color-texto-suave);margin-bottom:.2rem">Racha actual</div>
+        <div style="font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:800;color:var(--color-texto)"
+             th:text="${racha + ' días'}">5 días</div> <img src="/Imagenes/calendario.png" width="50" height="50">
+           
+      </div>
+    </div>
+
+    <div class="sidebar-card" style="display:flex;align-items:center;gap:.75rem">
+      <div>
+        <div style="font-size:.75rem;color:var(--color-texto-suave);margin-bottom:.2rem">Puntos por desafío</div>
+        <div style="font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:800;color:var(--color-primario)"
+             th:text="'+' + puntosPorDesafio + ' pts'">+40 pts</div>
+      </div>
+    </div>
+
+    <div class="sidebar-card" style="display:flex;align-items:center;gap:.75rem">
+      <div>
+        <div style="font-size:.75rem;color:var(--color-texto-suave);margin-bottom:.2rem">Desafíos completados</div>
+        <div style="font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:800;color:var(--color-texto)"
+             th:text="${desafiosCompletados}">12</div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+    <div style="font-size:.75rem;color:var(--color-texto-suave);margin-bottom:.5rem">Lenguaje</div>
+    <div class="lenguaje-toggle">
+      <button type="button" class="toggle-btn toggle-python active" data-lang="python">
+        </svg>
+        Python
+      </button>
+      <button type="button" class="toggle-btn toggle-cpp" data-lang="cpp">
+        </svg>
+        C++
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="u-layout">
+
+    <!-- COLUMNA IZQUIERDA -->
+    <div style="display:flex;flex-direction:column;gap:1rem">
+
+      <!-- PROBLEMA DEL DÍA -->
+      <div class="sidebar-card">
+        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem">
+          <h2 style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;margin:0;color:var(--color-texto)"
+              th:text="'Problema del día: ' + nombreProblema">Problema del día: Suma de pares</h2>
+          <span class="tag tag-active" th:text="${lenguajeActivo}">Python</span>
+          <span class="tag tag-salida" style="margin-left:auto">Hoy</span>
+        </div>
+
+        <p style="font-size:.85rem;font-weight:700;color:var(--color-texto);margin:0 0 .3rem">Enunciado:</p>
+          <p style="font-size:.85rem;color:var(--color-texto);margin:0 0 1rem;line-height:1.55"
+           th:text="${enunciado}">Dado un arreglo de números enteros, calcula la suma de todos los números que sea pares</p>
+
+        <p style="font-size:.85rem;font-weight:700;color:var(--color-texto);margin:0 0 .3rem">Ejemplo:</p>
+          <p style="font-size:.85rem;color:var(--color-texto);margin:0 0 1rem;line-height:1.55"
+           th:text="${enunciado}">Entrada: [1, 4, 7, 2, 9]</p>
+          <p style="font-size:.85rem;color:var(--color-texto);margin:0 0 1rem;line-height:1.55"
+           th:text="${enunciado}">Salida: 6(4+2)</p>
+      </div>
+
+      <!-- CASOS DE PRUEBA -->
+      <div class="sidebar-card">
+        <h3 style="font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;margin:0 0 .8rem;color:var(--color-texto)">
+          Casos de prueba
+        </h3>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.84rem">
+            <thead>
+              <tr style="border-bottom:1.5px solid var(--color-borde);">
+                <th style="text-align:left;padding:.4rem .6rem;color:var(--color-texto);font-weight:600">#</th>
+                <th style="text-align:left;padding:.4rem .6rem;color:var(--color-texto);font-weight:600">Entrada</th>
+                <th style="text-align:left;padding:.4rem .6rem;color:var(--color-texto);font-weight:600">Salida</th>
+              </tr>
+            </thead>
+            <tbody id="casosPrueba">
+              <tr th:each="caso,i : ${casosPrueba}" style="border-bottom:1px solid var(--color-borde)">
+                <td style="padding:.45rem .6rem;color:var(--color-texto)" th:text="${i.index + 1}">1.</td>
+                <td style="padding:.45rem .6rem;color:var(--color-texto);font-family:monospace" th:text="${caso.entrada}">[1,2,3]</td>
+                <td style="padding:.45rem .6rem;color:var(--color-texto);font-family:monospace" th:text="${caso.salida}">2</td>
+              </tr>
+            </tbody>
+            <tbody id="casosPrueba">
+              <tr th:each="caso,i : ${casosPrueba}" style="border-bottom:1px solid var(--color-borde)">
+                <td style="padding:.45rem .6rem;color:var(--color-texto)" th:text="${i.index + 1}">2.</td>
+                <td style="padding:.45rem .6rem;color:var(--color-texto);font-family:monospace" th:text="${caso.entrada}">[2,4,6]</td>
+                <td style="padding:.45rem .6rem;color:var(--color-texto);font-family:monospace" th:text="${caso.salida}">12</td>
+              </tr>
+            </tbody>
+            <tbody id="casosPrueba">
+              <tr th:each="caso,i : ${casosPrueba}" style="border-bottom:1px solid var(--color-borde)">
+                <td style="padding:.45rem .6rem;color:var(--color-texto)" th:text="${i.index + 1}">3.</td>
+                <td style="padding:.45rem .6rem;color:var(--color-texto);font-family:monospace" th:text="${caso.entrada}">[5,7,9]</td>
+                <td style="padding:.45rem .6rem;color:var(--color-texto);font-family:monospace" th:text="${caso.salida}">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CONSEJO DE PICHY -->
+      <div class="sidebar-card2">
+        <h3 style="font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;margin:0 0 .5rem;color:var(--color-texto)">
+          Consejo de Pichy
+        </h3>
+        <p style="font-size:.85rem;color:var(--color-texto);margin:0;line-height:1.55"
+           th:text="${consejo}">Si cambias a C++, recuerda usar long long si la suma puede crecer</p>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR DERECHA -->
+    <div class="u-sidebar">
+
+      <!-- ENTREGAR DESAFÍO -->
+      <div class="sidebar-card">
+        <h3 style="font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;margin:0 0 .9rem;color:var(--color-texto)">
+          Entregar desafío
+        </h3>
+
+        <!-- Subir captura -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.8rem">
+          <div>
+            <label style="font-size:.78rem;color:var(--color-texto-suave);display:block;margin-bottom:.35rem">
+              Subir captura (PNG/JPG)
+            </label>
+            <label class="btn-secondary"
+                   style="display:block;text-align:center;cursor:pointer;font-size:.82rem;padding:.45rem .7rem">
+              Subir captura
+              <input type="file" accept="image/*" style="display:none" id="inputCaptura"/>
+            </label>
+            <p style="font-size:.72rem;color:var(--color-texto-suave);margin:.3rem 0 0" id="nombreCaptura"></p>
+          </div>
+
+          <div>
+            <label style="font-size:.78rem;color:var(--color-texto-suave);display:block;margin-bottom:.35rem">
+              Subir archivo .txt
+            </label>
+            <label class="btn-secondary"
+                   style="display:block;text-align:center;cursor:pointer;font-size:.82rem;padding:.45rem .7rem">
+              Subir .txt
+              <input type="file" accept=".txt" style="display:none" id="inputTxt"/>
+            </label>
+            <label style="font-size:.78rem;color:var(--color-texto-suave);display:block;margin-bottom:.35rem">
+              Nombre sugerido: desafio_2026-04-29.txt
+            </label>
+            <p style="font-size:.72rem;color:var(--color-texto-suave);margin:.3rem 0 0"
+               th:text="'Nombre sugerido: ' + nombreArchivoSugerido" id="nombreSugerido">—</p>
+          </div>
+        </div>
+
+        <!-- Comentario -->
+        <textarea id="comentario" placeholder="Comentario opcional"
+                  style="width:100%;min-height:80px;border:1.5px solid var(--color-borde);border-radius:8px;
+                         padding:.6rem .8rem;font-family:inherit;font-size:.84rem;resize:vertical;
+                         background:var(--color-blanco);color:var(--color-texto);box-sizing:border-box;
+                         margin-bottom:.8rem"></textarea>
+
+        <button class="btn-primary" style="width:100%;margin-bottom:.5rem" id="btnEnviar">
+          Enviar desafío
+        </button>
+        <button class="btn-secondary" style="width:100%;margin-bottom:.7rem" id="btnGuardar">
+          Guardar para después
+        </button>
+
+        <p style="font-size:.75rem;color:var(--color-texto-suave);text-align:center;margin:0"
+           th:text="${mensajeFecha}">Envía antes de las 23:59 para mantener tu racha.</p>
+      </div>
+
+      <!-- HISTORIAL RECIENTE -->
+      <div class="sidebar-card">
+        <h3 style="font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;margin:0 0 .8rem;color:var(--color-texto)">
+          Historial reciente
+        </h3>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          <div th:each="h : ${historial}"
+               style="display:flex;justify-content:space-between;align-items:center;font-size:.82rem;
+                      padding:.35rem 0;border-bottom:1px solid var(--color-borde)">
+            <span style="color:var(--color-texto)" th:text="${h.nombre}">—</span>
+            <span th:classappend="${h.completado} ? 'prob-estado correcto' : 'prob-estado pendiente'"
+                  th:text="${h.completado} ? '(Completado, +' + h.puntos + ' pts)' : 'Pendiente'">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

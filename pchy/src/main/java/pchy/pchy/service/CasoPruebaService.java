@@ -33,9 +33,9 @@ public class CasoPruebaService {
         casoPruebaRepository.crear(caso);
     }
 
-    public List<CasoPrueba> listarPorNivel(int idProblema) {
-        return casoPruebaRepository.listarPorProblema(idProblema);
-    }
+    public List<CasoPrueba> listarPorProblema(int idProblema) {
+    return casoPruebaRepository.listarPorProblema(idProblema);
+}
 
     public void eliminar(int idCaso) {
         casoPruebaRepository.eliminar(idCaso);

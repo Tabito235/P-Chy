@@ -389,7 +389,29 @@ public String eliminarProblema(
 
 
 // Editar nivel
+@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Editar")
+public String editarNivel(
+        @PathVariable int idClase,
+        @PathVariable int idComp,
+        @PathVariable int idNivel,
+        @RequestParam String titulo,
+        @RequestParam(defaultValue = "10") int tiempoLimite,
+        @RequestParam(defaultValue = "1") int problemasParaDesbloquear,
+        HttpSession session) {
 
+    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+
+    try {
+        nivelesService.editarNivel(idNivel, idComp, titulo,
+            tiempoLimite, problemasParaDesbloquear);
+    } catch (Exception e) {
+        return "redirect:/Administrador/Clase/" + idClase +
+               "/Competencia/" + idComp + "/Nivel/" + idNivel + "?error";
+    }
+
+    return "redirect:/Administrador/Clase/" + idClase +
+           "/Competencia/" + idComp + "/Nivel/" + idNivel + "?ok";
+}
 
 // Caso de pruena nuevo
 @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Caso")
@@ -473,6 +495,89 @@ public String cambiarRol(
     }
 
     return "redirect:/Administrador/Usuarios?ok";
+}
+
+//  casos de prueba
+
+// Ver problema + sus casos de prueba
+@GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}")
+public String verProblema(
+        @PathVariable int idClase,
+        @PathVariable int idComp,
+        @PathVariable int idNivel,
+        @PathVariable int idProblema,
+        HttpSession session,
+        Model model) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    try {
+        Clase clase       = claseService.obtenerClase(idClase, usuario.getIdUsuario());
+        Competencia comp  = competenciaService.obtener(idComp);
+        Niveles nivel     = nivelesService.obtener(idNivel);
+        Problema problema = problemaService.obtener(idProblema);
+        List<CasoPrueba> casos = casoPruebaService.listarPorProblema(idProblema);
+
+        model.addAttribute("clase", clase);
+        model.addAttribute("competencia", comp);
+        model.addAttribute("nivel", nivel);
+        model.addAttribute("problema", problema);
+        model.addAttribute("casos", casos);
+    } catch (Exception e) {
+        return "redirect:/Administrador/Clase/" + idClase +
+               "/Competencia/" + idComp + "/Nivel/" + idNivel;
+    }
+
+    return "Administrador/Competencias/problema";
+}
+
+// Agregar caso de prueba
+@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Caso")
+public String agregarCaso(
+        @PathVariable int idClase,
+        @PathVariable int idComp,
+        @PathVariable int idNivel,
+        @PathVariable int idProblema,
+        @RequestParam String entrada,
+        @RequestParam String salidaEsperada,
+        HttpSession session) {
+
+    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+
+    try {
+        casoPruebaService.agregar(idProblema, entrada, salidaEsperada);
+    } catch (Exception e) {
+        return "redirect:/Administrador/Clase/" + idClase +
+               "/Competencia/" + idComp +
+               "/Nivel/" + idNivel +
+               "/Problema/" + idProblema + "?casoError";
+    }
+
+    return "redirect:/Administrador/Clase/" + idClase +
+           "/Competencia/" + idComp +
+           "/Nivel/" + idNivel +
+           "/Problema/" + idProblema;
+}
+
+// Eliminar caso de prueba
+@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Caso/{idCaso}/Eliminar")
+public String eliminarCaso(
+        @PathVariable int idClase,
+        @PathVariable int idComp,
+        @PathVariable int idNivel,
+        @PathVariable int idProblema,
+        @PathVariable int idCaso,
+        HttpSession session) {
+
+    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+
+    casoPruebaService.eliminar(idCaso);
+
+    return "redirect:/Administrador/Clase/" + idClase +
+           "/Competencia/" + idComp +
+           "/Nivel/" + idNivel +
+           "/Problema/" + idProblema;
 }
 
 }
