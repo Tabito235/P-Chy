@@ -21,35 +21,66 @@ public class NivelesRepository {
     public int crearNivel(Niveles n) {
 
         String sql = """
-            INSERT INTO nivel
-            (idCompetencia, numeroNivel, titulo, enunciado, puntaje, tiempoLimite, posicion, activo)
-            VALUES (?, ?, ?, ?, ?, ?, ?, TRUE)
-            """;
+                INSERT INTO nivel
+                (idCompetencia, numeroNivel, titulo, tiempoLimite,
+                 posicion, problemasParaDesbloquear, activo)
+                VALUES (?, ?, ?, ?, ?, ?, TRUE)
+                """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = con.prepareStatement(
+                    sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, n.getIdCompetencia());
             ps.setInt(2, n.getNumeroNivel());
             ps.setString(3, n.getTitulo());
-            ps.setString(4, n.getEnunciado());
-            ps.setInt(5, n.getPuntaje());
-            ps.setInt(6, n.getTiempoLimite());
-            ps.setInt(7, n.getPosicion());
+            ps.setInt(4, n.getTiempoLimite());
+            ps.setInt(5, n.getPosicion());
+            ps.setInt(6, n.getProblemasParaDesbloquear());
             return ps;
         }, keyHolder);
 
         return keyHolder.getKey().intValue();
     }
 
+    public void editarNivel(Niveles n) {
+
+        String sql = """
+                UPDATE nivel
+                SET titulo = ?, tiempoLimite = ?, problemasParaDesbloquear = ?
+                WHERE idNivel = ? AND idCompetencia = ?
+                """;
+
+        jdbcTemplate.update(sql,
+                n.getTitulo(),
+                n.getTiempoLimite(),
+                n.getProblemasParaDesbloquear(),
+                n.getIdNivel(),
+                n.getIdCompetencia());
+    }
+
+    // Actualiza el mapper también
+    private Niveles mapear(java.sql.ResultSet rs) throws java.sql.SQLException {
+        Niveles n = new Niveles();
+        n.setIdNivel(rs.getInt("idNivel"));
+        n.setIdCompetencia(rs.getInt("idCompetencia"));
+        n.setNumeroNivel(rs.getInt("numeroNivel"));
+        n.setTitulo(rs.getString("titulo"));
+        n.setTiempoLimite(rs.getInt("tiempoLimite"));
+        n.setPosicion(rs.getInt("posicion"));
+        n.setActivo(rs.getBoolean("activo"));
+        n.setProblemasParaDesbloquear(rs.getInt("problemasParaDesbloquear"));
+        return n;
+    }
+
     public List<Niveles> listarPorCompetencia(int idCompetencia) {
 
         String sql = """
-            SELECT * FROM nivel
-            WHERE idCompetencia = ? AND activo = TRUE
-            ORDER BY posicion ASC
-            """;
+                SELECT * FROM nivel
+                WHERE idCompetencia = ? AND activo = TRUE
+                ORDER BY posicion ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idCompetencia);
     }
@@ -59,28 +90,11 @@ public class NivelesRepository {
         String sql = "SELECT * FROM nivel WHERE idNivel = ?";
 
         return jdbcTemplate.query(sql, rs -> {
-            if (rs.next()) return mapear(rs);
+            if (rs.next())
+                return mapear(rs);
             return null;
         }, idNivel);
     }
-
-public void editarNivel(Niveles n) {
-
-    String sql = """
-        UPDATE nivel
-        SET titulo = ?, enunciado = ?, puntaje = ?, tiempoLimite = ?
-        WHERE idNivel = ? AND idCompetencia = ?
-        """;
-
-    jdbcTemplate.update(sql,
-        n.getTitulo(),
-        n.getEnunciado(),
-        n.getPuntaje(),
-        n.getTiempoLimite(),
-        n.getIdNivel(),
-        n.getIdCompetencia()
-    );
-}
 
     // Borrado lógico
     public void desactivarNivel(int idNivel) {
@@ -102,17 +116,4 @@ public void editarNivel(Niveles n) {
         return total != null ? total : 0;
     }
 
-    private Niveles mapear(java.sql.ResultSet rs) throws java.sql.SQLException {
-        Niveles n = new Niveles();
-        n.setIdNivel(rs.getInt("idNivel"));
-        n.setIdCompetencia(rs.getInt("idCompetencia"));
-        n.setNumeroNivel(rs.getInt("numeroNivel"));
-        n.setTitulo(rs.getString("titulo"));
-        n.setEnunciado(rs.getString("enunciado"));
-        n.setPuntaje(rs.getInt("puntaje"));
-        n.setTiempoLimite(rs.getInt("tiempoLimite"));
-        n.setPosicion(rs.getInt("posicion"));
-        n.setActivo(rs.getBoolean("activo"));
-        return n;
-    }
 }

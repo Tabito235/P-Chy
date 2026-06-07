@@ -54,151 +54,190 @@
 
   <div class="editar-layout">
 
-    <!-- Panel izquierdo: enunciado -->
-    <div class="panel-niveles">
-
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-        <h2 th:text="${nivel.titulo}"></h2>
-        <span style="font-size:13px;color:#6B6B80"
-              th:text="${nivel.tiempoLimite} + ' min'"></span>
-      </div>
-
-      <!-- Form editar nivel -->
-      <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
-                       '/Competencia/' + ${competencia.idCompetencia} +
-                       '/Nivel/' + ${nivel.idNivel} + '/Editar'"
-            method="post">
-
-        <div class="m-campo">
-          <label class="m-label">Título del problema</label>
-          <input type="text" name="titulo" class="m-input"
-                 th:value="${nivel.titulo}" required>
-        </div>
-
-        <div class="m-campo">
-          <label class="m-label">Enunciado</label>
-          <textarea name="enunciado" class="m-input"
-                    style="resize:vertical;min-height:140px"
-                    th:text="${nivel.enunciado}"
-                    placeholder="Describe el problema..."></textarea>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="m-campo">
-            <label class="m-label">Tiempo límite (min)</label>
-            <input type="number" name="tiempoLimite" class="m-input"
-                   th:value="${nivel.tiempoLimite}" min="1" required>
-          </div>
-          <div class="m-campo">
-            <label class="m-label">Puntaje</label>
-            <input type="number" name="puntaje" class="m-input"
-                   th:value="${nivel.puntaje}" min="0" required>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-modal-submit"
-                style="width:100%;margin-top:8px">
-          Guardar nivel
-        </button>
-      </form>
-    </div>
-
-    <!-- Panel derecho: casos de prueba -->
-    <div class="panel-problemas">
-
-      <div class="panel-prob-header">
-        <div>
-          <div class="panel-prob-titulo">Casos de prueba</div>
-          <div class="panel-prob-tiempo">
-            El alumno verá estos casos como referencia
-          </div>
-        </div>
-        <button class="btn-add-problema"
-                onclick="document.getElementById('modalNuevoCaso').classList.add('visible')">
-          + Agregar caso
-        </button>
-      </div>
-
-      <!-- Sin casos -->
-      <div th:if="${#lists.isEmpty(casos)}"
-           style="text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">
-        Aún no hay casos de prueba.
-      </div>
-
-      <!-- Lista de casos -->
-      <div th:each="caso, stat : ${casos}" class="problema-card">
-        <div class="prob-header">
-          <span class="prob-titulo"
-                th:text="'Caso ' + ${stat.count}"></span>
-          <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
-                           '/Competencia/' + ${competencia.idCompetencia} +
-                           '/Nivel/' + ${nivel.idNivel} +
-                           '/Caso/' + ${caso.idCaso} + '/Eliminar'"
-                method="post" style="display:inline"
-                onsubmit="return confirm('¿Eliminar este caso?')">
-            <button type="submit" class="btn-del-nivel"
-                    title="Eliminar">✕</button>
-          </form>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
-          <div>
-            <div class="m-label" style="margin-bottom:4px">Entrada</div>
-            <pre class="prob-textarea"
-                 style="margin:0;white-space:pre-wrap;font-family:monospace;font-size:13px"
-                 th:text="${caso.entrada}"></pre>
-          </div>
-          <div>
-            <div class="m-label" style="margin-bottom:4px">Salida esperada</div>
-            <pre class="prob-textarea"
-                 style="margin:0;white-space:pre-wrap;font-family:monospace;font-size:13px"
-                 th:text="${caso.salidaEsperada}"></pre>
-          </div>
-        </div>
-      </div>
-
-    </div>
+<!-- Panel izquierdo: info del nivel -->
+<div class="panel-niveles">
+  <h2 th:text="${nivel.titulo}"></h2>
+  <div style="font-size:13px;color:#6B6B80;margin-bottom:1rem">
+    <span th:text="${nivel.tiempoLimite} + ' min'"></span> ·
+    <span th:text="'Requiere ' + ${nivel.problemasParaDesbloquear} + ' problemas para desbloquear'"></span>
   </div>
-</main>
 
-<!-- Modal nuevo caso de prueba -->
-<div class="modal-overlay" id="modalNuevoCaso">
+  <!-- Form editar nivel -->
+  <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                   '/Competencia/' + ${competencia.idCompetencia} +
+                   '/Nivel/' + ${nivel.idNivel} + '/Editar'"
+        method="post">
+
+    <div class="m-campo">
+      <label class="m-label">Título del nivel</label>
+      <input type="text" name="titulo" class="m-input"
+             th:value="${nivel.titulo}" required>
+    </div>
+    <div class="m-campo">
+      <label class="m-label">Tiempo límite (min)</label>
+      <input type="number" name="tiempoLimite" class="m-input"
+             th:value="${nivel.tiempoLimite}" min="1" required>
+    </div>
+    <div class="m-campo">
+      <label class="m-label">Problemas para desbloquear siguiente nivel</label>
+      <input type="number" name="problemasParaDesbloquear" class="m-input"
+             th:value="${nivel.problemasParaDesbloquear}" min="1" required>
+    </div>
+
+    <button type="submit" class="btn-modal-submit"
+            style="width:100%;margin-top:8px">
+      Guardar nivel
+    </button>
+  </form>
+</div>
+
+<!-- Panel derecho: lista de problemas -->
+<div class="panel-problemas">
+  <div class="panel-prob-header">
+    <div>
+      <div class="panel-prob-titulo">Problemas</div>
+      <div class="panel-prob-tiempo"
+           th:text="'Requiere ' + ${nivel.problemasParaDesbloquear} +
+                    ' de ' + ${#lists.size(problemas)} + ' para desbloquear'">
+      </div>
+    </div>
+    <button class="btn-add-problema"
+            onclick="document.getElementById('modalNuevoProblema').classList.add('visible')">
+      + Añadir problema
+    </button>
+  </div>
+
+  <!-- Sin problemas -->
+  <div th:if="${#lists.isEmpty(problemas)}"
+       style="text-align:center;color:#94a3b8;padding:40px 0;font-size:14px">
+    Aún no hay problemas en este nivel.
+  </div>
+
+  <!-- Lista de problemas -->
+  <div th:each="prob : ${problemas}" class="problema-card">
+    <div class="prob-header">
+      <span class="prob-titulo" th:text="${prob.titulo}"></span>
+      <div style="display:flex;gap:6px">
+        <button class="btn-del-nivel"
+                th:data-id="${prob.idProblema}"
+                th:data-titulo="${prob.titulo}"
+                th:data-enunciado="${prob.enunciado}"
+                th:data-puntaje="${prob.puntaje}"
+                onclick="abrirEditarProblema(this)"
+                title="Editar">✏️</button>
+        <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                         '/Competencia/' + ${competencia.idCompetencia} +
+                         '/Nivel/' + ${nivel.idNivel} +
+                         '/Problema/' + ${prob.idProblema} + '/Eliminar'"
+              method="post" style="display:inline"
+              onsubmit="return confirm('¿Eliminar este problema?')">
+          <button type="submit" class="btn-del-nivel" title="Eliminar">✕</button>
+        </form>
+      </div>
+    </div>
+    <div style="font-size:13px;color:#6B6B80;margin-top:8px;white-space:pre-line"
+         th:text="${prob.enunciado}"></div>
+    <div style="font-size:12px;color:#1646a9;margin-top:6px"
+         th:text="${prob.puntaje} + ' pts'"></div>
+  </div>
+</div>
+
+<!-- Modal nuevo problema -->
+<div class="modal-overlay" id="modalNuevoProblema">
   <div class="modal-card">
-    <h2 class="modal-titulo">Nuevo caso de prueba</h2>
+    <h2 class="modal-titulo">Nuevo problema</h2>
     <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
                      '/Competencia/' + ${competencia.idCompetencia} +
-                     '/Nivel/' + ${nivel.idNivel} + '/Caso'"
+                     '/Nivel/' + ${nivel.idNivel} + '/Problema/Nuevo'"
           method="post">
 
       <div class="m-campo">
-        <label class="m-label">Entrada</label>
-        <textarea name="entrada" class="m-input"
-                  style="resize:vertical;min-height:80px;font-family:monospace"
-                  placeholder="Ej: 5 3" required></textarea>
+        <label class="m-label">Título</label>
+        <input type="text" name="titulo" class="m-input"
+               placeholder="Ej. Suma de arreglos" required>
       </div>
       <div class="m-campo">
-        <label class="m-label">Salida esperada</label>
-        <textarea name="salidaEsperada" class="m-input"
-                  style="resize:vertical;min-height:80px;font-family:monospace"
-                  placeholder="Ej: 8" required></textarea>
+        <label class="m-label">Enunciado</label>
+        <textarea name="enunciado" class="m-input"
+                  style="resize:vertical;min-height:100px"
+                  placeholder="Describe el problema..."></textarea>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Puntaje</label>
+        <input type="number" name="puntaje" class="m-input"
+               value="0" min="0">
       </div>
 
       <div class="modal-acciones">
         <button type="button" class="btn-modal-cancel"
-                onclick="document.getElementById('modalNuevoCaso').classList.remove('visible')">
+                onclick="document.getElementById('modalNuevoProblema').classList.remove('visible')">
           Cancelar
         </button>
-        <button type="submit" class="btn-modal-submit">Agregar</button>
+        <button type="submit" class="btn-modal-submit">Crear problema</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal editar problema -->
+<div class="modal-overlay" id="modalEditarProblema">
+  <div class="modal-card">
+    <h2 class="modal-titulo">Editar problema</h2>
+    <form id="formEditarProblema" method="post">
+
+      <div class="m-campo">
+        <label class="m-label">Título</label>
+        <input type="text" name="titulo" id="editProbTitulo"
+               class="m-input" required>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Enunciado</label>
+        <textarea name="enunciado" id="editProbEnunciado"
+                  class="m-input" style="resize:vertical;min-height:100px"></textarea>
+      </div>
+      <div class="m-campo">
+        <label class="m-label">Puntaje</label>
+        <input type="number" name="puntaje" id="editProbPuntaje"
+               class="m-input" min="0">
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-modal-cancel"
+                onclick="document.getElementById('modalEditarProblema').classList.remove('visible')">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-modal-submit">Guardar</button>
       </div>
     </form>
   </div>
 </div>
 
 <script>
-  document.getElementById('modalNuevoCaso').addEventListener('click', function(e) {
-    if (e.target === this)
-      this.classList.remove('visible');
-  });
+  function abrirEditarProblema(btn) {
+    const id       = btn.dataset.id;
+    const titulo   = btn.dataset.titulo;
+    const enunciado= btn.dataset.enunciado;
+    const puntaje  = btn.dataset.puntaje;
+    const idClase  = /*[[${clase.idClase}]]*/ 0;
+    const idComp   = /*[[${competencia.idCompetencia}]]*/ 0;
+    const idNivel  = /*[[${nivel.idNivel}]]*/ 0;
+
+    document.getElementById('editProbTitulo').value   = titulo;
+    document.getElementById('editProbEnunciado').value = enunciado;
+    document.getElementById('editProbPuntaje').value  = puntaje;
+    document.getElementById('formEditarProblema').action =
+      `/Administrador/Clase/${idClase}/Competencia/${idComp}/Nivel/${idNivel}/Problema/${id}/Editar`;
+
+    document.getElementById('modalEditarProblema').classList.add('visible');
+  }
+
+  // Cerrar modales al click fuera
+  ['modalNuevoProblema','modalEditarProblema','modalNuevoNivel','modalEditarNivel']
+    .forEach(id => {
+      document.getElementById(id)?.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('visible');
+      });
+    });
 </script>
 
 </body>

@@ -3,7 +3,7 @@ package pchy.pchy.models;
 public class CasoPrueba {
 
     private int idCaso;
-    private int idNivel;
+    private int idProblema;
     private String entrada;
     private String salidaEsperada;
     private int posicion;
@@ -19,12 +19,12 @@ public class CasoPrueba {
         this.idCaso = idCaso;
     }
 
-    public int getIdNivel() {
-        return idNivel;
+    public int getIdProblema() {
+        return idProblema;
     }
 
-    public void setIdNivel(int idNivel) {
-        this.idNivel = idNivel;
+    public void setIdProblema(int idProblema) {
+        this.idProblema = idProblema;
     }
 
     public String getEntrada() {

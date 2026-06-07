@@ -15,7 +15,7 @@ public class NivelesService {
     private NivelesRepository nivelesRepository;
 
     public int crearNivel(int idCompetencia, String titulo,
-                      String enunciado, int tiempoLimite) {
+                      int tiempoLimite, int problemasParaDesbloquear) {
 
     if (titulo == null || titulo.isBlank())
         throw new RuntimeException("El título es obligatorio");
@@ -26,14 +26,33 @@ public class NivelesService {
     n.setIdCompetencia(idCompetencia);
     n.setNumeroNivel(posicion);
     n.setTitulo(titulo);
-    n.setEnunciado(enunciado != null ? enunciado : "");
-    n.setPuntaje(0);
     n.setTiempoLimite(tiempoLimite);
     n.setPosicion(posicion);
+    n.setProblemasParaDesbloquear(problemasParaDesbloquear);
     n.setActivo(true);
 
     return nivelesRepository.crearNivel(n);
 }
+
+public void editarNivel(int idNivel, int idCompetencia,
+                        String titulo, int tiempoLimite,
+                        int problemasParaDesbloquear) {
+
+    if (titulo == null || titulo.isBlank())
+        throw new RuntimeException("El título es obligatorio");
+
+    Niveles n = nivelesRepository.obtenerPorId(idNivel);
+    if (n == null) throw new RuntimeException("Nivel no encontrado");
+
+    n.setTitulo(titulo);
+    n.setTiempoLimite(tiempoLimite);
+    n.setProblemasParaDesbloquear(problemasParaDesbloquear);
+    n.setIdCompetencia(idCompetencia);
+
+    nivelesRepository.editarNivel(n);
+}
+
+
 
     public List<Niveles> listarPorCompetencia(int idCompetencia) {
         return nivelesRepository.listarPorCompetencia(idCompetencia);
@@ -44,25 +63,6 @@ public class NivelesService {
         if (n == null) throw new RuntimeException("Nivel no encontrado");
         return n;
     }
-
-    public void editarNivel(int idNivel, int idCompetencia,
-                        String titulo, String enunciado,
-                        int tiempoLimite, int puntaje) {
-
-    if (titulo == null || titulo.isBlank())
-        throw new RuntimeException("El título es obligatorio");
-
-    Niveles n = nivelesRepository.obtenerPorId(idNivel);
-    if (n == null) throw new RuntimeException("Nivel no encontrado");
-
-    n.setTitulo(titulo);
-    n.setEnunciado(enunciado != null ? enunciado : "");
-    n.setTiempoLimite(tiempoLimite);
-    n.setPuntaje(puntaje);
-    n.setIdCompetencia(idCompetencia);
-
-    nivelesRepository.editarNivel(n);
-}
 
     public void eliminar(int idNivel, int idCompetencia) {
         nivelesRepository.eliminarNivel(idNivel, idCompetencia);

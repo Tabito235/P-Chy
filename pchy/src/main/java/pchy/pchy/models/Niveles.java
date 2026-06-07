@@ -6,11 +6,10 @@ public class Niveles {
     private int idCompetencia;
     private int numeroNivel;
     private String titulo;
-    private String enunciado;
-    private int puntaje;
     private int tiempoLimite;
     private int posicion;
     private boolean activo;
+    private int problemasParaDesbloquear;
 
     public Niveles() {
     }
@@ -39,20 +38,12 @@ public class Niveles {
         this.numeroNivel = numeroNivel;
     }
 
-    public String getEnunciado() {
-        return enunciado;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setEnunciado(String enunciado) {
-        this.enunciado = enunciado;
-    }
-
-    public int getPuntaje() {
-        return puntaje;
-    }
-
-    public void setPuntaje(int puntaje) {
-        this.puntaje = puntaje;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public int getTiempoLimite() {
@@ -79,12 +70,11 @@ public class Niveles {
         this.activo = activo;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public int getProblemasParaDesbloquear() {
+        return problemasParaDesbloquear;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setProblemasParaDesbloquear(int p) {
+        this.problemasParaDesbloquear = p;
     }
-
 }

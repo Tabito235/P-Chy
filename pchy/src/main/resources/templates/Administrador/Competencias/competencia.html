@@ -155,38 +155,33 @@ class="nivel-item"
   <div class="modal-card">
     <h2 class="modal-titulo">Nuevo nivel</h2>
     <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
-                     '/Competencia/' + ${competencia.idCompetencia} + '/Nivel/Nuevo'"
-          method="post">
+                 '/Competencia/' + ${competencia.idCompetencia} + '/Nivel/Nuevo'"
+      method="post">
 
-      <div class="m-campo">
-        <label class="m-label">Título del nivel</label>
-        <input type="text" name="titulo" class="m-input"
-               placeholder="Ej. Nivel 1" required>
-      </div>
+  <div class="m-campo">
+    <label class="m-label">Título del nivel</label>
+    <input type="text" name="titulo" class="m-input"
+           placeholder="Ej. Nivel 1" required>
+  </div>
+  <div class="m-campo">
+    <label class="m-label">Tiempo límite (minutos)</label>
+    <input type="number" name="tiempoLimite" class="m-input"
+           value="10" min="1" required>
+  </div>
+  <div class="m-campo">
+    <label class="m-label">Problemas para desbloquear siguiente nivel</label>
+    <input type="number" name="problemasParaDesbloquear" class="m-input"
+           value="1" min="1" required>
+  </div>
 
-      <div class="m-campo">
-  <label class="m-label">Enunciado</label>
-  <textarea name="enunciado"
-            class="m-input"
-            style="resize:vertical;min-height:80px"
-            required></textarea>
-</div>
-
-
-      <div class="m-campo">
-        <label class="m-label">Tiempo límite (minutos)</label>
-        <input type="number" name="tiempoLimite" class="m-input"
-               value="10" min="1" required>
-      </div>
-
-      <div class="modal-acciones">
-        <button type="button" class="btn-modal-cancel"
-                onclick="document.getElementById('modalNuevoNivel').classList.remove('visible')">
-          Cancelar
-        </button>
-        <button type="submit" class="btn-modal-submit">Crear nivel</button>
-      </div>
-    </form>
+  <div class="modal-acciones">
+    <button type="button" class="btn-modal-cancel"
+            onclick="document.getElementById('modalNuevoNivel').classList.remove('visible')">
+      Cancelar
+    </button>
+    <button type="submit" class="btn-modal-submit">Crear nivel</button>
+  </div>
+</form>
   </div>
 </div>
 

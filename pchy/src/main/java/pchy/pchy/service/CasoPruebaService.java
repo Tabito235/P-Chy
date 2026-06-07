@@ -14,7 +14,7 @@ public class CasoPruebaService {
     @Autowired
     private CasoPruebaRepository casoPruebaRepository;
 
-    public void agregar(int idNivel, String entrada, String salidaEsperada) {
+    public void agregar(int idProblema, String entrada, String salidaEsperada) {
 
         if (entrada == null || entrada.isBlank())
             throw new RuntimeException("La entrada es obligatoria");
@@ -22,10 +22,10 @@ public class CasoPruebaService {
             throw new RuntimeException("La salida esperada es obligatoria");
 
         int posicion = casoPruebaRepository
-            .listarPorNivel(idNivel).size() + 1;
+            .listarPorProblema(idProblema).size() + 1;
 
         CasoPrueba caso = new CasoPrueba();
-        caso.setIdNivel(idNivel);
+        caso.setIdProblema(idProblema);
         caso.setEntrada(entrada);
         caso.setSalidaEsperada(salidaEsperada);
         caso.setPosicion(posicion);
@@ -33,8 +33,8 @@ public class CasoPruebaService {
         casoPruebaRepository.crear(caso);
     }
 
-    public List<CasoPrueba> listarPorNivel(int idNivel) {
-        return casoPruebaRepository.listarPorNivel(idNivel);
+    public List<CasoPrueba> listarPorNivel(int idProblema) {
+        return casoPruebaRepository.listarPorProblema(idProblema);
     }
 
     public void eliminar(int idCaso) {
