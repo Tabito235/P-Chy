@@ -44,3 +44,11 @@
     btn.style.color = '#22c55e';
     setTimeout(() => btn.style.color = '', 1200);
   }
+
+  document.getElementById('searchAlumno')?.addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.alumno-card').forEach(card => {
+    const nombre = card.dataset.nombre?.toLowerCase() || '';
+    card.style.display = nombre.includes(q) ? '' : 'none';
+  });
+});

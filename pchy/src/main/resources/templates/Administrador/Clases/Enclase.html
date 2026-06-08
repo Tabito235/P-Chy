@@ -63,42 +63,131 @@
 
     <div class="tabs">
       <button class="tab" data-tab="alumnos">Alumnos</button>
-      <button class="tab" data-tab="solicitudes">
-        Solicitudes <span class="badge">0</span>
-      </button>
+<button class="tab" data-tab="solicitudes">
+    Solicitudes
+    <span class="badge"
+          th:text="${#lists.size(solicitudes)}">0</span>
+</button>
       <button class="tab active" data-tab="competencias">Competencias</button>
     </div>
   </div>
 </div>
 
+
 <main class="clase-main">
 
   <!-- TAB: ALUMNOS -->
-  <div id="tab-alumnos" class="tab-panel hidden">
-    <div class="alumnos-layout">
-      <div class="alumnos-left">
-        <div class="panel-header">
-          <h2>Alumnos inscritos</h2>
-          <div class="search-wrap" style="max-width:220px;margin-bottom:0">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Buscar alumno..." id="searchAlumno"/>
+  <!-- TAB: ALUMNOS -->
+<div id="tab-alumnos" class="tab-panel hidden">
+  <div class="alumnos-layout">
+    <div class="alumnos-left">
+      <div class="panel-header">
+        <h2>Alumnos inscritos</h2>
+        <div class="search-wrap" style="max-width:220px;margin-bottom:0">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Buscar alumno..."
+                 id="searchAlumno"/>
+        </div>
+      </div>
+
+      <div th:if="${#lists.isEmpty(alumnos)}"
+           style="text-align:center;padding:40px;color:#94a3b8;font-size:14px">
+        Aún no hay alumnos inscritos.
+      </div>
+
+      <div class="alumnos-grid">
+        <div class="alumno-card"
+             th:each="alumno : ${alumnos}"
+             th:attr="data-nombre=${alumno.nombre + ' ' + alumno.apellido}">
+
+          <!-- Avatar -->
+          <div class="avatar"
+               th:if="${alumno.fotoPerfil != null}"
+               th:style="'background-image:url(' + ${alumno.fotoPerfil} + ');background-size:cover;background-position:center'">
+          </div>
+          <div class="avatar avatar-iniciales-nav"
+               th:if="${alumno.fotoPerfil == null}"
+               th:text="${alumno.nombre?.substring(0,1) + alumno.apellido?.substring(0,1)}">
+          </div>
+
+          <div>
+            <div class="alumno-name"
+                 th:text="${alumno.nombre + ' ' + alumno.apellido}"></div>
+            <div class="alumno-user" th:text="${alumno.correo}"></div>
+            <span class="status-badge activo">Activo</span>
           </div>
         </div>
-        <div class="alumnos-grid" id="alumnosGrid"></div>
-      </div>
-      <div class="solicitudes-panel">
-        <h2>Solicitudes pendientes</h2>
-        <div class="solicitudes-list" id="solicitudesList"></div>
-        <button class="ver-todas">Ver todas las solicitudes</button>
       </div>
     </div>
   </div>
+</div>
 
   <!-- TAB: SOLICITUDES -->
-  <div id="tab-solicitudes" class="tab-panel hidden">
-    <div class="panel-card">
-      <div class="panel-header"><h2>Todas las solicitudes</h2></div>
-      <div class="solicitudes-full" id="solicitudesFull"></div>
+<div id="tab-solicitudes" class="tab-panel hidden">
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2>Solicitudes pendientes</h2>
+    </div>
+
+    <div th:if="${#lists.isEmpty(solicitudes)}"
+         style="text-align:center;padding:40px;color:#94a3b8;font-size:14px">
+      No hay solicitudes pendientes.
+    </div>
+
+    <div class="solicitudes-full">
+      <div class="solicitud-item full"
+           th:each="sol : ${solicitudes}">
+
+        <div class="avatar"
+             th:if="${sol.fotoPerfil != null}"
+             th:style="'background-image:url(' + ${sol.fotoPerfil} + ');background-size:cover'">
+        </div>
+        <div class="avatar avatar-iniciales-nav"
+             th:if="${sol.fotoPerfil == null}"
+             th:text="${sol.nombre?.substring(0,1) + sol.apellido?.substring(0,1)}">
+        </div>
+
+        <div class="sol-info">
+          <div class="alumno-name"
+               th:text="${sol.nombre + ' ' + sol.apellido}"></div>
+          <div class="alumno-user" th:text="${sol.correo}"></div>
+          <div class="alumno-user" th:text="${sol.matricula}"></div>
+        </div>
+
+        <div class="sol-actions">
+          <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                           '/Solicitud/' + ${sol.idUsuario} + '/Aprobar'"
+                method="post" style="display:inline">
+            <button type="submit" class="btn-aprobar">
+              <svg width="14" height="14" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Aceptar
+            </button>
+          </form>
+          <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                           '/Solicitud/' + ${sol.idUsuario} + '/Rechazar'"
+                method="post" style="display:inline">
+            <button type="submit" class="btn-rechazar">
+              <svg width="14" height="14" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              Rechazar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+      
     </div>
   </div>
 

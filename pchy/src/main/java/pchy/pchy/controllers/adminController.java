@@ -18,6 +18,7 @@ import pchy.pchy.service.ClaseService;
 import pchy.pchy.service.CompetenciaService;
 import pchy.pchy.service.NivelesService;
 import pchy.pchy.service.ProblemaService;
+import pchy.pchy.service.UsuarioClaseService;
 import pchy.pchy.service.UsuarioService;
 
 import java.util.List;
@@ -25,12 +26,20 @@ import java.util.List;
 @Controller
 public class adminController {
 
-    @Autowired private ClaseService claseService;
-    @Autowired private CompetenciaService competenciaService;
-    @Autowired private NivelesService nivelesService;
-    @Autowired private CasoPruebaService casoPruebaService;
-    @Autowired private UsuarioService usuarioService;
-    @Autowired private ProblemaService problemaService;
+    @Autowired
+    private ClaseService claseService;
+    @Autowired
+    private CompetenciaService competenciaService;
+    @Autowired
+    private NivelesService nivelesService;
+    @Autowired
+    private CasoPruebaService casoPruebaService;
+    @Autowired
+    private UsuarioService usuarioService;
+    @Autowired
+    private ProblemaService problemaService;
+    @Autowired
+    private UsuarioClaseService usuarioClaseService;
 
     @Value("${pchy.base-url}")
     private String baseUrl;
@@ -40,7 +49,8 @@ public class adminController {
     @GetMapping("/Administrador/Inicio")
     public String principalAdmin(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
         model.addAttribute("usuario", usuario);
         model.addAttribute("rol", session.getAttribute("rol"));
         return "Administrador/principalAdmin";
@@ -61,15 +71,17 @@ public class adminController {
     @GetMapping("/Administrador/Clases")
     public String clasesAdmin(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
         model.addAttribute("clases",
-            claseService.listarMisClases(usuario.getIdUsuario()));
+                claseService.listarMisClases(usuario.getIdUsuario()));
         return "Administrador/Clases/clasesadmin";
     }
 
     @GetMapping("/Administrador/Nueva/Clase")
     public String nuevaClaseVista(HttpSession session) {
-        if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
         return "Administrador/Clases/nuevaClase";
     }
 
@@ -80,7 +92,8 @@ public class adminController {
             HttpSession session) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             claseService.crearClase(nombre, descripcion, usuario.getIdUsuario());
@@ -90,27 +103,7 @@ public class adminController {
         }
     }
 
-    @GetMapping("/Administrador/Clase/{id}")
-    public String verClase(
-            @PathVariable int id,
-            HttpSession session,
-            Model model) {
-
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
-
-        try {
-            Clase clase = claseService.obtenerClase(id, usuario.getIdUsuario());
-            model.addAttribute("clase", clase);
-            model.addAttribute("urlClase", baseUrl + "/unirse/" + clase.getCodigo());
-            model.addAttribute("competencias",
-                competenciaService.listarPorClase(id));
-        } catch (Exception e) {
-            return "redirect:/Administrador/Clases";
-        }
-
-        return "Administrador/Clases/Enclase";
-    }
+    
 
     @PostMapping("/Administrador/Clase/{id}/Editar")
     public String editarClase(
@@ -120,7 +113,8 @@ public class adminController {
             HttpSession session) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             claseService.editarClase(id, nombre, descripcion, usuario.getIdUsuario());
@@ -136,7 +130,8 @@ public class adminController {
             HttpSession session) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         claseService.eliminarClase(id, usuario.getIdUsuario());
         return "redirect:/Administrador/Clases?eliminada";
@@ -154,14 +149,14 @@ public class adminController {
             @RequestParam String fechaFin,
             HttpSession session) {
 
-        if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
         try {
             int idComp = competenciaService.crearCompetencia(
-                idClase, nombre, descripcion, lenguaje, fechaInicio, fechaFin
-            );
+                    idClase, nombre, descripcion, lenguaje, fechaInicio, fechaFin);
             return "redirect:/Administrador/Clase/" + idClase +
-                   "/Competencia/" + idComp;
+                    "/Competencia/" + idComp;
         } catch (Exception e) {
             return "redirect:/Administrador/Clase/" + idClase + "?compError";
         }
@@ -175,7 +170,8 @@ public class adminController {
             Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             Clase clase = claseService.obtenerClase(idClase, usuario.getIdUsuario());
@@ -203,17 +199,17 @@ public class adminController {
             @RequestParam String fechaFin,
             HttpSession session) {
 
-        if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
         try {
             competenciaService.editarCompetencia(
-                idComp, idClase, nombre, descripcion, lenguaje, fechaInicio, fechaFin
-            );
+                    idComp, idClase, nombre, descripcion, lenguaje, fechaInicio, fechaFin);
             return "redirect:/Administrador/Clase/" + idClase +
-                   "/Competencia/" + idComp + "?editOk";
+                    "/Competencia/" + idComp + "?editOk";
         } catch (Exception e) {
             return "redirect:/Administrador/Clase/" + idClase +
-                   "/Competencia/" + idComp + "?editError";
+                    "/Competencia/" + idComp + "?editError";
         }
     }
 
@@ -223,10 +219,11 @@ public class adminController {
             @PathVariable int idComp,
             HttpSession session) {
 
-        if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
         competenciaService.publicar(idComp);
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp;
+                "/Competencia/" + idComp;
     }
 
     @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Eliminar")
@@ -235,143 +232,141 @@ public class adminController {
             @PathVariable int idComp,
             HttpSession session) {
 
-        if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
         competenciaService.eliminar(idComp, idClase);
         return "redirect:/Administrador/Clase/" + idClase;
     }
 
     // Los niveles
 
+    // ─── Crear nivel (actualizado) ────────────────────
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/Nuevo")
+    public String crearNivel(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @RequestParam String titulo,
+            @RequestParam(defaultValue = "10") int tiempoLimite,
+            @RequestParam(defaultValue = "1") int problemasParaDesbloquear,
+            HttpSession session) {
 
-// ─── Crear nivel (actualizado) ────────────────────
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/Nuevo")
-public String crearNivel(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @RequestParam String titulo,
-        @RequestParam(defaultValue = "10") int tiempoLimite,
-        @RequestParam(defaultValue = "1") int problemasParaDesbloquear,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        try {
+            nivelesService.crearNivel(idComp, titulo,
+                    tiempoLimite, problemasParaDesbloquear);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp + "?nivelError";
+        }
 
-    try {
-        nivelesService.crearNivel(idComp, titulo,
-            tiempoLimite, problemasParaDesbloquear);
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp + "?nivelError";
+                "/Competencia/" + idComp;
     }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp;
-}
+    // ─── Ver nivel con problemas ──────────────────────
+    @GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}")
+    public String verNivel(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            HttpSession session,
+            Model model) {
 
-// ─── Ver nivel con problemas ──────────────────────
-@GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}")
-public String verNivel(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        HttpSession session,
-        Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        try {
+            Clase clase = claseService.obtenerClase(idClase, usuario.getIdUsuario());
+            Competencia comp = competenciaService.obtener(idComp);
+            Niveles nivel = nivelesService.obtener(idNivel);
+            List<Problema> problemas = problemaService.listarPorNivel(idNivel);
 
-    try {
-        Clase clase      = claseService.obtenerClase(idClase, usuario.getIdUsuario());
-        Competencia comp = competenciaService.obtener(idComp);
-        Niveles nivel    = nivelesService.obtener(idNivel);
-        List<Problema> problemas = problemaService.listarPorNivel(idNivel);
+            model.addAttribute("clase", clase);
+            model.addAttribute("competencia", comp);
+            model.addAttribute("nivel", nivel);
+            model.addAttribute("problemas", problemas);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp;
+        }
 
-        model.addAttribute("clase", clase);
-        model.addAttribute("competencia", comp);
-        model.addAttribute("nivel", nivel);
-        model.addAttribute("problemas", problemas);
-    } catch (Exception e) {
-        return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp;
+        return "Administrador/Competencias/nivel";
     }
 
-    return "Administrador/Competencias/nivel";
-}
+    // ─── Crear problema ───────────────────────────────
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/Nuevo")
+    public String crearProblema(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @RequestParam String titulo,
+            @RequestParam(required = false) String enunciado,
+            @RequestParam(defaultValue = "0") int puntaje,
+            HttpSession session) {
 
-// ─── Crear problema ───────────────────────────────
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/Nuevo")
-public String crearProblema(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @RequestParam String titulo,
-        @RequestParam(required = false) String enunciado,
-        @RequestParam(defaultValue = "0") int puntaje,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        try {
+            problemaService.crear(idNivel, titulo, enunciado, puntaje);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp +
+                    "/Nivel/" + idNivel + "?problemaError";
+        }
 
-    try {
-        problemaService.crear(idNivel, titulo, enunciado, puntaje);
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp +
-               "/Nivel/" + idNivel + "?problemaError";
+                "/Competencia/" + idComp + "/Nivel/" + idNivel;
     }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp + "/Nivel/" + idNivel;
-}
+    // ─── Editar problema ──────────────────────────────
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Editar")
+    public String editarProblema(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            @RequestParam String titulo,
+            @RequestParam(required = false) String enunciado,
+            @RequestParam(defaultValue = "0") int puntaje,
+            HttpSession session) {
 
-// ─── Editar problema ──────────────────────────────
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Editar")
-public String editarProblema(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        @RequestParam String titulo,
-        @RequestParam(required = false) String enunciado,
-        @RequestParam(defaultValue = "0") int puntaje,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        try {
+            problemaService.editar(idProblema, idNivel, titulo, enunciado, puntaje);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp +
+                    "/Nivel/" + idNivel + "?problemaError";
+        }
 
-    try {
-        problemaService.editar(idProblema, idNivel, titulo, enunciado, puntaje);
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp +
-               "/Nivel/" + idNivel + "?problemaError";
+                "/Competencia/" + idComp + "/Nivel/" + idNivel;
     }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp + "/Nivel/" + idNivel;
-}
+    // ─── Eliminar problema ────────────────────────────
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Eliminar")
+    public String eliminarProblema(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            HttpSession session) {
 
-// ─── Eliminar problema ────────────────────────────
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Eliminar")
-public String eliminarProblema(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        problemaService.eliminar(idProblema);
 
-    problemaService.eliminar(idProblema);
+        return "redirect:/Administrador/Clase/" + idClase +
+                "/Competencia/" + idComp + "/Nivel/" + idNivel;
+    }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp + "/Nivel/" + idNivel;
-}
-
-
-
-   
-
-
-
-   
     @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Eliminar")
     public String eliminarNivel(
             @PathVariable int idClase,
@@ -379,78 +374,79 @@ public String eliminarProblema(
             @PathVariable int idNivel,
             HttpSession session) {
 
-        if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
         nivelesService.eliminar(idNivel, idComp);
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp;
+                "/Competencia/" + idComp;
     }
 
+    // Editar nivel
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Editar")
+    public String editarNivel(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @RequestParam String titulo,
+            @RequestParam(defaultValue = "10") int tiempoLimite,
+            @RequestParam(defaultValue = "1") int problemasParaDesbloquear,
+            HttpSession session) {
 
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
+        try {
+            nivelesService.editarNivel(idNivel, idComp, titulo,
+                    tiempoLimite, problemasParaDesbloquear);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp + "/Nivel/" + idNivel + "?error";
+        }
 
-// Editar nivel
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Editar")
-public String editarNivel(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @RequestParam String titulo,
-        @RequestParam(defaultValue = "10") int tiempoLimite,
-        @RequestParam(defaultValue = "1") int problemasParaDesbloquear,
-        HttpSession session) {
-
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
-
-    try {
-        nivelesService.editarNivel(idNivel, idComp, titulo,
-            tiempoLimite, problemasParaDesbloquear);
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp + "/Nivel/" + idNivel + "?error";
+                "/Competencia/" + idComp + "/Nivel/" + idNivel + "?ok";
     }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp + "/Nivel/" + idNivel + "?ok";
-}
+    // Caso de pruena nuevo
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Caso")
+    public String agregarCaso(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @RequestParam String entrada,
+            @RequestParam String salidaEsperada,
+            HttpSession session) {
 
-// Caso de pruena nuevo
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Caso")
-public String agregarCaso(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @RequestParam String entrada,
-        @RequestParam String salidaEsperada,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        try {
+            casoPruebaService.agregar(idNivel, entrada, salidaEsperada);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp + "/Nivel/" + idNivel + "?casoError";
+        }
 
-    try {
-        casoPruebaService.agregar(idNivel, entrada, salidaEsperada);
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp + "/Nivel/" + idNivel + "?casoError";
+                "/Competencia/" + idComp + "/Nivel/" + idNivel;
     }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp + "/Nivel/" + idNivel;
-}
+    // Eliminar caso de prueba
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Caso/{idCaso}/Eliminar")
+    public String eliminarCaso(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idCaso,
+            HttpSession session) {
 
-// Eliminar caso de prueba
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Caso/{idCaso}/Eliminar")
-public String eliminarCaso(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idCaso,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
-
-    casoPruebaService.eliminar(idCaso);
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp + "/Nivel/" + idNivel;
-}
+        casoPruebaService.eliminar(idCaso);
+        return "redirect:/Administrador/Clase/" + idClase +
+                "/Competencia/" + idComp + "/Nivel/" + idNivel;
+    }
 
     // Existen:
 
@@ -464,120 +460,178 @@ public String eliminarCaso(
         return "Administrador/Competencias/revision";
     }
 
-
     // Ver todos los usuarios
-@GetMapping("/Administrador/Usuarios")
-public String verUsuarios(HttpSession session, Model model) {
+    @GetMapping("/Administrador/Usuarios")
+    public String verUsuarios(HttpSession session, Model model) {
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    model.addAttribute("usuarios",
-        usuarioService.listarUsuariosConRol());
+        model.addAttribute("usuarios",
+                usuarioService.listarUsuariosConRol());
 
-    return "Administrador/usuarios";
-}
-
-
-// Cambiar rol
-@PostMapping("/Administrador/Usuario/{id}/Rol")
-public String cambiarRol(
-        @PathVariable int id,
-        @RequestParam int nuevoRol,
-        HttpSession session) {
-
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
-
-    try {
-        usuarioService.cambiarRol(id, nuevoRol);
-    } catch (Exception e) {
-        return "redirect:/Administrador/Usuarios?error";
+        return "Administrador/usuarios";
     }
 
-    return "redirect:/Administrador/Usuarios?ok";
-}
+    // Cambiar rol
+    @PostMapping("/Administrador/Usuario/{id}/Rol")
+    public String cambiarRol(
+            @PathVariable int id,
+            @RequestParam int nuevoRol,
+            HttpSession session) {
 
-//  casos de prueba
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-// Ver problema + sus casos de prueba
-@GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}")
-public String verProblema(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        HttpSession session,
-        Model model) {
+        try {
+            usuarioService.cambiarRol(id, nuevoRol);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Usuarios?error";
+        }
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        return "redirect:/Administrador/Usuarios?ok";
+    }
 
-    try {
-        Clase clase       = claseService.obtenerClase(idClase, usuario.getIdUsuario());
-        Competencia comp  = competenciaService.obtener(idComp);
-        Niveles nivel     = nivelesService.obtener(idNivel);
-        Problema problema = problemaService.obtener(idProblema);
-        List<CasoPrueba> casos = casoPruebaService.listarPorProblema(idProblema);
+    // casos de prueba
 
-        model.addAttribute("clase", clase);
-        model.addAttribute("competencia", comp);
-        model.addAttribute("nivel", nivel);
-        model.addAttribute("problema", problema);
-        model.addAttribute("casos", casos);
-    } catch (Exception e) {
+    // Ver problema + sus casos de prueba
+    @GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}")
+    public String verProblema(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            HttpSession session,
+            Model model) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
+
+        try {
+            Clase clase = claseService.obtenerClase(idClase, usuario.getIdUsuario());
+            Competencia comp = competenciaService.obtener(idComp);
+            Niveles nivel = nivelesService.obtener(idNivel);
+            Problema problema = problemaService.obtener(idProblema);
+            List<CasoPrueba> casos = casoPruebaService.listarPorProblema(idProblema);
+
+            model.addAttribute("clase", clase);
+            model.addAttribute("competencia", comp);
+            model.addAttribute("nivel", nivel);
+            model.addAttribute("problema", problema);
+            model.addAttribute("casos", casos);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp + "/Nivel/" + idNivel;
+        }
+
+        return "Administrador/Competencias/problema";
+    }
+
+    // Agregar caso de prueba
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Caso")
+    public String agregarCaso(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            @RequestParam String entrada,
+            @RequestParam String salidaEsperada,
+            HttpSession session) {
+
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
+
+        try {
+            casoPruebaService.agregar(idProblema, entrada, salidaEsperada);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp +
+                    "/Nivel/" + idNivel +
+                    "/Problema/" + idProblema + "?casoError";
+        }
+
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp + "/Nivel/" + idNivel;
+                "/Competencia/" + idComp +
+                "/Nivel/" + idNivel +
+                "/Problema/" + idProblema;
     }
 
-    return "Administrador/Competencias/problema";
-}
+    // Eliminar caso de prueba
+    @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Caso/{idCaso}/Eliminar")
+    public String eliminarCaso(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            @PathVariable int idCaso,
+            HttpSession session) {
 
-// Agregar caso de prueba
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Caso")
-public String agregarCaso(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        @RequestParam String entrada,
-        @RequestParam String salidaEsperada,
-        HttpSession session) {
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        casoPruebaService.eliminar(idCaso);
 
-    try {
-        casoPruebaService.agregar(idProblema, entrada, salidaEsperada);
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp +
-               "/Nivel/" + idNivel +
-               "/Problema/" + idProblema + "?casoError";
+                "/Competencia/" + idComp +
+                "/Nivel/" + idNivel +
+                "/Problema/" + idProblema;
     }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp +
-           "/Nivel/" + idNivel +
-           "/Problema/" + idProblema;
-}
+    // Actualiza verClase para pasar solicitudes
+    @GetMapping("/Administrador/Clase/{id}")
+    public String verClase(
+            @PathVariable int id,
+            HttpSession session,
+            Model model) {
 
-// Eliminar caso de prueba
-@PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Caso/{idCaso}/Eliminar")
-public String eliminarCaso(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        @PathVariable int idCaso,
-        HttpSession session) {
+                
 
-    if (session.getAttribute("usuario") == null) return "redirect:/Login";
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    casoPruebaService.eliminar(idCaso);
+        try {
+            Clase clase = claseService.obtenerClase(id, usuario.getIdUsuario());
+            model.addAttribute("clase", clase);
+            model.addAttribute("urlClase", baseUrl + "/unirse/" + clase.getCodigo());
+            model.addAttribute("competencias",
+                    competenciaService.listarPorClase(id));
+            model.addAttribute("solicitudes",
+                    usuarioClaseService.listarPendientes(id)); // ← nuevo
+                    model.addAttribute("alumnos",
+    usuarioClaseService.listarAlumnos(id));
+                    
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clases";
+        }
 
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp +
-           "/Nivel/" + idNivel +
-           "/Problema/" + idProblema;
-}
+        return "Administrador/Clases/Enclase";
+    }
+
+    @PostMapping("/Administrador/Clase/{idClase}/Solicitud/{idUsuario}/Aprobar")
+    public String aprobar(
+            @PathVariable int idClase,
+            @PathVariable int idUsuario,
+            HttpSession session) {
+
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
+        usuarioClaseService.aprobar(idUsuario, idClase);
+        return "redirect:/Administrador/Clase/" + idClase + "?aprobado";
+    }
+
+    @PostMapping("/Administrador/Clase/{idClase}/Solicitud/{idUsuario}/Rechazar")
+    public String rechazar(
+            @PathVariable int idClase,
+            @PathVariable int idUsuario,
+            HttpSession session) {
+
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
+        usuarioClaseService.rechazar(idUsuario, idClase);
+        return "redirect:/Administrador/Clase/" + idClase + "?rechazado";
+    }
 
 }
