@@ -3,285 +3,107 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P-Chy – Problema</title>
+  <title th:text="'P-Chy – ' + ${problema.titulo}">P-Chy – Problema</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/Estilos/enclase.css"/>
   <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
   <link rel="stylesheet" href="/Estilos/usuario.css"/>
+
+    <link rel="stylesheet" href="/Estilos/extra.css"/>
   <style>
-    /* ── HEADER PROBLEMA ── */
-    .prob-hero {
-      background: var(--color-blanco);
-      border-bottom: 1px solid var(--color-borde);
-      padding: 1rem 0;
-      margin-bottom: 1.4rem;
-    }
-    .prob-hero-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 2rem;
+    .veredicto-banner {
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .prob-hero-title {
-      font-family: 'Sora', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--color-texto);
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      flex-wrap: wrap;
-    }
-    .pts-badge {
-      background: #ede9fe;
-      color: #6d28d9;
-      font-size: .78rem;
+      gap: 10px;
       font-weight: 700;
-      border-radius: 999px;
-      padding: .2rem .7rem;
+      font-size: 14px;
     }
+    .veredicto-banner.aceptado  { background:#dcfce7; color:#15803d; border:1.5px solid #86efac; }
+    .veredicto-banner.error     { background:#fee2e2; color:#b91c1c; border:1.5px solid #fca5a5; }
+    .veredicto-banner.incorrecto{ background:#fef9c3; color:#a16207; border:1.5px solid #fde68a; }
+    .veredicto-banner.sin-casos { background:#f1f5f9; color:#475569; border:1.5px solid #E0DFF0; }
 
-    /* ── STATS BAR ── */
-    .prob-stats {
-      background: var(--color-blanco);
-      border: 1px solid var(--color-borde);
-      border-radius: var(--radius);
-      padding: .75rem 1.4rem;
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.2rem;
-      box-shadow: var(--shadow);
-    }
-    .prob-stat-label { font-size: .73rem; color: var(--color-texto-suave); }
-    .prob-stat-val   { font-size: .88rem; font-weight: 700; color: var(--color-texto); }
-    .prob-stat-val.pendiente { color: var(--yellow-fg); }
-    .prob-stat-val.enviado   { color: var(--green-dark); }
-
-    /* ── SECCIÓN ENUNCIADO ── */
-    .enunciado-card {
-      background: var(--color-blanco);
-      border: 1px solid var(--color-borde);
-      border-radius: var(--radius);
-      padding: 1.4rem;
-      box-shadow: var(--shadow);
-      margin-bottom: 1rem;
-    }
-
-    .enunciado-card h2 {
-      font-family: 'Sora', sans-serif;
-      font-size: .95rem;
-      font-weight: 700;
-      color: var(--color-texto);
-      margin-bottom: .8rem;
-    }
-
-    .enunciado-texto {
-      font-size: .88rem;
-      color: var(--color-texto);
-      line-height: 1.65;
-      white-space: pre-line;
-    }
-
-    /* ── DOS COLUMNAS CODIGO + CASOS ── */
-    .codigo-casos-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .code-card {
-      background: var(--color-blanco);
-      border: 1px solid var(--color-borde);
-      border-radius: var(--radius);
-      padding: 1.2rem;
-      box-shadow: var(--shadow);
-    }
-
-    .code-card h2 {
-      font-family: 'Sora', sans-serif;
-      font-size: .88rem;
-      font-weight: 700;
-      color: var(--color-texto);
-      margin-bottom: .75rem;
-    }
-
-    .code-block {
-      background: #1e1e2e;
-      border-radius: 8px;
-      padding: .9rem 1rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .78rem;
-      color: #cdd6f4;
-      line-height: 1.6;
-      overflow-x: auto;
-      white-space: pre;
-    }
-
-    /* Tabla casos de prueba */
-    .casos-table {
+    .casos-result-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: .82rem;
+      font-size: 13px;
+      margin-top: 10px;
     }
-
-    .casos-table th {
+    .casos-result-table th {
       text-align: left;
-      padding: .4rem .6rem;
-      font-size: .75rem;
+      padding: 6px 10px;
+      font-size: 11px;
       font-weight: 700;
-      color: var(--color-texto-suave);
-      border-bottom: 1.5px solid var(--color-borde);
+      color: #6B6B80;
+      border-bottom: 1.5px solid #E0DFF0;
     }
-
-    .casos-table td {
-      padding: .45rem .6rem;
-      border-bottom: 1px solid var(--color-borde);
+    .casos-result-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #E0DFF0;
       font-family: 'JetBrains Mono', monospace;
-      font-size: .78rem;
-      color: var(--color-texto);
+      font-size: 12px;
     }
+    .caso-ok  { color: #15803d; font-weight: 700; }
+    .caso-err { color: #b91c1c; font-weight: 700; }
 
-    .casos-table tr:last-child td { border-bottom: none; }
-
-    /* ── NAVEGACIÓN ANTERIOR / SIGUIENTE ── */
-    .prob-nav {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 1rem;
+    .porcentaje-bar {
+      height: 8px;
+      background: #E0DFF0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px;
     }
-
-    /* ── SIDEBAR ENTREGA ── */
-    .upload-area {
-      border: 2px dashed var(--color-borde);
-      border-radius: 9px;
-      padding: .9rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .15s, background .15s;
-      margin-bottom: .6rem;
+    .porcentaje-fill {
+      height: 100%;
+      background: #1646a9;
+      border-radius: 999px;
+      transition: width .4s ease;
     }
-
-    .upload-area:hover { border-color: var(--color-primario); background: #eef2fb; }
-
-    .upload-area.done {
-      border-color: var(--green);
-      background: var(--green-light);
-    }
-
-    .upload-label { font-size: .82rem; font-weight: 600; color: var(--color-texto-suave); }
-    .upload-label.done { color: var(--green-dark); }
-    .upload-sub   { font-size: .72rem; color: var(--color-texto-suave); margin-top: 2px; }
-
-    .comentario-input {
-      width: 100%;
-      border: 1.5px solid var(--color-borde);
-      border-radius: 8px;
-      padding: .6rem .8rem;
-      font-family: inherit;
-      font-size: .83rem;
-      color: var(--color-texto);
-      background: var(--color-fondo);
-      resize: none;
-      min-height: 60px;
-      outline: none;
-      transition: border-color .18s;
-      margin-bottom: .75rem;
-    }
-
-    .comentario-input:focus { border-color: var(--color-primario); background: var(--color-blanco); }
-
-    .pasos-list { margin-bottom: .8rem; }
-
-    .paso {
-      display: flex;
-      gap: .6rem;
-      font-size: .82rem;
-      color: var(--color-texto-suave);
-      margin-bottom: .45rem;
-      align-items: flex-start;
-    }
-
-    .paso-num {
-      min-width: 20px;
-      height: 20px;
-      background: var(--color-primario);
-      color: #fff;
-      border-radius: 50%;
-      font-size: .7rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    /* Toast envio */
-    .toast-envio {
-      position: fixed;
-      top: 1.2rem;
-      right: 1.5rem;
-      background: var(--color-blanco);
-      border: 1.5px solid var(--green);
-      border-radius: 10px;
-      padding: .75rem 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      font-size: .88rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      box-shadow: var(--shadow-md);
-      z-index: 999;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity .3s, transform .3s;
-      pointer-events: none;
-    }
-
-    .toast-envio.show { opacity: 1; transform: translateY(0); }
+    .porcentaje-fill.verde { background: #22c55e; }
+    .porcentaje-fill.rojo  { background: #ef4444; }
   </style>
 </head>
 <body>
 
 <div th:replace="~{Usuario/navbar :: navbar}"></div>
 
-<!-- TOAST -->
-<div class="toast-envio" id="toastEnvio">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-  Enviado para revisión
-</div>
-
 <main class="u-main">
 
   <!-- BREADCRUMB -->
   <nav class="breadcrumb">
-    <a href="/clasesadmin">Clases</a>
+    <a href="/Alumno/Mis/Clases">Clases</a>
     <span class="breadcrumb-sep">/</span>
-    <a href="/enclase">Estructuras de Datos</a>
+    <a th:href="'/Alumno/Clase/' + ${clase.idClase}"
+       th:text="${clase.nombre}"></a>
     <span class="breadcrumb-sep">/</span>
-    <a href="/Alumno/Competencias">Listas enlazadas en Python</a>
+    <a th:href="'/Alumno/Clase/' + ${clase.idClase} +
+                '/Competencia/' + ${competencia.idCompetencia}"
+       th:text="${competencia.nombre}"></a>
     <span class="breadcrumb-sep">/</span>
-    <a href="/Alumno/Competencias/Niveles">Nivel 1</a>
+    <a th:href="'/Alumno/Clase/' + ${clase.idClase} +
+                '/Competencia/' + ${competencia.idCompetencia} +
+                '/Nivel/' + ${nivel.idNivel}"
+       th:text="${nivel.titulo}"></a>
     <span class="breadcrumb-sep">/</span>
-    <span class="breadcrumb-actual">Problema 2</span>
+    <span class="breadcrumb-actual" th:text="${problema.titulo}"></span>
   </nav>
 
   <!-- HERO -->
   <div class="prob-hero" style="margin:-1.6rem -2rem 1.4rem">
     <div class="prob-hero-inner">
       <div class="prob-hero-title">
-        Problema 2: Eliminar nodo
-        <span class="tag tag-oblig">Obligatorio ★</span>
-        <span class="pts-badge">40 pts</span>
+        <span th:text="${problema.titulo}"></span>
+        <span class="pts-badge" th:text="${problema.puntaje} + ' pts'"></span>
       </div>
-      <button class="btn-secondary" onclick="window.location.href='/Alumno/Competencias/Niveles'">Volver al nivel</button>
+      <a class="btn-secondary"
+         th:href="'/Alumno/Clase/' + ${clase.idClase} +
+                  '/Competencia/' + ${competencia.idCompetencia} +
+                  '/Nivel/' + ${nivel.idNivel}">
+        Volver al nivel
+      </a>
     </div>
   </div>
 
@@ -289,67 +111,133 @@
   <div class="prob-stats">
     <div>
       <div class="prob-stat-label">Estado</div>
-      <div class="prob-stat-val pendiente">Pendiente</div>
+      <div class="prob-stat-val"
+           th:classappend="${ultimaEntrega == null} ? 'pendiente' :
+                           (${ultimaEntrega.resultadoJudge == 'ACEPTADO'} ? 'enviado' : 'pendiente')"
+           th:text="${ultimaEntrega == null} ? 'Sin intentos' :
+                    ${ultimaEntrega.resultadoJudge}">
+      </div>
+    </div>
+    <div th:if="${ultimaEntrega != null}">
+      <div class="prob-stat-label">Último resultado</div>
+      <div class="prob-stat-val"
+           th:text="${ultimaEntrega.porcentajeCasos} + '% casos pasados'">
+      </div>
     </div>
     <div>
-      <div class="prob-stat-label">Tiempo restante del nivel</div>
-      <div class="prob-stat-val azul" id="timer2">08:12</div>
-    </div>
-    <div>
-      <div class="prob-stat-label">Obligatorios completados</div>
-      <div class="prob-stat-val">1/3</div>
+      <div class="prob-stat-label">Lenguaje</div>
+      <div class="prob-stat-val" th:text="${competencia.lenguaje}"></div>
     </div>
   </div>
 
-  <!-- LAYOUT -->
   <div class="u-layout">
 
     <!-- CONTENIDO -->
     <div>
-      <!-- Enunciado -->
-      <div class="enunciado-card">
-        <h2>Enunciado</h2>
-        <div class="enunciado-texto">Descripción: Elimina el primer nodo con valor X de una lista enlazada.
-Entrada: Cabeza de lista y valor X.
-Salida: Nueva cabeza.
-Restricciones: La lista puede estar vacía. El valor X puede no estar en la lista.
 
-Ejemplo:
-  Entrada: [1→2→3], X=2.
-  Salida: [1→3]</div>
-      </div>
+      <!-- Banner resultado último intento -->
+      <div th:if="${ultimaEntrega != null}">
 
-      <!-- Código + Casos -->
-      <div class="codigo-casos-grid">
-        <div class="code-card">
-          <h2>Código de ejemplo (del profesor)</h2>
-          <div class="code-block">class Node:
-  def __init__(self, head):
-    ...
-
-def remove_node(head, x):
-  # TODO: Implementar lógica</div>
+        <div th:if="${ultimaEntrega.resultadoJudge == 'ACEPTADO'}"
+             class="veredicto-banner aceptado">
+          ✓ ¡Aceptado!
+          <span th:text="${ultimaEntrega.porcentajeCasos} + '% de casos correctos'"></span>
         </div>
-        <div class="code-card">
-          <h2>Casos de prueba (del profesor)</h2>
-          <table class="casos-table">
+
+        <div th:if="${ultimaEntrega.resultadoJudge == 'INCORRECTO' or
+                      ultimaEntrega.resultadoJudge == 'ERROR_EJECUCION' or
+                      ultimaEntrega.resultadoJudge == 'TIEMPO_LIMITE'}"
+             class="veredicto-banner error">
+          ✗ <span th:text="${ultimaEntrega.resultadoJudge}"></span>
+          <span th:if="${ultimaEntrega.mensajeError != null}"
+                th:text="' — ' + ${ultimaEntrega.mensajeError}"></span>
+        </div>
+
+        <div th:if="${ultimaEntrega.resultadoJudge == 'ERROR_COMPILACION'}"
+             class="veredicto-banner error">
+          ✗ Error de compilación
+          <pre style="font-size:11px;margin:4px 0 0;white-space:pre-wrap"
+               th:text="${ultimaEntrega.mensajeError}"></pre>
+        </div>
+
+        <div th:if="${ultimaEntrega.resultadoJudge == 'SIN_CASOS'}"
+             class="veredicto-banner sin-casos">
+          ⚠ Entrega recibida. El profesor revisará manualmente.
+        </div>
+
+        <!-- Tabla resultados por caso -->
+        <div th:if="${resultadosCasos != null and !#lists.isEmpty(resultadosCasos)}"
+             style="background:#fff;border:1px solid #E0DFF0;border-radius:10px;padding:14px;margin-bottom:1rem">
+          <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px">
+            Resultados por caso
+          </div>
+
+          <!-- Barra de progreso -->
+          <div style="font-size:12px;color:#6B6B80;margin-bottom:4px"
+               th:text="${ultimaEntrega.porcentajeCasos} + '% (' +
+                         ${#lists.size(resultadosCasos.?[correcto])} +
+                         '/' + ${#lists.size(resultadosCasos)} + ' casos)'">
+          </div>
+          <div class="porcentaje-bar">
+            <div class="porcentaje-fill"
+                 th:classappend="${ultimaEntrega.porcentajeCasos == 100} ? 'verde' :
+                                 (${ultimaEntrega.porcentajeCasos < 50} ? 'rojo' : '')"
+                 th:style="'width:' + ${ultimaEntrega.porcentajeCasos} + '%'">
+            </div>
+          </div>
+
+          <table class="casos-result-table" style="margin-top:12px">
             <thead>
-              <tr><th>Entrada</th><th>Salida esperada</th></tr>
+              <tr>
+                <th>#</th>
+                <th>Entrada</th>
+                <th>Esperado</th>
+                <th>Obtenido</th>
+                <th>Resultado</th>
+                <th>Tiempo</th>
+              </tr>
             </thead>
             <tbody>
-              <tr><td>[1→2→3], X=2</td><td>[1→3]</td></tr>
-              <tr><td>[1→2→3], X=4</td><td>[1→2→3]</td></tr>
-              <tr><td>[], X=1</td><td>[]</td></tr>
+              <tr th:each="rc, stat : ${resultadosCasos}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${rc.entrada}"></td>
+                <td th:text="${rc.salidaEsperada}"></td>
+                <td th:text="${rc.salidaObtenida}"></td>
+                <td>
+                  <span th:if="${rc.correcto}"  class="caso-ok">✓ OK</span>
+                  <span th:if="${!rc.correcto}" class="caso-err">✗ Fallo</span>
+                </td>
+                <td th:text="${rc.tiempoEjecucion} + 's'"></td>
+              </tr>
             </tbody>
           </table>
         </div>
+
       </div>
 
-      <!-- Navegación -->
-      <div class="prob-nav">
-        <button class="btn-secondary">← Anterior</button>
-        <button class="btn-secondary">Siguiente →</button>
+      <!-- Enunciado -->
+      <div class="enunciado-card">
+        <h2>Enunciado</h2>
+        <div class="enunciado-texto" th:text="${problema.enunciado}"></div>
       </div>
+
+      <!-- Casos de prueba visibles -->
+      <div class="code-card" style="margin-top:1rem"
+           th:if="${!#lists.isEmpty(casos)}">
+        <h2>Casos de prueba</h2>
+        <table class="casos-table">
+          <thead>
+            <tr><th>Entrada</th><th>Salida esperada</th></tr>
+          </thead>
+          <tbody>
+            <tr th:each="caso : ${casos}">
+              <td th:text="${caso.entrada}"></td>
+              <td th:text="${caso.salidaEsperada}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
     <!-- SIDEBAR ENTREGA -->
@@ -357,49 +245,96 @@ def remove_node(head, x):
       <div class="sidebar-card">
         <h3>Entregar solución</h3>
 
-        <div class="pasos-list">
-          <div class="paso">
-            <span class="paso-num">1</span>
-            <span>Subir captura de tu código (PNG/JPG)</span>
+        <form th:action="'/Alumno/Clase/' + ${clase.idClase} +
+                          '/Competencia/' + ${competencia.idCompetencia} +
+                          '/Nivel/' + ${nivel.idNivel} +
+                          '/Problema/' + ${problema.idProblema} + '/Entregar'"
+              method="post" enctype="multipart/form-data" id="formEntrega">
+
+          <div class="pasos-list">
+            <div class="paso">
+              <span class="paso-num">1</span>
+              <span>Archivo de código
+                (<span th:text="${competencia.lenguaje == 'Python'} ? '.py' : '.cpp'"></span>
+                o .txt)
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div class="upload-area" id="uploadCaptura" onclick="simularUpload('uploadCaptura','labelCaptura')">
-          <div class="upload-label" id="labelCaptura"> Subir captura</div>
-          <div class="upload-sub">Asegúrate de que se vea el código completo.</div>
-        </div>
-
-        <div class="pasos-list">
-          <div class="paso">
-            <span class="paso-num">2</span>
-            <span>Subir archivo .txt (código)</span>
+          <div class="upload-area" id="areaCode"
+               onclick="document.getElementById('inputCodigo').click()">
+            <div class="upload-label" id="labelCodigo">📄 Seleccionar archivo</div>
+            <div class="upload-sub">
+              <span th:text="${competencia.lenguaje}"></span> — .py, .cpp o .txt
+            </div>
           </div>
-        </div>
+          <input type="file" id="inputCodigo" name="archivoCodigo"
+                 accept=".py,.cpp,.txt,.c" style="display:none" required
+                 onchange="mostrarNombre(this,'labelCodigo','areaCode')">
 
-        <div class="upload-area" id="uploadTxt" onclick="simularUpload('uploadTxt','labelTxt')">
-          <div class="upload-label" id="labelTxt"> Subir .txt</div>
-          <div class="upload-sub">Nombre sugerido: problema2.txt</div>
-        </div>
-
-        <div class="pasos-list" style="margin-top:.7rem">
-          <div class="paso">
-            <span class="paso-num">3</span>
-            <span>Comentario opcional</span>
+          <div class="pasos-list" style="margin-top:.7rem">
+            <div class="paso">
+              <span class="paso-num">2</span>
+              <span>Captura de pantalla (opcional)</span>
+            </div>
           </div>
+
+          <div class="upload-area" id="areaCaptura"
+               onclick="document.getElementById('inputCaptura').click()">
+            <div class="upload-label" id="labelCaptura">📷 Subir captura</div>
+            <div class="upload-sub">PNG, JPG — visible para el profesor</div>
+          </div>
+          <input type="file" id="inputCaptura" name="archivoCaptura"
+                 accept="image/*" style="display:none"
+                 onchange="mostrarNombre(this,'labelCaptura','areaCaptura')">
+
+          <button type="submit" class="btn-primary"
+                  style="width:100%;justify-content:center;margin-top:1rem"
+                  id="btnEnviar">
+            🚀 Enviar y evaluar
+          </button>
+
+        </form>
+
+        <!-- Spinner mientras evalúa -->
+        <div id="evaluando" style="display:none;text-align:center;padding:16px;color:#6B6B80">
+          <div style="font-size:13px">Evaluando con Judge0...</div>
+          <div style="font-size:11px;margin-top:4px">Puede tardar unos segundos</div>
         </div>
 
-        <textarea class="comentario-input" placeholder="¿Algo que el profe deba notar?"></textarea>
+        <!-- Historial -->
+        <div th:if="${ultimaEntrega != null}"
+             style="margin-top:1rem;padding-top:1rem;border-top:1px solid #E0DFF0">
+          <div style="font-size:12px;font-weight:700;color:#1C1C2E;margin-bottom:8px">
+            Último intento
+          </div>
+          <div style="font-size:12px;color:#6B6B80"
+               th:text="${#dates.format(ultimaEntrega.fechaEntrega,'dd/MM/yyyy HH:mm')}">
+          </div>
+          <div style="font-size:13px;font-weight:700;margin-top:4px"
+               th:text="${ultimaEntrega.porcentajeCasos} + '%'"></div>
+        </div>
 
-        <button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:.5rem" onclick="enviarSolucion()">
-          Enviar para revisión
-        </button>
-        <button class="btn-secondary" style="width:100%;justify-content:center">
-          Guardar y continuar después
-        </button>
       </div>
     </div>
 
   </div>
 </main>
+
+<script>
+  function mostrarNombre(input, labelId, areaId) {
+    if (input.files.length > 0) {
+      document.getElementById(labelId).textContent =
+        '✓ ' + input.files[0].name;
+      document.getElementById(areaId).classList.add('done');
+    }
+  }
+
+  document.getElementById('formEntrega')?.addEventListener('submit', function() {
+    document.getElementById('btnEnviar').style.display = 'none';
+    document.getElementById('evaluando').style.display = 'block';
+  });
+</script>
+
 </body>
 </html>

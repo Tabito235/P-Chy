@@ -10,6 +10,82 @@
   <link rel="stylesheet" href="/Estilos/comstyle.css"/>
   <link rel="stylesheet" href="/Estilos/modalStyle.css"/>
 </head>
+
+<!-- Modal ayuda casos -->
+<div class="modal-overlay" id="modalAyudaCasos">
+  <div class="modal-card">
+    <h2 class="modal-titulo">¿Cómo crear casos de prueba?</h2>
+
+    <div style="font-size:14px;line-height:1.6">
+
+      <p>
+        La sección <strong>Entrada</strong> simula lo que el alumno recibirá
+        desde teclado (<code>stdin</code>).
+      </p>
+
+      <p>
+        La sección <strong>Salida esperada</strong> debe contener exactamente
+        el resultado que el programa debe imprimir.
+      </p>
+
+      <hr style="margin:12px 0">
+
+      <h4>Ejemplo 1: Suma de dos números</h4>
+
+      <strong>Entrada</strong>
+
+      <pre style="background:#f8fafc;padding:8px;border-radius:8px">
+5 3
+      </pre>
+
+      <strong>Salida esperada</strong>
+
+      <pre style="background:#f8fafc;padding:8px;border-radius:8px">
+8
+      </pre>
+
+      <hr style="margin:12px 0">
+
+      <h4>Ejemplo 2: Varias líneas</h4>
+
+      <strong>Entrada</strong>
+
+      <pre style="background:#f8fafc;padding:8px;border-radius:8px">
+Juan
+18
+      </pre>
+
+      <strong>Salida esperada</strong>
+
+      <pre style="background:#f8fafc;padding:8px;border-radius:8px">
+Hola Juan
+      </pre>
+
+      <hr style="margin:12px 0">
+
+      <p>
+        <strong>Importante:</strong>
+      </p>
+
+      <ul style="padding-left:18px">
+        <li>No usar comas para separar datos.</li>
+        <li>Usar espacios o saltos de línea según el problema.</li>
+        <li>La salida esperada debe coincidir exactamente con la salida del programa.</li>
+        <li>Las mayúsculas, espacios y saltos de línea sí importan.</li>
+      </ul>
+
+    </div>
+
+    <div class="modal-acciones">
+      <button type="button"
+              class="btn-modal-submit"
+              onclick="document.getElementById('modalAyudaCasos').classList.remove('visible')">
+        Entendido
+      </button>
+    </div>
+  </div>
+</div>
+
 <body>
 
 <div th:replace="~{Administrador/navbar :: navbar}"></div>
@@ -114,10 +190,20 @@
             El alumno verá estos casos como referencia
           </div>
         </div>
-        <button class="btn-add-problema"
-                onclick="document.getElementById('modalNuevoCaso').classList.add('visible')">
-          + Agregar caso
-        </button>
+ 
+<div style="display:flex;gap:8px">
+  <button type="button"
+          class="btn-add-problema"
+          onclick="document.getElementById('modalAyudaCasos').classList.add('visible')">
+    ?
+  </button>
+
+  <button class="btn-add-problema"
+          onclick="document.getElementById('modalNuevoCaso').classList.add('visible')">
+    + Agregar caso
+  </button>
+</div>
+
       </div>
 
       <!-- Sin casos -->
@@ -200,7 +286,15 @@
   document.getElementById('modalNuevoCaso').addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('visible');
   });
+
+    ['modalNuevoCaso','modalAyudaCasos']
+    .forEach(id => {
+      document.getElementById(id)?.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('visible');
+      });
+    });
 </script>
+
 
 </body>
 </html>
