@@ -143,7 +143,7 @@ public class UsuarioController {
             return "redirect:/Alumno/Mis/Clases";
         }
 
-        return "Usuario/enClase";
+        return "Usuario/Enclase";
     }
 
     // ── Rutas estáticas por ahora ─────────────────────
