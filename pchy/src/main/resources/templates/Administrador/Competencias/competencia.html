@@ -54,25 +54,22 @@
   <div th:if="${param.nivelError}" class="alerta alerta-error">✗ Error al guardar el nivel.</div>
 
   <!-- Header de la competencia -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-    <div>
-      <h1 class="editar-titulo" th:text="${competencia.nombre}"></h1>
-      <div style="font-size:13px;color:#6B6B80;margin-top:4px">
-        <span th:text="${competencia.lenguaje}"></span> ·
-        <span th:text="${competencia.estado}"></span> ·
-        Inicio: <span th:text="${#dates.format(competencia.fechaInicio,'dd/MM/yyyy HH:mm')}"></span>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-outline" onclick="abrirModalEditarComp()">Editar competencia</button>
-      <form th:if="${competencia.estado == 'BORRADOR'}"
-            th:action="'/Administrador/Clase/' + ${clase.idClase} +
-                       '/Competencia/' + ${competencia.idCompetencia} + '/Publicar'"
-            method="post" style="display:inline">
-        <button type="submit" class="btn-enter">Publicar</button>
-      </form>
-    </div>
-  </div>
+  <div style="display:flex;gap:8px">
+  <button class="btn-outline" onclick="abrirModalEditarComp()">Editar competencia</button>
+  <a class="btn-outline"
+     th:href="'/Administrador/Clase/' + ${clase.idClase} +
+              '/Competencia/' + ${competencia.idCompetencia} + '/Revision'">
+    Revisar entregas
+  </a>
+  <form th:if="${competencia.estado == 'BORRADOR'}"
+        th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                   '/Competencia/' + ${competencia.idCompetencia} + '/Publicar'"
+        method="post" style="display:inline">
+    <button type="submit" class="btn-enter">Publicar</button>
+  </form>
+</div>
+
+
 
   <div class="editar-layout">
 

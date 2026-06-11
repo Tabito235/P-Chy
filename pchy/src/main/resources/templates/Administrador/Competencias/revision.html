@@ -1,532 +1,536 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P-Chy – Revisión de Competencia</title>
+  <title th:text="'P-Chy – Revisión: ' + ${competencia.nombre}">Revisión</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/Estilos/enclase.css"/>
   <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
   <link rel="stylesheet" href="/Estilos/comstyle.css"/>
   <style>
-    .rev-main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 2rem 40px;
-    }
-    .breadcrumb {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13px; color: #6B6B80; margin-bottom: 10px;
-    }
-    .breadcrumb a { color: #1646a9; text-decoration: none; font-weight: 600; }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .breadcrumb-sep { color: #c7c7d4; }
-    .rev-page-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    .rev-page-titulo {
-      font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; color: #1C1C2E;
-    }
-    .rev-page-meta { font-size: 13px; color: #6B6B80; margin-top: 4px; }
-    .rev-estado-badge {
-      font-size: 12px; font-weight: 700; padding: 5px 14px;
-      border-radius: 8px; background: #f1f5f9; color: #475569;
-      border: 1px solid #E0DFF0; white-space: nowrap; margin-top: 4px;
-    }
+    .rev-main { max-width:1200px; margin:0 auto; padding:24px 2rem 40px; }
+
     .rev-grid {
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 280px 1fr;
       gap: 20px;
       align-items: start;
       margin-top: 20px;
     }
-    .rev-col-left { display: flex; flex-direction: column; gap: 16px; }
+
     .panel-box {
-      background: #fff; border: 1px solid #E0DFF0;
-      border-radius: 12px; padding: 18px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      background:#fff; border:1px solid #E0DFF0;
+      border-radius:12px; padding:18px;
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+      margin-bottom:16px;
     }
     .panel-box-titulo {
-      font-family: 'Sora', sans-serif; font-size: 14px;
-      font-weight: 700; color: #1C1C2E; margin-bottom: 12px;
+      font-family:'Sora',sans-serif; font-size:14px;
+      font-weight:700; color:#1C1C2E; margin-bottom:12px;
     }
-    .rev-search { position: relative; margin-bottom: 10px; }
+
+    /* Lista alumnos */
+    .alumno-rev-item {
+      display:flex; align-items:center; gap:10px;
+      padding:9px 10px; border-radius:8px; cursor:pointer;
+      transition:background .15s; border:1.5px solid transparent;
+      text-decoration:none; color:inherit; margin-bottom:4px;
+    }
+    .alumno-rev-item:hover { background:#f8fafc; }
+    .alumno-rev-item.activo { background:#eef2fb; border-color:#1646a9; }
+    .alumno-rev-nombre { flex:1; font-size:13px; font-weight:600; color:#1C1C2E; }
+    .alumno-rev-sub { font-size:11px; color:#6B6B80; }
+
+    /* Tarjeta de entrega */
+    .entrega-card {
+      background:#fff; border:1px solid #E0DFF0;
+      border-radius:12px; padding:20px;
+      box-shadow:0 2px 8px rgba(0,0,0,.04);
+      margin-bottom:16px;
+    }
+    .entrega-header {
+      display:flex; align-items:center;
+      justify-content:space-between; margin-bottom:14px;
+      flex-wrap:wrap; gap:8px;
+    }
+    .entrega-titulo {
+      font-family:'Sora',sans-serif; font-size:15px;
+      font-weight:700; color:#1C1C2E;
+    }
+
+    /* Veredicto judge */
+    .judge-badge {
+      font-size:12px; font-weight:700; padding:3px 10px;
+      border-radius:20px; white-space:nowrap;
+    }
+    .judge-badge.aceptado  { background:#dcfce7; color:#15803d; }
+    .judge-badge.error     { background:#fee2e2; color:#b91c1c; }
+    .judge-badge.incorrecto{ background:#fef9c3; color:#a16207; }
+    .judge-badge.pendiente { background:#f1f5f9; color:#475569; }
+    .judge-badge.sin-casos { background:#e0f2fe; color:#0369a1; }
+
+    /* Tabs */
+    .entrega-tabs {
+      display:flex; border-bottom:1px solid #E0DFF0; margin-bottom:14px;
+    }
+    .entrega-tab {
+      background:none; border:none; border-bottom:2px solid transparent;
+      padding:7px 14px; font-family:'DM Sans',sans-serif;
+      font-size:12.5px; font-weight:600; color:#6B6B80;
+      cursor:pointer; transition:color .15s,border-color .15s;
+    }
+    .entrega-tab.active { color:#1C1C2E; border-bottom-color:#1C1C2E; }
+    .entrega-panel { display:none; }
+    .entrega-panel.visible { display:block; }
+
+    /* Tabla casos */
+    .casos-rev-table {
+      width:100%; border-collapse:collapse; font-size:12.5px; margin-top:8px;
+    }
+    .casos-rev-table th {
+      text-align:left; padding:6px 10px; font-size:11px; font-weight:700;
+      color:#6B6B80; border-bottom:1.5px solid #E0DFF0; background:#f8fafc;
+    }
+    .casos-rev-table td {
+      padding:7px 10px; border-bottom:1px solid #E0DFF0;
+      font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    }
+    .caso-ok  { color:#15803d; font-weight:700; }
+    .caso-err { color:#b91c1c; font-weight:700; }
+
+    /* Porcentaje bar */
+    .pct-bar { height:7px; background:#E0DFF0; border-radius:999px; overflow:hidden; margin-top:6px; }
+    .pct-fill { height:100%; border-radius:999px; transition:width .4s; }
+    .pct-fill.verde { background:#22c55e; }
+    .pct-fill.rojo  { background:#ef4444; }
+    .pct-fill.amarillo { background:#f59e0b; }
+
+    /* Captura */
+    .captura-wrap {
+      max-width:100%; border-radius:10px; overflow:hidden;
+      border:1px solid #E0DFF0; margin-bottom:12px;
+    }
+    .captura-wrap img { width:100%; display:block; }
+    .sin-captura {
+      background:#f8fafc; border:1px dashed #E0DFF0;
+      border-radius:10px; padding:30px; text-align:center;
+      color:#94a3b8; font-size:13px; margin-bottom:12px;
+    }
+
+    /* Validación */
+    .validar-form { display:flex; flex-direction:column; gap:10px; }
+    .validar-label { font-size:12.5px; font-weight:700; color:#1C1C2E; }
+    .validar-select, .validar-input, .validar-textarea {
+      border:1px solid #E0DFF0; border-radius:8px; padding:7px 10px;
+      font-family:'DM Sans',sans-serif; font-size:13px; outline:none;
+      transition:border-color .15s;
+    }
+    .validar-select:focus, .validar-input:focus, .validar-textarea:focus {
+      border-color:#1646a9;
+    }
+    .validar-textarea { resize:vertical; min-height:70px; }
+    .validar-input { width:100px; }
+
+    .btn-aprobar-rev {
+      background:#dcfce7; color:#15803d; border:1.5px solid #86efac;
+      padding:8px 18px; border-radius:8px; font-family:'DM Sans',sans-serif;
+      font-size:13px; font-weight:700; cursor:pointer; transition:background .15s;
+    }
+    .btn-aprobar-rev:hover { background:#bbf7d0; }
+
+    .btn-rechazar-rev {
+      background:#fee2e2; color:#b91c1c; border:1.5px solid #fca5a5;
+      padding:8px 18px; border-radius:8px; font-family:'DM Sans',sans-serif;
+      font-size:13px; font-weight:700; cursor:pointer; transition:background .15s;
+    }
+    .btn-rechazar-rev:hover { background:#fecaca; }
+
+    .validar-acciones { display:flex; gap:8px; flex-wrap:wrap; }
+
+    .estado-entrega {
+      font-size:11px; font-weight:700; padding:2px 8px;
+      border-radius:20px; display:inline-block;
+    }
+    .estado-entrega.APROBADA  { background:#dcfce7; color:#15803d; }
+    .estado-entrega.RECHAZADA { background:#fee2e2; color:#b91c1c; }
+    .estado-entrega.REVISION  { background:#fef9c3; color:#a16207; }
+    .estado-entrega.PENDIENTE { background:#f1f5f9; color:#475569; }
+
+    /* Búsqueda */
+    .rev-search { position:relative; margin-bottom:10px; }
     .rev-search svg {
-      position: absolute; left: 10px; top: 50%;
-      transform: translateY(-50%); width: 14px; height: 14px;
-      stroke: #6B6B80; fill: none; stroke-width: 2;
+      position:absolute; left:10px; top:50%;
+      transform:translateY(-50%); width:14px; height:14px;
+      stroke:#6B6B80; fill:none; stroke-width:2;
     }
     .rev-search input {
-      width: 100%; padding: 8px 10px 8px 32px;
-      border: 1px solid #E0DFF0; border-radius: 8px;
-      font-family: 'DM Sans', sans-serif; font-size: 13px;
-      color: #1C1C2E; outline: none; transition: border-color .15s;
+      width:100%; padding:8px 10px 8px 32px;
+      border:1px solid #E0DFF0; border-radius:8px;
+      font-family:'DM Sans',sans-serif; font-size:13px; outline:none;
     }
-    .rev-search input:focus { border-color: #1646a9; }
-    .alumno-rev-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 10px; border-radius: 8px; cursor: pointer;
-      transition: background .15s; border: 1px solid transparent;
-    }
-    .alumno-rev-item:hover { background: #f8fafc; }
-    .alumno-rev-item.activo { background: #eef2fb; border-color: #1646a9; }
-    .alumno-rev-nombre { flex: 1; font-size: 13px; font-weight: 600; color: #1C1C2E; }
-    .alumno-rev-estado {
-      font-size: 11px; font-weight: 700; padding: 2px 8px;
-      border-radius: 20px; white-space: nowrap;
-    }
-    .alumno-rev-estado.entregado { background: #dcfce7; color: #15803d; }
-    .alumno-rev-estado.pendiente { background: #fef9c3; color: #a16207; }
-    .alumno-rev-niveles { font-size: 11px; color: #6B6B80; white-space: nowrap; }
-    .resumen-tabla { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 14px; }
-    .resumen-tabla td { padding: 4px 0; color: #374151; }
-    .resumen-tabla td:first-child { color: #6B6B80; width: 80px; }
-    .api-tag {
-      display: inline-block; font-size: 11px; font-weight: 700;
-      padding: 1px 7px; border-radius: 4px;
-    }
-    .api-tag.aceptada { background: #dcfce7; color: #15803d; }
-    .api-tag.rechazada { background: #fee2e2; color: #b91c1c; }
-    .resumen-footer { display: flex; flex-direction: column; gap: 8px; }
-    .resumen-fila { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-    .resumen-label { color: #6B6B80; font-size: 12.5px; min-width: 140px; }
-    .resumen-input {
-      border: 1px solid #E0DFF0; border-radius: 6px;
-      padding: 5px 10px; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; width: 70px; outline: none; text-align: center;
-    }
-    .resumen-input:focus { border-color: #1646a9; }
-    .resumen-select {
-      border: 1px solid #E0DFF0; border-radius: 6px;
-      padding: 5px 8px; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; outline: none; cursor: pointer;
-    }
-    .btn-guardar-cal {
-      width: 100%; background: #1646a9; color: #fff;
-      border: none; border-radius: 8px; padding: 10px;
-      font-family: 'DM Sans', sans-serif; font-size: 13.5px;
-      font-weight: 700; cursor: pointer; margin-top: 4px;
-      transition: background .15s;
-    }
-    .btn-guardar-cal:hover { background: #0e39a0; }
-    .ranking-lista { display: flex; flex-direction: column; gap: 6px; }
-    .ranking-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 7px 10px; border-radius: 8px; font-size: 13px;
-    }
-    .ranking-item.destacado { background: #eef2fb; font-weight: 700; }
-    .ranking-pos { font-weight: 800; color: #6B6B80; width: 18px; font-size: 13px; text-align: right; }
-    .ranking-pos.oro    { color: #ca8a04; }
-    .ranking-pos.plata  { color: #64748b; }
-    .ranking-pos.bronce { color: #b45309; }
-    .ranking-nombre { flex: 1; color: #1C1C2E; }
-    .ranking-pts { font-weight: 800; color: #1646a9; }
-    .btn-publicar {
-      width: 100%; background: #fff; border: 1.5px solid #1646a9;
-      color: #1646a9; border-radius: 8px; padding: 9px;
-      font-family: 'DM Sans', sans-serif; font-size: 13px;
-      font-weight: 700; cursor: pointer; margin-top: 12px;
-      transition: all .15s;
-    }
-    .btn-publicar:hover { background: #1646a9; color: #fff; }
-    .rev-col-right { display: flex; flex-direction: column; gap: 16px; }
-    .nivel-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 4px;
-    }
-    .nivel-titulo { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: #1C1C2E; }
-    .nivel-meta { font-size: 12.5px; color: #6B6B80; }
-    .nivel-total { font-size: 12px; font-weight: 700; background: #f1f5f9; color: #475569; padding: 4px 12px; border-radius: 20px; }
-    .prob-rev-card {
-      background: #fff; border: 1px solid #E0DFF0;
-      border-radius: 12px; padding: 18px 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.04);
-    }
-    .prob-rev-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .prob-rev-titulo { font-size: 14px; font-weight: 700; color: #1C1C2E; }
-    .sintaxis-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
-    .sintaxis-badge.aceptada { background: #dcfce7; color: #15803d; }
-    .sintaxis-badge.rechazada { background: #fee2e2; color: #b91c1c; }
-    .sintaxis-badge.pendiente { background: #f1f5f9; color: #475569; }
-    .prob-rev-tabs { display: flex; border-bottom: 1px solid #E0DFF0; margin-bottom: 14px; }
-    .prob-rev-tab {
-      background: none; border: none; border-bottom: 2px solid transparent;
-      padding: 7px 14px; font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px; font-weight: 600; color: #6B6B80;
-      cursor: pointer; transition: color .15s, border-color .15s;
-    }
-    .prob-rev-tab.active { color: #1C1C2E; border-bottom-color: #1C1C2E; }
-    .prob-rev-tab:hover { color: #1C1C2E; }
-    .prob-rev-panel { display: none; }
-    .prob-rev-panel.visible { display: block; }
-    .archivo-recibido {
-      display: flex; align-items: center; gap: 10px;
-      background: #f8fafc; border: 1px solid #E0DFF0;
-      border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;
-    }
-    .archivo-icono {
-      width: 36px; height: 36px; background: #E2E8F0;
-      border-radius: 8px; display: flex; align-items: center;
-      justify-content: center; font-size: 18px; flex-shrink: 0;
-    }
-    .archivo-info { flex: 1; }
-    .archivo-nombre-txt { font-size: 13px; font-weight: 700; color: #1E293B; display: block; }
-    .archivo-meta-txt { font-size: 11px; color: #64748B; }
-    .archivo-top {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 12px; color: #6B6B80; margin-bottom: 6px;
-    }
-    .archivo-btns { display: flex; gap: 6px; }
-    .btn-archivo {
-      background: #fff; border: 1px solid #E0DFF0; color: #1C1C2E;
-      padding: 4px 12px; border-radius: 6px; font-size: 12px;
-      font-weight: 600; cursor: pointer; transition: border-color .15s;
-    }
-    .btn-archivo:hover { border-color: #1646a9; color: #1646a9; }
-    .btn-archivo.ver-completo { border-color: #1646a9; color: #1646a9; }
-    .rev-seccion-titulo { font-size: 12.5px; font-weight: 700; color: #1C1C2E; margin-bottom: 8px; }
-    .rev-textarea {
-      width: 100%; border: 1px solid #E0DFF0; border-radius: 8px;
-      padding: 8px 10px; font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px; color: #1C1C2E; background: #f8fafc;
-      resize: vertical; min-height: 60px; outline: none; transition: border-color .15s;
-    }
-    .rev-textarea:focus { border-color: #1646a9; background: #fff; }
-    .rev-input-pts {
-      border: 1px solid #E0DFF0; border-radius: 6px;
-      padding: 6px 10px; font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px; width: 80px; outline: none; margin-bottom: 8px;
-    }
-    .rev-input-pts:focus { border-color: #1646a9; }
-    .rev-pts-hint { font-size: 11px; color: #6B6B80; margin-bottom: 8px; }
-    .rev-select {
-      width: 100%; border: 1px solid #E0DFF0; border-radius: 6px;
-      padding: 6px 10px; font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px; color: #1C1C2E; outline: none;
-      margin-bottom: 8px; cursor: pointer;
-    }
-    .rev-select:focus { border-color: #1646a9; }
-    @media (max-width: 900px) {
-      .rev-grid { grid-template-columns: 1fr; }
-    }
+    .rev-search input:focus { border-color:#1646a9; }
+
+    @media(max-width:900px){ .rev-grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
 
 <div th:replace="~{Administrador/navbar :: navbar}"></div>
 
+<!-- Header clase -->
 <div class="clase-header">
   <div class="clase-header-inner">
     <div class="clase-title-row">
       <div>
-        <h1 class="clase-title">Estructuras de Datos</h1>
+        <h1 class="clase-title" th:text="${clase.nombre}"></h1>
         <div class="clase-meta">
-          <span>Código: <strong>A1B2C3</strong></span>
+          <span>Competencia: <strong th:text="${competencia.nombre}"></strong></span>
           <span class="sep">|</span>
-          <span>Alumnos: <strong>30</strong></span>
-          <span class="sep">|</span>
-          <span>Competencias: <strong>5</strong></span>
+          <span>Lenguaje: <strong th:text="${competencia.lenguaje}"></strong></span>
         </div>
       </div>
-      <button class="btn-editar" onclick="window.location.href='/Administrador/En/Clase'">Editar clase</button>
-    </div>
-    <div class="tabs">
-      <button class="tab" onclick="window.location.href='/Administrador/En/Clase?tab=alumnos'">Alumnos</button>
-      <button class="tab" onclick="window.location.href='/Administrador/En/Clase?tab=solicitudes'">Solicitudes <span class="badge">12</span></button>
-      <button class="tab" onclick="window.location.href='/Administrador/En/Clase'">Competencias</button>
-      <button class="tab active">Revisión</button>
+      <a class="btn-editar"
+         th:href="'/Administrador/Clase/' + ${clase.idClase} +
+                  '/Competencia/' + ${competencia.idCompetencia}">
+        Volver a competencia
+      </a>
     </div>
   </div>
 </div>
 
 <main class="rev-main">
 
+  <!-- Breadcrumb -->
   <nav class="breadcrumb">
-    <a href="/Administrador/En/Clase">Competencias</a>
+    <a th:href="'/Administrador/Clases'">Clases</a>
     <span class="breadcrumb-sep">/</span>
-    <a id="bcNombre" href="#">—</a>
+    <a th:href="'/Administrador/Clase/' + ${clase.idClase}"
+       th:text="${clase.nombre}"></a>
+    <span class="breadcrumb-sep">/</span>
+    <a th:href="'/Administrador/Clase/' + ${clase.idClase} +
+                '/Competencia/' + ${competencia.idCompetencia}"
+       th:text="${competencia.nombre}"></a>
     <span class="breadcrumb-sep">/</span>
     <span>Revisión</span>
   </nav>
 
-  <div class="rev-page-header">
-    <div>
-      <h1 class="rev-page-titulo" id="revTitulo">Revisión de competencia</h1>
-      <div class="rev-page-meta" id="revMeta">Competencia: — · Lenguaje: Python · Fecha de cierre: —</div>
-    </div>
-    <span class="rev-estado-badge" id="revEstado">—</span>
+  <!-- Alertas -->
+  <div th:if="${param.validado}"
+       class="alerta alerta-ok" style="margin-bottom:16px">
+    ✓ Entrega validada correctamente.
+  </div>
+  <div th:if="${param.error}"
+       class="alerta alerta-error" style="margin-bottom:16px">
+    ✗ Error al validar.
   </div>
 
   <div class="rev-grid">
 
-    <div class="rev-col-left">
-
+    <!-- Columna izquierda: lista de alumnos -->
+    <div>
       <div class="panel-box">
-        <div class="panel-box-titulo">Alumnos</div>
+        <div class="panel-box-titulo">Alumnos con entregas</div>
+
         <div class="rev-search">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" placeholder="Buscar alumno..." id="searchRevAlumno"/>
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" placeholder="Buscar alumno..."
+                 id="searchAlumno"/>
         </div>
-        <div id="alumnosRevLista"></div>
-      </div>
 
-      <div class="panel-box" id="panelResumen">
-        <div class="panel-box-titulo" id="resumenTitulo">Resumen del alumno</div>
-        <table class="resumen-tabla" id="resumenTabla"></table>
-        <div class="resumen-footer">
-          <div class="resumen-fila">
-            <span class="resumen-label">Calificación final (0–100)</span>
-            <input class="resumen-input" type="number" id="calFinal" min="0" max="100" value="0"/>
-          </div>
-          <div class="resumen-fila">
-            <span class="resumen-label">Posición en ranking</span>
-            <select class="resumen-select" id="posRanking">
-              <option>1</option><option>2</option><option>3</option><option>4</option>
-            </select>
-          </div>
-          <button class="btn-guardar-cal" onclick="guardarCalificacion()">Guardar calificación final</button>
+        <!-- Sin alumnos -->
+        <div th:if="${#lists.isEmpty(alumnos)}"
+             style="text-align:center;padding:20px;color:#94a3b8;font-size:13px">
+          Aún no hay entregas en esta competencia.
+        </div>
+
+        <!-- Lista dinámica -->
+        <div th:each="alumno : ${alumnos}"
+             th:attr="data-nombre=${alumno.nombre + ' ' + alumno.apellido}">
+          <a class="alumno-rev-item"
+             th:classappend="${alumnoSeleccionado == alumno.idUsuario} ? ' activo' : ''"
+             th:href="'/Administrador/Clase/' + ${clase.idClase} +
+                      '/Competencia/' + ${competencia.idCompetencia} +
+                      '/Revision?idAlumno=' + ${alumno.idUsuario}">
+
+            <!-- Avatar -->
+            <div class="avatar avatar-iniciales-nav"
+                 th:if="${alumno.fotoPerfil == null}"
+                 th:text="${alumno.nombre?.substring(0,1) + alumno.apellido?.substring(0,1)}">
+            </div>
+            <div class="avatar"
+                 th:if="${alumno.fotoPerfil != null}"
+                 th:style="'background-image:url(' + ${alumno.fotoPerfil} +
+                           ');background-size:cover;background-position:center'">
+            </div>
+
+            <div>
+              <div class="alumno-rev-nombre"
+                   th:text="${alumno.nombre + ' ' + alumno.apellido}"></div>
+              <div class="alumno-rev-sub" th:text="${alumno.rolActual}"></div>
+            </div>
+          </a>
         </div>
       </div>
-
-      <div class="panel-box">
-        <div class="panel-box-titulo">Ranking final</div>
-        <div class="ranking-lista" id="rankingLista"></div>
-        <button class="btn-publicar">Publicar ranking</button>
-      </div>
-
     </div>
 
-    <div class="rev-col-right" id="colDerecha">
-      <div style="text-align:center;color:#94a3b8;padding:60px 0;font-size:14px;">
+    <!-- Columna derecha: entregas del alumno -->
+    <div>
+
+      <!-- Estado inicial (ningún alumno seleccionado) -->
+      <div th:if="${alumnoSeleccionado == null}"
+           style="text-align:center;color:#94a3b8;padding:60px 0;font-size:14px;
+                  background:#fff;border-radius:12px;border:1px solid #E0DFF0">
         Selecciona un alumno para ver sus entregas
       </div>
-    </div>
 
+      <!-- Entregas del alumno seleccionado -->
+      <div th:if="${alumnoSeleccionado != null}">
+
+        <div th:if="${#lists.isEmpty(entregas)}"
+             style="text-align:center;padding:40px;color:#94a3b8;font-size:13px">
+          Este alumno no tiene entregas aún.
+        </div>
+
+        <!-- Tarjeta por entrega -->
+        <div class="entrega-card"
+             th:each="entrega, stat : ${entregas}"
+             th:id="'entrega-' + ${entrega.idEntrega}">
+
+          <div class="entrega-header">
+            <div>
+              <div class="entrega-titulo"
+                   th:text="'Entrega #' + ${stat.count}"></div>
+              <div style="font-size:12px;color:#6B6B80;margin-top:3px"
+                   th:text="${#dates.format(entrega.fechaEntrega,'dd/MM/yyyy HH:mm')}">
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <!-- Veredicto Judge -->
+              <span class="judge-badge"
+                    th:classappend="${entrega.resultadoJudge == 'ACEPTADO'} ? 'aceptado' :
+                                    (${entrega.resultadoJudge == 'SIN_CASOS'} ? 'sin-casos' :
+                                    (${entrega.resultadoJudge == 'PENDIENTE'} ? 'pendiente' : 'error'))"
+                    th:text="'Judge: ' + ${entrega.resultadoJudge}">
+              </span>
+              <!-- Estado revisión -->
+              <span class="estado-entrega"
+                    th:classappend="${entrega.estado}"
+                    th:text="${entrega.estado}">
+              </span>
+              <!-- Porcentaje -->
+              <span style="font-size:12px;font-weight:700;color:#1646a9"
+                    th:text="${entrega.porcentajeCasos} + '%'">
+              </span>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="entrega-tabs">
+            <button class="entrega-tab active"
+                    th:onclick="'switchTab(' + ${entrega.idEntrega} + ',\'casos\')'">
+              Casos de prueba
+            </button>
+            <button class="entrega-tab"
+                    th:onclick="'switchTab(' + ${entrega.idEntrega} + ',\'captura\')'">
+              Captura
+            </button>
+            <button class="entrega-tab"
+                    th:onclick="'switchTab(' + ${entrega.idEntrega} + ',\'validar\')'">
+              Validar
+            </button>
+          </div>
+
+          <!-- Panel: Casos de prueba -->
+          <div class="entrega-panel visible"
+               th:id="'panel-' + ${entrega.idEntrega} + '-casos'">
+
+            <!-- Barra porcentaje -->
+            <div style="font-size:12px;color:#6B6B80;margin-bottom:4px"
+                 th:text="${entrega.porcentajeCasos} + '% de casos correctos'">
+            </div>
+            <div class="pct-bar">
+              <div class="pct-fill"
+                   th:classappend="${entrega.porcentajeCasos == 100} ? 'verde' :
+                                   (${entrega.porcentajeCasos >= 50} ? 'amarillo' : 'rojo')"
+                   th:style="'width:' + ${entrega.porcentajeCasos} + '%'">
+              </div>
+            </div>
+
+            <!-- Mensaje de error si hay -->
+            <div th:if="${entrega.mensajeError != null}"
+                 style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;
+                        padding:10px;margin-top:10px;font-size:12px;color:#b91c1c">
+              <strong>Error:</strong>
+              <pre style="margin:4px 0 0;white-space:pre-wrap;font-size:11px"
+                   th:text="${entrega.mensajeError}"></pre>
+            </div>
+
+            <!-- Tabla por caso -->
+            <div th:with="casos=${resultadosPorEntrega[entrega.idEntrega]}">
+              <div th:if="${casos == null or #lists.isEmpty(casos)}"
+                   style="color:#94a3b8;font-size:13px;padding:16px 0;text-align:center">
+                Sin resultados por caso (sin casos de prueba definidos).
+              </div>
+              <table class="casos-rev-table" th:if="${casos != null and !#lists.isEmpty(casos)}">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Entrada</th>
+                    <th>Esperado</th>
+                    <th>Obtenido</th>
+                    <th>Resultado</th>
+                    <th>Tiempo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="rc, rStat : ${casos}">
+                    <td th:text="${rStat.count}"></td>
+                    <td th:text="${rc.entrada}"></td>
+                    <td th:text="${rc.salidaEsperada}"></td>
+                    <td th:text="${rc.salidaObtenida}"></td>
+                    <td>
+                      <span th:if="${rc.correcto}"  class="caso-ok">✓ OK</span>
+                      <span th:if="${!rc.correcto}" class="caso-err">✗ Fallo</span>
+                    </td>
+                    <td th:text="${rc.tiempoEjecucion} + 's'"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Panel: Captura -->
+          <div class="entrega-panel"
+               th:id="'panel-' + ${entrega.idEntrega} + '-captura'">
+
+            <div th:if="${entrega.archivoCaptura == null}" class="sin-captura">
+              📷 El alumno no subió captura en esta entrega.
+            </div>
+
+            <div th:if="${entrega.archivoCaptura != null}">
+              <div class="captura-wrap">
+                <img th:src="${entrega.archivoCaptura}"
+                     alt="Captura del alumno"
+                     onerror="this.style.display='none'"/>
+              </div>
+              <a th:href="${entrega.archivoCaptura}"
+                 target="_blank"
+                 style="font-size:12px;color:#1646a9;font-weight:600">
+                Abrir imagen en nueva pestaña →
+              </a>
+            </div>
+
+            <!-- Código fuente (link) -->
+            <div th:if="${entrega.archivoCodigo != null}"
+                 style="margin-top:14px;padding-top:14px;border-top:1px solid #E0DFF0">
+              <div style="font-size:12.5px;font-weight:700;color:#1C1C2E;margin-bottom:6px">
+                Código fuente
+              </div>
+              <a th:href="${entrega.archivoCodigo}"
+                 target="_blank"
+                 class="btn-archivo ver-completo">
+                📄 Descargar / Ver código
+              </a>
+            </div>
+          </div>
+
+          <!-- Panel: Validar -->
+          <div class="entrega-panel"
+               th:id="'panel-' + ${entrega.idEntrega} + '-validar'">
+
+            <!-- Ya validada -->
+            <div th:if="${entrega.estado == 'APROBADA' or entrega.estado == 'RECHAZADA'}"
+                 style="padding:12px;border-radius:8px;font-size:13px;margin-bottom:12px"
+                 th:classappend="${entrega.estado == 'APROBADA'} ?
+                                 'background:#dcfce7;color:#15803d' :
+                                 'background:#fee2e2;color:#b91c1c'">
+              Esta entrega ya fue
+              <strong th:text="${entrega.estado == 'APROBADA'} ? 'aprobada' : 'rechazada'"></strong>.
+              Puedes cambiar la decisión abajo.
+            </div>
+
+            <form class="validar-form"
+                  th:action="'/Administrador/Entrega/' + ${entrega.idEntrega} + '/Validar'"
+                  method="post">
+
+              <input type="hidden" name="idClase"
+                     th:value="${clase.idClase}"/>
+              <input type="hidden" name="idComp"
+                     th:value="${competencia.idCompetencia}"/>
+              <input type="hidden" name="idAlumno"
+                     th:value="${alumnoSeleccionado}"/>
+
+              <div>
+                <label class="validar-label">Decisión</label>
+                <select name="estado" class="validar-select" style="width:100%">
+                  <option value="APROBADA">✓ Aprobar</option>
+                  <option value="RECHAZADA">✗ Rechazar</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="validar-label">
+                  Puntaje (0 – <span th:text="${problema?.puntaje ?: 100}"></span>)
+                </label>
+                <input type="number" name="puntaje" class="validar-input"
+                       th:value="${entrega.puntaje}"
+                       min="0" max="100"/>
+              </div>
+
+              <div>
+                <label class="validar-label">Comentario para el alumno</label>
+                <textarea name="comentario" class="validar-textarea"
+                          placeholder="Retroalimentación opcional..."></textarea>
+              </div>
+
+              <div class="validar-acciones">
+                <button type="submit" class="btn-aprobar-rev"
+                        onclick="this.form.estado.value='APROBADA'">
+                  ✓ Aprobar
+                </button>
+                <button type="submit" class="btn-rechazar-rev"
+                        onclick="this.form.estado.value='RECHAZADA'">
+                  ✗ Rechazar
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 
 <script>
-const urlParams   = new URLSearchParams(window.location.search);
-const compNombre  = urlParams.get("nombre") || "Bucles en Python";
-const compId      = urlParams.get("id") || "1";
+  // Tabs por entrega
+  function switchTab(idEntrega, tab) {
+    const card = document.getElementById('entrega-' + idEntrega);
+    card.querySelectorAll('.entrega-tab').forEach(t => t.classList.remove('active'));
+    card.querySelectorAll('.entrega-panel').forEach(p => p.classList.remove('visible'));
 
-document.getElementById("bcNombre").textContent = compNombre;
-document.getElementById("bcNombre").href = `/Administrador/Competencias/competencia?id=${compId}&nombre=${encodeURIComponent(compNombre)}`;
-document.getElementById("revTitulo").textContent = `Revisión de competencia (cerrada)`;
-document.getElementById("revMeta").textContent   = `Competencia: ${compNombre} · Lenguaje: Python · Fecha de cierre: 20 Oct 2026, 9:00 AM`;
-document.getElementById("revEstado").textContent  = "Cerrada";
+    const panels = { casos: 0, captura: 1, validar: 2 };
+    const tabs   = card.querySelectorAll('.entrega-tab');
+    tabs[panels[tab]]?.classList.add('active');
 
-const alumnosRev = [
-  {
-    id: 1, nombre: "Juan Pérez",    inicial: "JP", estado: "entregado", niveles: "3/3",
-    problemas: [
-      { titulo: "Problema 1: Sumas",    sintaxis: "aceptada",  pts: 85, archivo: "solucion_juan_perez.txt",  completo: false },
-      { titulo: "Problema 2: Arreglos", sintaxis: "rechazada", pts: 60, archivo: "solucion_juan_perez.txt",  completo: false },
-      { titulo: "Problema 3: Arreglos", sintaxis: "aceptada",  pts: 90, archivo: "solucion_juan_perez.txt",  completo: true  }
-    ]
-  },
-  {
-    id: 2, nombre: "María López",   inicial: "ML", estado: "entregado", niveles: "3/3",
-    problemas: [
-      { titulo: "Problema 1: Sumas",    sintaxis: "aceptada",  pts: 95, archivo: "solucion_maria_lopez.txt", completo: true  },
-      { titulo: "Problema 2: Arreglos", sintaxis: "aceptada",  pts: 90, archivo: "solucion_maria_lopez.txt", completo: false },
-      { titulo: "Problema 3: Arreglos", sintaxis: "rechazada", pts: 70, archivo: "solucion_maria_lopez.txt", completo: false }
-    ]
-  },
-  {
-    id: 3, nombre: "Ana García",    inicial: "AG", estado: "entregado", niveles: "3/3",
-    problemas: [
-      { titulo: "Problema 1: Sumas",    sintaxis: "aceptada",  pts: 100, archivo: "solucion_ana_garcia.txt", completo: true  },
-      { titulo: "Problema 2: Arreglos", sintaxis: "aceptada",  pts: 95,  archivo: "solucion_ana_garcia.txt", completo: true  },
-      { titulo: "Problema 3: Arreglos", sintaxis: "aceptada",  pts: 90,  archivo: "solucion_ana_garcia.txt", completo: true  }
-    ]
-  },
-  {
-    id: 4, nombre: "Luis Hernández", inicial: "LH", estado: "entregado", niveles: "3/3",
-    problemas: [
-      { titulo: "Problema 1: Sumas",    sintaxis: "rechazada", pts: 50, archivo: "solucion_luis_hdz.txt", completo: false },
-      { titulo: "Problema 2: Arreglos", sintaxis: "rechazada", pts: 40, archivo: "solucion_luis_hdz.txt", completo: false },
-      { titulo: "Problema 3: Arreglos", sintaxis: "pendiente", pts: 0,  archivo: "solucion_luis_hdz.txt", completo: false }
-    ]
+    const panel = card.querySelector(`#panel-${idEntrega}-${tab}`);
+    if (panel) panel.classList.add('visible');
   }
-];
 
-const rankingData = [
-  { nombre: "Ana López",      pts: 95 },
-  { nombre: "Juan Pérez",     pts: 88 },
-  { nombre: "María García",   pts: 80 },
-  { nombre: "Luis Hernández", pts: 60 }
-];
-
-let alumnoActivo = null;
-const tabsActivos = {};
-
-function avatarColor(inicial) {
-  const colores = ["#dbeafe","#fce7f3","#dcfce7","#fef9c3","#ede9fe","#fee2e2","#e0f2fe","#f3e8ff"];
-  const textos  = ["#1d4ed8","#be185d","#15803d","#a16207","#6d28d9","#b91c1c","#0369a1","#7e22ce"];
-  const i = inicial.charCodeAt(0) % colores.length;
-  return `background:${colores[i]};color:${textos[i]}`;
-}
-
-function renderAlumnosRev(filtro = "") {
-  const lista = document.getElementById("alumnosRevLista");
-  const filtrados = alumnosRev.filter(a =>
-    a.nombre.toLowerCase().includes(filtro.toLowerCase())
-  );
-  lista.innerHTML = filtrados.map(a => `
-    <div class="alumno-rev-item ${alumnoActivo === a.id ? 'activo' : ''}"
-         onclick="seleccionarAlumno(${a.id})">
-      <div class="avatar-letra sm" style="${avatarColor(a.inicial)}">${a.inicial}</div>
-      <span class="alumno-rev-nombre">${a.nombre}</span>
-      <span class="alumno-rev-estado ${a.estado}">${a.estado.charAt(0).toUpperCase()+a.estado.slice(1)}</span>
-      <span class="alumno-rev-niveles">Niveles: ${a.niveles}</span>
-    </div>`).join("");
-}
-
-function seleccionarAlumno(id) {
-  alumnoActivo = id;
-  const alumno = alumnosRev.find(a => a.id === id);
-  renderAlumnosRev(document.getElementById("searchRevAlumno").value);
-  renderResumen(alumno);
-  renderProblemasRev(alumno);
-}
-
-function renderResumen(alumno) {
-  document.getElementById("resumenTitulo").textContent = `Resumen del alumno (${alumno.nombre})`;
-  const total = alumno.problemas.reduce((s, p) => s + p.pts, 0);
-  const cal   = Math.round(total / alumno.problemas.length);
-  document.getElementById("calFinal").value = cal;
-  document.getElementById("resumenTabla").innerHTML = alumno.problemas.map((p, i) => `
-    <tr>
-      <td>Problema ${i+1}</td>
-      <td>
-        | API: <span class="api-tag ${p.sintaxis}">${p.sintaxis.charAt(0).toUpperCase()+p.sintaxis.slice(1)}</span>
-        | <strong>${p.pts} pts</strong>
-      </td>
-    </tr>`).join("");
-}
-
-function renderProblemasRev(alumno) {
-  const col = document.getElementById("colDerecha");
-  col.innerHTML = `
-    <div class="nivel-header">
-      <div>
-        <div class="nivel-titulo">Nivel 1</div>
-        <div class="nivel-meta">Tiempo: 10 min</div>
-      </div>
-      <span class="nivel-total">Total problemas: ${alumno.problemas.length}</span>
-    </div>
-    ${alumno.problemas.map((p, i) => problemaRevHTML(p, i, alumno.id)).join("")}`;
-}
-
-function problemaRevHTML(p, i, alumnoId) {
-  const cardId  = `pcard-${alumnoId}-${i}`;
-  const tabKey  = `${alumnoId}-${i}`;
-  const tabActivo = tabsActivos[tabKey] || "archivo";
-
-  return `
-    <div class="prob-rev-card" id="${cardId}">
-      <div class="prob-rev-header">
-        <span class="prob-rev-titulo">${p.titulo}</span>
-        <span class="sintaxis-badge ${p.sintaxis}">Sintaxis: ${p.sintaxis.charAt(0).toUpperCase()+p.sintaxis.slice(1)}</span>
-      </div>
-      <div class="prob-rev-tabs">
-        <button class="prob-rev-tab ${tabActivo==='enunciado'?'active':''}"
-                onclick="switchRevTab('${cardId}','enunciado','${tabKey}')">Enunciado</button>
-        <button class="prob-rev-tab ${tabActivo==='archivo'?'active':''}"
-                onclick="switchRevTab('${cardId}','archivo','${tabKey}')">Archivo .txt</button>
-        <button class="prob-rev-tab ${tabActivo==='api'?'active':''}"
-                onclick="switchRevTab('${cardId}','api','${tabKey}')">Revisión API</button>
-        <button class="prob-rev-tab ${tabActivo==='cal'?'active':''}"
-                onclick="switchRevTab('${cardId}','cal','${tabKey}')">Calificación</button>
-      </div>
-      <div class="prob-rev-panel ${tabActivo==='enunciado'?'visible':''}" id="${cardId}-enunciado">
-        <p style="font-size:13px;color:#374151;line-height:1.6">
-          Descripción del problema ${i+1}. Aquí aparecerá el enunciado completo.
-        </p>
-      </div>
-      <div class="prob-rev-panel ${tabActivo==='archivo'?'visible':''}" id="${cardId}-archivo">
-        <div class="archivo-top">
-          <span>Archivo recibido: ${p.archivo}</span>
-          <div class="archivo-btns">
-            <button class="btn-archivo">Descargar</button>
-            <button class="btn-archivo ${p.completo?'ver-completo':''}">${p.completo?'Ver completo':'Ver detalles'}</button>
-          </div>
-        </div>
-        <div class="archivo-recibido">
-          <div class="archivo-icono">📄</div>
-          <div class="archivo-info">
-            <span class="archivo-nombre-txt">${p.archivo}</span>
-            <span class="archivo-meta-txt">Formato: .txt · Tamaño: 12 KB</span>
-          </div>
-        </div>
-      </div>
-      <div class="prob-rev-panel ${tabActivo==='api'?'visible':''}" id="${cardId}-api">
-        <div class="rev-seccion-titulo">Revisión automática (API)</div>
-        <input class="rev-input-pts" type="number" placeholder="0" min="0" max="100" value="${p.pts}"/>
-        <div class="rev-pts-hint">(0–100)</div>
-        <select class="rev-select">
-          <option>Comentarios rápidos</option>
-          <option>Lógica correcta</option>
-          <option>Mejora estructura</option>
-          <option>Revisar casos borde</option>
-        </select>
-        <textarea class="rev-textarea" placeholder="Comentario de la API..."></textarea>
-      </div>
-      <div class="prob-rev-panel ${tabActivo==='cal'?'visible':''}" id="${cardId}-cal">
-        <div class="rev-seccion-titulo">Calificación del problema</div>
-        <input class="rev-input-pts" type="number" placeholder="0" min="0" max="100" value="${p.pts}"/>
-        <div class="rev-pts-hint">(0–100)</div>
-        <select class="rev-select">
-          <option>Comentarios rápidos</option>
-          <option>Excelente solución</option>
-          <option>Buena lógica, mejorar nombres</option>
-          <option>Falta manejo de errores</option>
-        </select>
-        <div class="rev-seccion-titulo" style="margin-top:8px">Comentario del maestro</div>
-        <textarea class="rev-textarea" placeholder="Escribe tu comentario..."></textarea>
-      </div>
-    </div>`;
-}
-
-function switchRevTab(cardId, tab, tabKey) {
-  tabsActivos[tabKey] = tab;
-  const card = document.getElementById(cardId);
-  card.querySelectorAll(".prob-rev-tab").forEach(t => t.classList.remove("active"));
-  card.querySelectorAll(".prob-rev-panel").forEach(p => p.classList.remove("visible"));
-  const tabBtn = [...card.querySelectorAll(".prob-rev-tab")].find(t =>
-    t.getAttribute("onclick").includes(`'${tab}'`));
-  if (tabBtn) tabBtn.classList.add("active");
-  const panel = card.querySelector(`#${cardId}-${tab}`);
-  if (panel) panel.classList.add("visible");
-}
-
-function renderRanking() {
-  const posClases = ["oro","plata","bronce",""];
-  document.getElementById("rankingLista").innerHTML = rankingData.map((r, i) => `
-    <div class="ranking-item ${i===1?'destacado':''}">
-      <span class="ranking-pos ${posClases[i]||''}">${i+1})</span>
-      <span class="ranking-nombre">${r.nombre}</span>
-      <span class="ranking-pts">${r.pts}</span>
-    </div>`).join("");
-}
-
-function guardarCalificacion() {
-  const cal = document.getElementById("calFinal").value;
-  alert(`Calificación de ${cal} pts guardada correctamente.`);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderAlumnosRev();
-  renderRanking();
-  document.getElementById("searchRevAlumno").addEventListener("input", e =>
-    renderAlumnosRev(e.target.value));
-  seleccionarAlumno(alumnosRev[0].id);
-});
+  // Buscador de alumnos
+  document.getElementById('searchAlumno')?.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('[data-nombre]').forEach(row => {
+      const nombre = row.dataset.nombre?.toLowerCase() || '';
+      row.style.display = nombre.includes(q) ? '' : 'none';
+    });
+  });
 </script>
+
 </body>
 </html>

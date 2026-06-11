@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import pchy.pchy.models.Clase;
 import pchy.pchy.models.Competencia;
+import pchy.pchy.models.Entrega;
 import pchy.pchy.models.Niveles;
 import pchy.pchy.models.Problema;
+import pchy.pchy.models.ResultadoCaso;
 import pchy.pchy.models.Usuario;
 import pchy.pchy.models.CasoPrueba;
 import pchy.pchy.service.CasoPruebaService;
@@ -18,6 +20,7 @@ import pchy.pchy.service.ClaseService;
 import pchy.pchy.service.CompetenciaService;
 import pchy.pchy.service.NivelesService;
 import pchy.pchy.service.ProblemaService;
+import pchy.pchy.service.RevisionService;
 import pchy.pchy.service.UsuarioClaseService;
 import pchy.pchy.service.UsuarioService;
 
@@ -633,5 +636,89 @@ public class adminController {
         usuarioClaseService.rechazar(idUsuario, idClase);
         return "redirect:/Administrador/Clase/" + idClase + "?rechazado";
     }
+
+    @Autowired
+private RevisionService revisionService;
+
+// Ver revisión de una competencia
+@GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Revision")
+public String verRevision(
+        @PathVariable int idClase,
+        @PathVariable int idComp,
+        @RequestParam(required = false) Integer idAlumno,
+        HttpSession session,
+        Model model) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    try {
+        Clase clase           = claseService.obtenerClase(idClase, usuario.getIdUsuario());
+        Competencia comp      = competenciaService.obtener(idComp);
+        List<Usuario> alumnos = revisionService.listarAlumnosConEntregas(idComp);
+
+        model.addAttribute("clase", clase);
+        model.addAttribute("competencia", comp);
+        model.addAttribute("alumnos", alumnos);
+
+        // Si se seleccionó un alumno, cargar sus entregas
+        if (idAlumno != null) {
+            List<Entrega> entregas = revisionService.listarEntregasAlumno(
+                idAlumno, idComp
+            );
+
+            // Para cada entrega, cargar resultados de casos
+            java.util.Map<Integer, List<ResultadoCaso>> resultadosPorEntrega =
+                new java.util.HashMap<>();
+
+            for (Entrega e : entregas) {
+                resultadosPorEntrega.put(
+                    e.getIdEntrega(),
+                    revisionService.listarResultadosCasos(e.getIdEntrega())
+                );
+            }
+
+            model.addAttribute("alumnoSeleccionado", idAlumno);
+            model.addAttribute("entregas", entregas);
+            model.addAttribute("resultadosPorEntrega", resultadosPorEntrega);
+        }
+
+    } catch (Exception e) {
+        return "redirect:/Administrador/Clase/" + idClase;
+    }
+
+    return "Administrador/Competencias/revision";
+}
+
+// Validar una entrega
+@PostMapping("/Administrador/Entrega/{idEntrega}/Validar")
+public String validarEntrega(
+        @PathVariable int idEntrega,
+        @RequestParam String estado,
+        @RequestParam(defaultValue = "0") int puntaje,
+        @RequestParam(required = false) String comentario,
+        @RequestParam int idClase,
+        @RequestParam int idComp,
+        @RequestParam int idAlumno,
+        HttpSession session) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    try {
+        revisionService.validar(
+            idEntrega, estado, puntaje,
+            comentario, usuario.getIdUsuario()
+        );
+    } catch (Exception e) {
+        return "redirect:/Administrador/Clase/" + idClase +
+               "/Competencia/" + idComp +
+               "/Revision?idAlumno=" + idAlumno + "&error";
+    }
+
+    return "redirect:/Administrador/Clase/" + idClase +
+           "/Competencia/" + idComp +
+           "/Revision?idAlumno=" + idAlumno + "&validado";
+}
 
 }
