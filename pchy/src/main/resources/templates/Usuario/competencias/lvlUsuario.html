@@ -68,39 +68,61 @@
   <div class="u-layout">
 
     <!-- LISTA DE PROBLEMAS -->
-    <div>
+<div>
+  <div th:if="${#lists.isEmpty(problemas)}"
+       style="text-align:center;padding:40px;color:#94a3b8">
+    Este nivel aún no tiene problemas.
+  </div>
 
-      <div th:if="${#lists.isEmpty(problemas)}"
-           style="text-align:center;padding:40px;color:#94a3b8">
-        Este nivel aún no tiene problemas.
+  <div class="prob-list">
+    <a class="prob-item"
+       th:each="prob : ${problemas}"
+       th:href="'/Alumno/Clase/' + ${clase.idClase} +
+                '/Competencia/' + ${competencia.idCompetencia} +
+                '/Nivel/' + ${nivel.idNivel} +
+                '/Problema/' + ${prob.idProblema}"
+       style="text-decoration:none;color:inherit">
+
+      <div class="prob-icon"
+           th:text="${problemaCompletado[prob.idProblema]} ? '✅' : '📄'">
       </div>
 
-      <div class="prob-list">
-        <a class="prob-item"
-           th:each="prob : ${problemas}"
-           th:href="'/Alumno/Clase/' + ${clase.idClase} +
-                    '/Competencia/' + ${competencia.idCompetencia} +
-                    '/Nivel/' + ${nivel.idNivel} +
-                    '/Problema/' + ${prob.idProblema}"
-           style="text-decoration:none;color:inherit">
-
-          <div class="prob-icon">📄</div>
-
-          <div class="prob-item-left">
-            <div>
-              <div class="prob-info-nombre" th:text="${prob.titulo}"></div>
-              <div class="prob-info-pts">
-                <span th:text="${prob.puntaje} + ' pts'"></span>
-              </div>
-            </div>
-          </div>
-
-          <span class="prob-estado pendiente">Pendiente</span>
-
-          <button class="btn-resolver">Resolver</button>
-        </a>
+      <div class="prob-item-left">
+        <div>
+          <div class="prob-info-nombre" th:text="${prob.titulo}"></div>
+          <div class="prob-info-pts" th:text="${prob.puntaje} + ' pts'"></div>
+        </div>
       </div>
+
+      <span class="prob-estado"
+            th:classappend="${problemaCompletado[prob.idProblema]} ? 'correcto' : 'pendiente'"
+            th:text="${problemaCompletado[prob.idProblema]} ? '✓ Completado' : 'Pendiente'">
+      </span>
+
+      <button class="btn-resolver">
+        <span th:text="${problemaCompletado[prob.idProblema]} ? 'Ver' : 'Resolver'"></span>
+      </button>
+    </a>
+  </div>
+
+  <!-- Stats del nivel -->
+  <div class="nivel-stats" style="margin-top:1rem">
+    <div class="nivel-stat">
+      <span class="nivel-stat-label">Completados</span>
+      <span class="nivel-stat-val"
+            th:text="${completados} + '/' + ${nivel.problemasParaDesbloquear} + ' requeridos'">
+      </span>
     </div>
+    <div class="nivel-stat">
+      <span class="nivel-stat-label">Estado del nivel</span>
+      <span class="nivel-stat-val"
+            th:classappend="${completados >= nivel.problemasParaDesbloquear} ? 'azul' : ''"
+            th:text="${completados >= nivel.problemasParaDesbloquear} ?
+                     '✓ Nivel superado' : 'En progreso'">
+      </span>
+    </div>
+  </div>
+</div>
 
     <!-- SIDEBAR -->
     <div class="u-sidebar">

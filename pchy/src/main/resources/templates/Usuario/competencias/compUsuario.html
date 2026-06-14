@@ -68,41 +68,60 @@
   <div class="u-layout">
 
     <!-- NIVELES -->
-    <div>
-      <h2 style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.9rem;">
-        Niveles
-      </h2>
+<div>
+  <h2 style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.9rem;">
+    Niveles
+  </h2>
 
-      <div th:if="${#lists.isEmpty(niveles)}"
-           style="text-align:center;padding:40px;color:#94a3b8">
-        Esta competencia aún no tiene niveles.
+  <div th:if="${#lists.isEmpty(niveles)}"
+       style="text-align:center;padding:40px;color:#94a3b8">
+    Esta competencia aún no tiene niveles.
+  </div>
+
+  <div class="niveles-list">
+    <div class="nivel-row"
+         th:each="nivel : ${niveles}"
+         th:classappend="${!nivelDesbloqueado[nivel.idNivel]} ? ' bloqueado' : ''">
+
+      <div class="nivel-row-header">
+        <div class="nivel-row-left">
+          <span class="nivel-row-nombre" th:text="${nivel.titulo}"></span>
+          <span class="nivel-row-meta">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span th:text="${nivel.tiempoLimite} + ' min'"></span>
+          </span>
+          <span class="nivel-row-meta"
+                th:text="${progresoNivel[nivel.idNivel]} + '/' +
+                          ${nivel.problemasParaDesbloquear} + ' completados'">
+          </span>
+        </div>
+
+        <a class="btn-entrar-nivel"
+           th:if="${nivelDesbloqueado[nivel.idNivel]}"
+           th:href="'/Alumno/Clase/' + ${clase.idClase} +
+                    '/Competencia/' + ${competencia.idCompetencia} +
+                    '/Nivel/' + ${nivel.idNivel}">
+          Entrar
+        </a>
+
+        <button class="btn-bloqueado"
+                th:if="${!nivelDesbloqueado[nivel.idNivel]}"
+                disabled>
+          🔒 Bloqueado
+        </button>
       </div>
 
-      <div class="niveles-list">
-        <div class="nivel-row" th:each="nivel, stat : ${niveles}">
-          <div class="nivel-row-header">
-            <div class="nivel-row-left">
-              <span class="nivel-row-nombre" th:text="${nivel.titulo}"></span>
-              <span class="nivel-row-meta">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
-                <span th:text="${nivel.tiempoLimite} + ' min'"></span>
-              </span>
-              <span class="nivel-row-meta"
-                    th:text="'Completar ' + ${nivel.problemasParaDesbloquear} + ' problemas para desbloquear'">
-              </span>
-            </div>
-            <a class="btn-entrar-nivel"
-               th:href="'/Alumno/Clase/' + ${clase.idClase} +
-                        '/Competencia/' + ${competencia.idCompetencia} +
-                        '/Nivel/' + ${nivel.idNivel}">
-              Entrar
-            </a>
-          </div>
-        </div>
+      <div th:if="${!nivelDesbloqueado[nivel.idNivel]}"
+           class="nivel-desbloqueo-msg">
+        Completa <strong th:text="${nivel.problemasParaDesbloquear}"></strong>
+        problema(s) del nivel anterior para desbloquear.
       </div>
     </div>
+  </div>
+</div>
 
     <!-- SIDEBAR -->
     <div class="u-sidebar">

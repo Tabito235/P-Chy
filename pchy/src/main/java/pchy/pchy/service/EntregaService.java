@@ -8,9 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pchy.pchy.models.CasoPrueba;
 import pchy.pchy.models.Entrega;
+import pchy.pchy.models.Problema;
 import pchy.pchy.models.ResultadoCaso;
 import pchy.pchy.repository.CasoPruebaRepository;
 import pchy.pchy.repository.EntregaRepository;
+import pchy.pchy.repository.ProblemaRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -23,11 +25,14 @@ public class EntregaService {
     @Autowired private CasoPruebaRepository casoPruebaRepository;
     @Autowired private JudgeService       judgeService;
     @Autowired private Cloudinary         cloudinary;
+    @Autowired private ProgresoService progresoService;
+@Autowired private ProblemaRepository problemaRepository;
 
     public Entrega enviar(int idUsuario, int idNivel, int idProblema,
                           String lenguaje,
                           MultipartFile archivoCodigo,
                           MultipartFile archivoCaptura) throws Exception {
+Problema problema = problemaRepository.obtenerPorId(idProblema);
 
         // 1. Leer código fuente
         String codigo = new String(
@@ -100,6 +105,15 @@ public class EntregaService {
             result.porcentaje(),
             result.mensajeError()
         );
+if ("ACEPTADO".equals(result.veredicto())) {
+    progresoService.procesarEntregaAceptada(
+        idUsuario,
+        idNivel,
+        idProblema,
+        problema != null ? problema.getPuntaje() : 0
+    );
+}
+        
 
         entrega.setResultadoJudge(result.veredicto());
         entrega.setPorcentajeCasos(result.porcentaje());

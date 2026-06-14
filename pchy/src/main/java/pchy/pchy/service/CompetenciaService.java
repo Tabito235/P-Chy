@@ -92,4 +92,8 @@ public class CompetenciaService {
     private Timestamp parsear(String fechaHora) {
         return Timestamp.valueOf(LocalDateTime.parse(fechaHora, FMT));
     }
+
+    public List<Competencia> listarPublicadasPorClase(int idClase) {
+    return competenciaRepository.listarPublicadasPorClase(idClase);
+}
 }

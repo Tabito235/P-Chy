@@ -236,4 +236,14 @@ public void actualizarFoto(String correo, String ruta){
     );
 }
 
+// Agregar puntos al puntaje global del usuario
+public void sumarPuntos(int idUsuario, int puntos) {
+    String sql = """
+        UPDATE usuario
+        SET puntaje = puntaje + ?
+        WHERE idUsuario = ?
+        """;
+    jdbcTemplate.update(sql, puntos, idUsuario);
+}
+
 }

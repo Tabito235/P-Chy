@@ -182,4 +182,42 @@ public class EntregaRepository {
         e.setFechaEntrega(rs.getTimestamp("fechaEntrega"));
         return e;
     }
+
+    // Verificar si el alumno ya completó un problema (Judge ACEPTADO)
+public boolean problemaCompletado(int idUsuario, int idProblema) {
+    String sql = """
+        SELECT COUNT(*) FROM entrega
+        WHERE idUsuario = ? AND idProblema = ?
+        AND resultadoJudge = 'ACEPTADO'
+        """;
+    Integer total = jdbcTemplate.queryForObject(sql, Integer.class,
+        idUsuario, idProblema);
+    return total != null && total > 0;
+}
+
+// Contar problemas distintos completados (Judge ACEPTADO) en un nivel
+public int contarProblemasCompletadosEnNivel(int idUsuario, int idNivel) {
+    String sql = """
+        SELECT COUNT(DISTINCT e.idProblema)
+        FROM entrega e
+        WHERE e.idUsuario = ? AND e.idNivel = ?
+        AND e.resultadoJudge = 'ACEPTADO'
+        """;
+    Integer total = jdbcTemplate.queryForObject(sql, Integer.class,
+        idUsuario, idNivel);
+    return total != null ? total : 0;
+}
+
+// Contar cuántas veces el alumno ha completado (ACEPTADO) un problema
+public long contarEntregasAceptadasParaProblema(int idUsuario, int idProblema) {
+    String sql = """
+        SELECT COUNT(*) FROM entrega
+        WHERE idUsuario = ? AND idProblema = ?
+        AND resultadoJudge = 'ACEPTADO'
+        """;
+    Long total = jdbcTemplate.queryForObject(sql, Long.class,
+        idUsuario, idProblema);
+    return total != null ? total : 0;
+}
+
 }

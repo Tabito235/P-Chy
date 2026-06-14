@@ -7,30 +7,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import pchy.pchy.models.CasoPrueba;
-import pchy.pchy.models.Clase;
-import pchy.pchy.models.Competencia;
-import pchy.pchy.models.Entrega;
-import pchy.pchy.models.Niveles;
-import pchy.pchy.models.Problema;
-import pchy.pchy.models.ResultadoCaso;
-import pchy.pchy.models.Usuario;
-import pchy.pchy.service.CasoPruebaService;
-import pchy.pchy.service.CompetenciaService;
-import pchy.pchy.service.EntregaService;
-import pchy.pchy.service.NivelesService;
-import pchy.pchy.service.ProblemaService;
-import pchy.pchy.service.UsuarioClaseService;
-import pchy.pchy.service.UsuarioService;
+import pchy.pchy.models.*;
+import pchy.pchy.repository.EntregaRepository;
+import pchy.pchy.service.*;
 
 import java.util.List;
 
 @Controller
 public class UsuarioController {
 
-    @Autowired private UsuarioService      usuarioService;
-    @Autowired private UsuarioClaseService usuarioClaseService;
-    @Autowired private CompetenciaService  competenciaService;
+    @Autowired private UsuarioService       usuarioService;
+    @Autowired private UsuarioClaseService  usuarioClaseService;
+    @Autowired private CompetenciaService   competenciaService;
+    @Autowired private NivelesService       nivelesService;
+    @Autowired private ProblemaService      problemaService;
+    @Autowired private CasoPruebaService    casoPruebaService;
+    @Autowired private EntregaService       entregaService;
+    @Autowired private ProgresoService      progresoService;
+    @Autowired private EntregaRepository    entregaRepository;
 
     // ── Registro ──────────────────────────────────────
     @GetMapping("/Usuario/Registro")
@@ -123,17 +117,16 @@ public class UsuarioController {
                 usuario.getIdUsuario(), idClase
             );
 
-            // Reutilizamos listarMisClases y filtramos la clase actual
             Clase clase = usuarioClaseService.listarMisClases(
                     usuario.getIdUsuario())
                 .stream()
                 .filter(c -> c.getIdClase() == idClase)
                 .findFirst()
-                .orElseThrow(() ->
-                    new RuntimeException("Clase no encontrada"));
+                .orElseThrow();
 
+            // Solo competencias PUBLICADAS para el alumno
             List<Competencia> competencias =
-                competenciaService.listarPorClase(idClase);
+                competenciaService.listarPublicadasPorClase(idClase);
 
             model.addAttribute("clase", clase);
             model.addAttribute("competencias", competencias);
@@ -146,12 +139,231 @@ public class UsuarioController {
         return "Usuario/Enclase";
     }
 
-    // ── Rutas estáticas por ahora ─────────────────────
-    @GetMapping("/Alumno/Competencias/Problema")
-    public String problema() {
+    // ── Ver competencia (niveles) ─────────────────────
+    @GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}")
+    public String verCompetencia(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            HttpSession session,
+            Model model) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/Login";
+
+        try {
+            usuarioClaseService.verificarAcceso(
+                usuario.getIdUsuario(), idClase
+            );
+
+            Clase clase = usuarioClaseService.listarMisClases(
+                    usuario.getIdUsuario())
+                .stream()
+                .filter(c -> c.getIdClase() == idClase)
+                .findFirst().orElseThrow();
+
+            Competencia comp   = competenciaService.obtener(idComp);
+            List<Niveles> niveles = nivelesService.listarPorCompetencia(idComp);
+
+            java.util.Map<Integer, Boolean> nivelDesbloqueado =
+                new java.util.HashMap<>();
+            java.util.Map<Integer, Integer> progresoNivel =
+                new java.util.HashMap<>();
+
+            for (Niveles n : niveles) {
+                boolean disponible = progresoService.nivelDisponible(
+                    usuario.getIdUsuario(), n.getIdNivel(), n.getPosicion()
+                );
+                nivelDesbloqueado.put(n.getIdNivel(), disponible);
+                progresoNivel.put(n.getIdNivel(),
+                    progresoService.obtenerProblemasCompletados(
+                        usuario.getIdUsuario(), n.getIdNivel()
+                    )
+                );
+            }
+
+            model.addAttribute("clase", clase);
+            model.addAttribute("competencia", comp);
+            model.addAttribute("niveles", niveles);
+            model.addAttribute("nivelDesbloqueado", nivelDesbloqueado);
+            model.addAttribute("progresoNivel", progresoNivel);
+            model.addAttribute("rol", 3);
+
+        } catch (Exception e) {
+            return "redirect:/Alumno/Clase/" + idClase;
+        }
+
+        return "Usuario/competencias/compUsuario";
+    }
+
+    // ── Ver nivel ─────────────────────────────────────
+    @GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}")
+    public String verNivel(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            HttpSession session,
+            Model model) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/Login";
+
+        try {
+            usuarioClaseService.verificarAcceso(
+                usuario.getIdUsuario(), idClase
+            );
+
+            Clase clase = usuarioClaseService.listarMisClases(
+                    usuario.getIdUsuario())
+                .stream()
+                .filter(c -> c.getIdClase() == idClase)
+                .findFirst().orElseThrow();
+
+            Competencia comp = competenciaService.obtener(idComp);
+            Niveles nivel    = nivelesService.obtener(idNivel);
+
+            // Verificar desbloqueo
+            boolean disponible = progresoService.nivelDisponible(
+                usuario.getIdUsuario(), idNivel, nivel.getPosicion()
+            );
+
+            if (!disponible) {
+                return "redirect:/Alumno/Clase/" + idClase +
+                       "/Competencia/" + idComp + "?bloqueado";
+            }
+
+            List<Problema> problemas = problemaService.listarPorNivel(idNivel);
+
+            int completados = progresoService.obtenerProblemasCompletados(
+                usuario.getIdUsuario(), idNivel
+            );
+
+            java.util.Map<Integer, Boolean> problemaCompletado =
+                new java.util.HashMap<>();
+            for (Problema p : problemas) {
+                problemaCompletado.put(
+                    p.getIdProblema(),
+                    entregaRepository.problemaCompletado(
+                        usuario.getIdUsuario(), p.getIdProblema()
+                    )
+                );
+            }
+
+            model.addAttribute("clase", clase);
+            model.addAttribute("competencia", comp);
+            model.addAttribute("nivel", nivel);
+            model.addAttribute("problemas", problemas);
+            model.addAttribute("completados", completados);
+            model.addAttribute("problemaCompletado", problemaCompletado);
+            model.addAttribute("rol", 3);
+
+        } catch (Exception e) {
+            return "redirect:/Alumno/Clase/" + idClase +
+                   "/Competencia/" + idComp;
+        }
+
+        return "Usuario/competencias/lvlUsuario";
+    }
+
+    // ── Ver problema ──────────────────────────────────
+    @GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}")
+    public String verProblema(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            HttpSession session,
+            Model model) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/Login";
+
+        try {
+            usuarioClaseService.verificarAcceso(
+                usuario.getIdUsuario(), idClase
+            );
+
+            Clase clase = usuarioClaseService.listarMisClases(
+                    usuario.getIdUsuario())
+                .stream()
+                .filter(c -> c.getIdClase() == idClase)
+                .findFirst().orElseThrow();
+
+            Competencia comp  = competenciaService.obtener(idComp);
+            Niveles nivel     = nivelesService.obtener(idNivel);
+            Problema problema = problemaService.obtener(idProblema);
+            List<CasoPrueba> casos =
+                casoPruebaService.listarPorProblema(idProblema);
+
+            Entrega ultimaEntrega = entregaService.obtenerUltima(
+                usuario.getIdUsuario(), idProblema
+            );
+
+            List<ResultadoCaso> resultadosCasos = null;
+            if (ultimaEntrega != null) {
+                resultadosCasos = entregaService.resultadosCasos(
+                    ultimaEntrega.getIdEntrega()
+                );
+            }
+
+            model.addAttribute("clase", clase);
+            model.addAttribute("competencia", comp);
+            model.addAttribute("nivel", nivel);
+            model.addAttribute("problema", problema);
+            model.addAttribute("casos", casos);
+            model.addAttribute("ultimaEntrega", ultimaEntrega);
+            model.addAttribute("resultadosCasos", resultadosCasos);
+            model.addAttribute("rol", 3);
+
+        } catch (Exception e) {
+            return "redirect:/Alumno/Clase/" + idClase +
+                   "/Competencia/" + idComp + "/Nivel/" + idNivel;
+        }
+
         return "Usuario/competencias/problemaU";
     }
 
+    // ── Entregar solución ─────────────────────────────
+    @PostMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Entregar")
+    public String entregar(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @PathVariable int idNivel,
+            @PathVariable int idProblema,
+            @RequestParam("archivoCodigo") MultipartFile archivoCodigo,
+            @RequestParam(value = "archivoCaptura", required = false)
+                MultipartFile archivoCaptura,
+            HttpSession session) {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/Login";
+
+        String base = "/Alumno/Clase/" + idClase +
+                      "/Competencia/" + idComp +
+                      "/Nivel/" + idNivel +
+                      "/Problema/" + idProblema;
+
+        try {
+            Competencia comp = competenciaService.obtener(idComp);
+
+            Entrega entrega = entregaService.enviar(
+                usuario.getIdUsuario(),
+                idNivel,
+                idProblema,
+                comp.getLenguaje(),
+                archivoCodigo,
+                archivoCaptura
+            );
+
+            return "redirect:" + base +
+                   "?resultado=" + entrega.getResultadoJudge() +
+                   "&porcentaje=" + entrega.getPorcentajeCasos();
+
+        } catch (Exception e) {
+            return "redirect:" + base + "?judgeError";
+        }
+    }
+
+    // ── Rutas estáticas ───────────────────────────────
     @GetMapping("/Alumno/Rankings")
     public String ranks() {
         return "Usuario/competencias/RanksU";
@@ -161,188 +373,4 @@ public class UsuarioController {
     public String resultado() {
         return "Usuario/competencias/ResultU";
     }
-
-    // ── Ver competencia (niveles) ─────────────────────
-@Autowired private NivelesService nivelesService;
-
-@GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}")
-public String verCompetencia(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        HttpSession session,
-        Model model) {
-
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
-
-    try {
-        usuarioClaseService.verificarAcceso(usuario.getIdUsuario(), idClase);
-
-        Clase clase = usuarioClaseService.listarMisClases(usuario.getIdUsuario())
-            .stream()
-            .filter(c -> c.getIdClase() == idClase)
-            .findFirst()
-            .orElseThrow();
-
-        Competencia comp = competenciaService.obtener(idComp);
-        List<Niveles> niveles = nivelesService.listarPorCompetencia(idComp);
-
-        model.addAttribute("clase", clase);
-        model.addAttribute("competencia", comp);
-        model.addAttribute("niveles", niveles);
-        model.addAttribute("rol", 3);
-
-    } catch (Exception e) {
-        return "redirect:/Alumno/Clase/" + idClase;
-    }
-
-    return "Usuario/competencias/compUsuario";
-}
-
-// ── Ver nivel (problemas + casos) ────────────────
-@Autowired private ProblemaService problemaService;
-@Autowired private CasoPruebaService casoPruebaService;
-
-@GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}")
-public String verNivel(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        HttpSession session,
-        Model model) {
-
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
-
-    try {
-        usuarioClaseService.verificarAcceso(usuario.getIdUsuario(), idClase);
-
-        Clase clase = usuarioClaseService.listarMisClases(usuario.getIdUsuario())
-            .stream()
-            .filter(c -> c.getIdClase() == idClase)
-            .findFirst()
-            .orElseThrow();
-
-        Competencia comp   = competenciaService.obtener(idComp);
-        Niveles nivel      = nivelesService.obtener(idNivel);
-        List<Problema> problemas = problemaService.listarPorNivel(idNivel);
-
-        model.addAttribute("clase", clase);
-        model.addAttribute("competencia", comp);
-        model.addAttribute("nivel", nivel);
-        model.addAttribute("problemas", problemas);
-        model.addAttribute("rol", 3);
-
-    } catch (Exception e) {
-        return "redirect:/Alumno/Clase/" + idClase + "/Competencia/" + idComp;
-    }
-
-    return "Usuario/competencias/lvlUsuario";
-}
-
-// ── Ver problema ──────────────────────────────────
-
-
-
-@Autowired private EntregaService entregaService;
-
-@PostMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Entregar")
-public String entregar(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        @RequestParam("archivoCodigo") MultipartFile archivoCodigo,
-        @RequestParam(value = "archivoCaptura", required = false)
-            MultipartFile archivoCaptura,
-        HttpSession session,
-        Model model) {
-
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
-
-    String base = "/Alumno/Clase/" + idClase +
-                  "/Competencia/" + idComp +
-                  "/Nivel/" + idNivel +
-                  "/Problema/" + idProblema;
-
-    try {
-        // Obtener lenguaje de la competencia
-        Competencia comp = competenciaService.obtener(idComp);
-
-        Entrega entrega = entregaService.enviar(
-            usuario.getIdUsuario(),
-            idNivel,
-            idProblema,
-            comp.getLenguaje(),
-            archivoCodigo,
-            archivoCaptura
-        );
-
-        return "redirect:" + base + "?resultado=" + entrega.getResultadoJudge()
-               + "&porcentaje=" + entrega.getPorcentajeCasos();
-
-    } catch (Exception e) {
-        return "redirect:" + base + "?judgeError";
-    }
-}
-
-// Actualizar verProblema para incluir última entrega
-@GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}")
-public String verProblema(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @PathVariable int idNivel,
-        @PathVariable int idProblema,
-        HttpSession session,
-        Model model) {
-
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
-
-    try {
-        usuarioClaseService.verificarAcceso(usuario.getIdUsuario(), idClase);
-
-        Clase clase = usuarioClaseService.listarMisClases(
-                usuario.getIdUsuario())
-            .stream()
-            .filter(c -> c.getIdClase() == idClase)
-            .findFirst().orElseThrow();
-
-        Competencia comp  = competenciaService.obtener(idComp);
-        Niveles nivel     = nivelesService.obtener(idNivel);
-        Problema problema = problemaService.obtener(idProblema);
-        List<CasoPrueba> casos = casoPruebaService.listarPorProblema(idProblema);
-
-        // Última entrega del alumno para este problema
-        Entrega ultimaEntrega = entregaService.obtenerUltima(
-            usuario.getIdUsuario(), idProblema
-        );
-
-        // Resultados por caso de la última entrega
-        List<ResultadoCaso> resultadosCasos = null;
-        if (ultimaEntrega != null) {
-            resultadosCasos = entregaService.resultadosCasos(
-                ultimaEntrega.getIdEntrega()
-            );
-        }
-
-        model.addAttribute("clase", clase);
-        model.addAttribute("competencia", comp);
-        model.addAttribute("nivel", nivel);
-        model.addAttribute("problema", problema);
-        model.addAttribute("casos", casos);
-        model.addAttribute("ultimaEntrega", ultimaEntrega);
-        model.addAttribute("resultadosCasos", resultadosCasos);
-        model.addAttribute("rol", 3);
-
-    } catch (Exception e) {
-        return "redirect:/Alumno/Clase/" + idClase +
-               "/Competencia/" + idComp + "/Nivel/" + idNivel;
-    }
-
-    return "Usuario/competencias/problemaU";
-}
-
-
 }

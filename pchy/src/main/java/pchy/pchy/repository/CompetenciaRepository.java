@@ -101,6 +101,15 @@ public class CompetenciaRepository {
         jdbcTemplate.update(sql, idCompetencia, idClase);
     }
 
+    public List<Competencia> listarPublicadasPorClase(int idClase) {
+    String sql = """
+        SELECT * FROM competencia
+        WHERE idClase = ? AND estado = 'PUBLICADA'
+        ORDER BY fechaInicio ASC
+        """;
+    return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idClase);
+}
+
     // Mapeado
     private Competencia mapear(java.sql.ResultSet rs) throws java.sql.SQLException {
         Competencia c = new Competencia();
