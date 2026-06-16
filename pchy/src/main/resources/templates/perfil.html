@@ -7,13 +7,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/Estilos/perfil-styles.css">
+  <link rel="stylesheet" href="/Estilos/pichy.css">
   <link rel="stylesheet" href="/Estilos/navbarStyles.css">
 </head>
 <body>
+   
+ 
 
   <!-- Navbar condicional por rol -->
   <!-- Reemplaza las dos líneas del navbar en perfil.html -->
 <div th:replace="${rol == 3} ? ~{Usuario/navbar :: navbar} : ~{Administrador/navbar :: navbar}"></div>
+ <div th:replace="~{pchy/pichy :: pichy}"></div>
   <main class="contenido">
 
     <!-- ── HERO / AVATAR ────────────────────────────── -->
