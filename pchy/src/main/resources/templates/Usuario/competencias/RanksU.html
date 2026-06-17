@@ -76,16 +76,16 @@
             <!-- Medalla -->
             <td>
               <img th:if="${entry.medalla == 'DIAMANTE'}"
-                   src="/Imagenes/diamanteRanking.png" width="28" height="28"
+                   src="/Imagenes/insigneas/diamanteRanking.png" width="28" height="28"
                    title="Diamante"/>
               <img th:if="${entry.medalla == 'ORO'}"
-                   src="/Imagenes/oroRanking.png" width="28" height="28"
+                   src="/Imagenes/insigneas/oroRanking.png" width="28" height="28"
                    title="Oro"/>
               <img th:if="${entry.medalla == 'PLATA'}"
-                   src="/Imagenes/plataRanking.png" width="28" height="28"
+                   src="/Imagenes/insigneas/plataRanking.png" width="28" height="28"
                    title="Plata"/>
               <img th:if="${entry.medalla == 'BRONCE'}"
-                   src="/Imagenes/bronceRanking.png" width="28" height="28"
+                   src="/Imagenes/insigneas/bronceRanking.png" width="28" height="28"
                    title="Bronce"/>
               <span th:if="${entry.medalla == null}"
                     style="color:#94a3b8;font-size:12px">—</span>
@@ -117,13 +117,13 @@
             <span class="stat-label">Medalla</span>
             <span class="stat-val">
               <img th:if="${miMedalla == 'DIAMANTE'}"
-                   src="/Imagenes/diamanteRanking.png" width="20" height="20"/>
+                   src="/Imagenes/insigneas/diamanteRanking.png" width="20" height="20"/>
               <img th:if="${miMedalla == 'ORO'}"
-                   src="/Imagenes/oroRanking.png" width="20" height="20"/>
+                   src="/Imagenes/insigneas/oroRanking.png" width="20" height="20"/>
               <img th:if="${miMedalla == 'PLATA'}"
-                   src="/Imagenes/plataRanking.png" width="20" height="20"/>
+                   src="/Imagenes/insigneas/plataRanking.png" width="20" height="20"/>
               <img th:if="${miMedalla == 'BRONCE'}"
-                   src="/Imagenes/bronceRanking.png" width="20" height="20"/>
+                   src="/Imagenes/insigneas/bronceRanking.png" width="20" height="20"/>
               <span th:text="${miMedalla}"></span>
             </span>
           </div>
