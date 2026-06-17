@@ -7,6 +7,7 @@ import pchy.pchy.models.Niveles;
 import pchy.pchy.repository.EntregaRepository;
 import pchy.pchy.repository.NivelesRepository;
 import pchy.pchy.repository.ProgresoRepository;
+import pchy.pchy.repository.PuntajeClaseRepository;
 import pchy.pchy.repository.UsuarioRepository;
 
 import java.util.List;
@@ -18,44 +19,40 @@ public class ProgresoService {
     @Autowired private EntregaRepository   entregaRepository;
     @Autowired private NivelesRepository   nivelesRepository;
     @Autowired private UsuarioRepository   usuarioRepository;
+    @Autowired private PuntajeClaseRepository puntajeClaseRepository;
 
-    public void procesarEntregaAceptada(int idUsuario, int idNivel,
-                                         int idProblema, int puntaje) {
+   public void procesarEntregaAceptada(int idUsuario, int idNivel,
+                                     int idProblema, int puntaje,
+                                     int idClase) { // ← agregar idClase
 
-        // 1. Contar cuántas veces fue aceptado ANTES de esta entrega
-        //    Si ya había sido aceptado, no sumar puntos de nuevo
-        long totalAceptadas = entregaRepository
-            .contarEntregasAceptadasParaProblema(idUsuario, idProblema);
+    long totalAceptadas = entregaRepository
+        .contarEntregasAceptadasParaProblema(idUsuario, idProblema);
 
-        boolean primerAceptado = (totalAceptadas == 1);
-        // totalAceptadas == 1 porque esta entrega YA fue guardada como ACEPTADO
-        // antes de llamar a este método
+    boolean primerAceptado = (totalAceptadas == 1);
+    if (!primerAceptado) return;
 
-        if (!primerAceptado) return; // Ya lo completó antes, no hacer nada
-
-        // 2. Sumar puntos al usuario solo la primera vez
-        if (puntaje > 0) {
-            usuarioRepository.sumarPuntos(idUsuario, puntaje);
-        }
-
-        // 3. Recalcular problemas completados en el nivel
-        int completados = entregaRepository
-            .contarProblemasCompletadosEnNivel(idUsuario, idNivel);
-
-        Niveles nivel = nivelesRepository.obtenerPorId(idNivel);
-        if (nivel == null) return;
-
-        // 4. Actualizar progreso
-        progresoRepository.actualizarProgreso(
-            idUsuario, idNivel, completados, true
-        );
-
-        // 5. Si cumple el mínimo, desbloquear siguiente nivel
-        if (completados >= nivel.getProblemasParaDesbloquear()) {
-            desbloquearSiguienteNivel(idUsuario, idNivel,
-                nivel.getIdCompetencia());
-        }
+    // Sumar al puntaje global
+    if (puntaje > 0) {
+        usuarioRepository.sumarPuntos(idUsuario, puntaje);
+        // Sumar también al ranking de la clase
+        puntajeClaseRepository.sumarPuntos(idUsuario, idClase, puntaje);
     }
+
+    int completados = entregaRepository
+        .contarProblemasCompletadosEnNivel(idUsuario, idNivel);
+
+    Niveles nivel = nivelesRepository.obtenerPorId(idNivel);
+    if (nivel == null) return;
+
+    progresoRepository.actualizarProgreso(
+        idUsuario, idNivel, completados, true
+    );
+
+    if (completados >= nivel.getProblemasParaDesbloquear()) {
+        desbloquearSiguienteNivel(idUsuario, idNivel,
+            nivel.getIdCompetencia());
+    }
+}
 
     private void desbloquearSiguienteNivel(int idUsuario,
                                             int idNivelActual,

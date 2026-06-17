@@ -29,7 +29,7 @@ public class EntregaService {
 @Autowired private ProblemaRepository problemaRepository;
 
     public Entrega enviar(int idUsuario, int idNivel, int idProblema,
-                          String lenguaje,
+                          String lenguaje, int idClase,
                           MultipartFile archivoCodigo,
                           MultipartFile archivoCaptura) throws Exception {
 Problema problema = problemaRepository.obtenerPorId(idProblema);
@@ -105,13 +105,12 @@ Problema problema = problemaRepository.obtenerPorId(idProblema);
             result.porcentaje(),
             result.mensajeError()
         );
-if ("ACEPTADO".equals(result.veredicto())) {
-    progresoService.procesarEntregaAceptada(
-        idUsuario,
-        idNivel,
-        idProblema,
-        problema != null ? problema.getPuntaje() : 0
-    );
+ if ("ACEPTADO".equals(result.veredicto())) {
+        progresoService.procesarEntregaAceptada(
+            idUsuario, idNivel, idProblema,
+            problema != null ? problema.getPuntaje() : 0,
+            idClase  // ← pasar idClase
+        );
 }
         
 

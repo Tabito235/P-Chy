@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pchy.pchy.models.*;
 import pchy.pchy.repository.EntregaRepository;
+import pchy.pchy.repository.PuntajeClaseRepository;
 import pchy.pchy.service.*;
 
 import java.util.List;
@@ -25,7 +26,8 @@ public class UsuarioController {
     @Autowired private EntregaService       entregaService;
     @Autowired private ProgresoService      progresoService;
     @Autowired private EntregaRepository    entregaRepository;
-
+    @Autowired private RankingService rankingService;
+ @Autowired private PuntajeClaseRepository puntajeClaseRepository;
     // ── Registro ──────────────────────────────────────
     @GetMapping("/Usuario/Registro")
     public String vistaRegistro() {
@@ -345,14 +347,15 @@ public class UsuarioController {
         try {
             Competencia comp = competenciaService.obtener(idComp);
 
-            Entrega entrega = entregaService.enviar(
-                usuario.getIdUsuario(),
-                idNivel,
-                idProblema,
-                comp.getLenguaje(),
-                archivoCodigo,
-                archivoCaptura
-            );
+Entrega entrega = entregaService.enviar(
+    usuario.getIdUsuario(),
+    idNivel,
+    idProblema,
+    comp.getLenguaje(),
+    idClase,  // ← agregar
+    archivoCodigo,
+    archivoCaptura
+);
 
             return "redirect:" + base +
                    "?resultado=" + entrega.getResultadoJudge() +
@@ -363,14 +366,84 @@ public class UsuarioController {
         }
     }
 
-    // ── Rutas estáticas ───────────────────────────────
-    @GetMapping("/Alumno/Rankings")
-    public String ranks() {
-        return "Usuario/competencias/RanksU";
-    }
+
 
     @GetMapping("/Alumno/Competencias/Resultado")
     public String resultado() {
         return "Usuario/competencias/ResultU";
     }
+
+
+// Ranking global
+@GetMapping("/Alumno/Rankings")
+public String rankingGlobal(HttpSession session, Model model) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    List<RankingEntry> ranking = rankingService.rankingGlobal();
+    int miPosicion = rankingService.posicionGlobal(usuario.getIdUsuario());
+    String miMedalla = rankingService.calcularMedalla(usuario.getPuntaje());
+
+    model.addAttribute("ranking", ranking);
+    model.addAttribute("miPosicion", miPosicion);
+    model.addAttribute("miPuntaje", usuario.getPuntaje());
+    model.addAttribute("miMedalla", miMedalla);
+    model.addAttribute("usuario", usuario);
+    model.addAttribute("rol", 3);
+
+    return "Usuario/competencias/RanksU";
+}
+
+// Ranking por clase
+@GetMapping("/Alumno/Clase/{idClase}/Ranking")
+public String rankingPorClase(
+        @PathVariable int idClase,
+        HttpSession session,
+        Model model) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    try {
+        usuarioClaseService.verificarAcceso(
+            usuario.getIdUsuario(), idClase
+        );
+
+        Clase clase = usuarioClaseService.listarMisClases(
+                usuario.getIdUsuario())
+            .stream()
+            .filter(c -> c.getIdClase() == idClase)
+            .findFirst().orElseThrow();
+
+        List<RankingEntry> ranking =
+            rankingService.rankingPorClase(idClase);
+
+        int miPosicion = rankingService.posicionEnClase(
+            usuario.getIdUsuario(), idClase
+        );
+
+        List<Clase> misClases = usuarioClaseService.listarMisClases(
+    usuario.getIdUsuario()
+);
+
+        int miPuntajeClase = puntajeClaseRepository.obtenerPuntaje(
+            usuario.getIdUsuario(), idClase
+        );
+
+        model.addAttribute("clase", clase);
+        model.addAttribute("ranking", ranking);
+        model.addAttribute("miPosicion", miPosicion);
+        model.addAttribute("miPuntajeClase", miPuntajeClase);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("rol", 3);
+        model.addAttribute("misClases", misClases);
+
+    } catch (Exception e) {
+        return "redirect:/Alumno/Mis/Clases";
+    }
+
+    return "Usuario/competencias/RankingClase";
+}
+
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P-Chy – Rankings</title>
+  <title th:text="'P-Chy – Ranking: ' + ${clase.nombre}">Ranking</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/Estilos/enclase.css"/>
   <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
@@ -16,10 +16,19 @@
 
 <main class="u-main">
 
-  <h1 class="rank-title">Rankings Global</h1>
-  <p class="rank-sub">Puntos de competencias + desafíos diarios.</p>
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a href="/Alumno/Mis/Clases">Clases</a>
+    <span class="breadcrumb-sep">/</span>
+    <a th:href="'/Alumno/Clase/' + ${clase.idClase}"
+       th:text="${clase.nombre}"></a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-actual">Ranking</span>
+  </nav>
 
-  <!-- LAYOUT -->
+  <h1 class="rank-title" th:text="'Ranking: ' + ${clase.nombre}"></h1>
+  <p class="rank-sub">Puntaje acumulado en esta clase.</p>
+
   <div class="u-layout">
 
     <!-- TABLA -->
@@ -29,21 +38,22 @@
           <tr>
             <th>#</th>
             <th>Alumno</th>
-            <th>Medalla</th>
-            <th>Puntos totales</th>
+            <th>Medalla global</th>
+            <th>Puntos en clase</th>
           </tr>
         </thead>
         <tbody>
 
-          <div th:if="${#lists.isEmpty(ranking)}"
-               style="text-align:center;padding:40px;color:#94a3b8">
-            Aún no hay datos en el ranking.
-          </div>
+          <tr th:if="${#lists.isEmpty(ranking)}">
+            <td colspan="4"
+                style="text-align:center;padding:40px;color:#94a3b8">
+              Aún no hay puntajes en esta clase.
+            </td>
+          </tr>
 
           <tr th:each="entry : ${ranking}"
               th:classappend="${entry.idUsuario == usuario.idUsuario} ? 'yo' : ''">
 
-            <!-- Posición -->
             <td>
               <span class="rank-pos"
                     th:classappend="${entry.posicion == 1} ? 'top1' :
@@ -53,13 +63,12 @@
               </span>
             </td>
 
-            <!-- Alumno -->
             <td>
               <div class="rank-nombre">
                 <div class="rank-avatar-sm"
                      th:if="${entry.fotoPerfil != null}"
                      th:style="'background-image:url(' + ${entry.fotoPerfil} +
-                               ');background-size:cover;background-position:center;border-radius:50%'">
+                               ');background-size:cover;border-radius:50%'">
                 </div>
                 <div class="rank-avatar-sm"
                      th:if="${entry.fotoPerfil == null}"
@@ -73,27 +82,22 @@
               </div>
             </td>
 
-            <!-- Medalla -->
             <td>
               <img th:if="${entry.medalla == 'DIAMANTE'}"
-                   src="/Imagenes/diamanteRanking.png" width="28" height="28"
-                   title="Diamante"/>
+                   src="/Imagenes/diamanteRanking.png" width="28" height="28"/>
               <img th:if="${entry.medalla == 'ORO'}"
-                   src="/Imagenes/oroRanking.png" width="28" height="28"
-                   title="Oro"/>
+                   src="/Imagenes/oroRanking.png" width="28" height="28"/>
               <img th:if="${entry.medalla == 'PLATA'}"
-                   src="/Imagenes/plataRanking.png" width="28" height="28"
-                   title="Plata"/>
+                   src="/Imagenes/plataRanking.png" width="28" height="28"/>
               <img th:if="${entry.medalla == 'BRONCE'}"
-                   src="/Imagenes/bronceRanking.png" width="28" height="28"
-                   title="Bronce"/>
+                   src="/Imagenes/bronceRanking.png" width="28" height="28"/>
               <span th:if="${entry.medalla == null}"
                     style="color:#94a3b8;font-size:12px">—</span>
             </td>
 
-            <!-- Puntos -->
             <td>
-              <span class="rank-pts" th:text="${entry.puntaje} + ' pts'"></span>
+              <span class="rank-pts"
+                    th:text="${entry.puntaje} + ' pts'"></span>
             </td>
 
           </tr>
@@ -104,64 +108,48 @@
     <!-- SIDEBAR -->
     <div class="u-sidebar">
 
-      <!-- Tu resumen -->
       <div class="sidebar-card">
-        <h3>Tu posición</h3>
-        <div class="mi-pos-grande" th:text="'#' + ${miPosicion}"></div>
+        <h3>Tu posición en esta clase</h3>
+        <div class="mi-pos-grande"
+             th:text="${miPosicion > 0} ? '#' + ${miPosicion} : '—'">
+        </div>
         <div class="stats-list">
           <div class="stat-row">
-            <span class="stat-label">Puntos totales</span>
-            <span class="stat-val" th:text="${miPuntaje} + ' pts'"></span>
-          </div>
-          <div class="stat-row" th:if="${miMedalla != null}">
-            <span class="stat-label">Medalla</span>
-            <span class="stat-val">
-              <img th:if="${miMedalla == 'DIAMANTE'}"
-                   src="/Imagenes/diamanteRanking.png" width="20" height="20"/>
-              <img th:if="${miMedalla == 'ORO'}"
-                   src="/Imagenes/oroRanking.png" width="20" height="20"/>
-              <img th:if="${miMedalla == 'PLATA'}"
-                   src="/Imagenes/plataRanking.png" width="20" height="20"/>
-              <img th:if="${miMedalla == 'BRONCE'}"
-                   src="/Imagenes/bronceRanking.png" width="20" height="20"/>
-              <span th:text="${miMedalla}"></span>
-            </span>
+            <span class="stat-label">Puntos en clase</span>
+            <span class="stat-val"
+                  th:text="${miPuntajeClase} + ' pts'"></span>
           </div>
         </div>
       </div>
 
-      <!-- Cómo se calcula -->
       <div class="sidebar-card">
         <h3>Medallas</h3>
-        <div class="calculo-item" style="display:flex;align-items:center;gap:8px">
+        <div class="calculo-item"
+             style="display:flex;align-items:center;gap:8px">
           <img src="/Imagenes/bronceRanking.png" width="20" height="20"/>
-          Bronce — 100 pts
+          Bronce — 100 pts globales
         </div>
-        <div class="calculo-item" style="display:flex;align-items:center;gap:8px">
+        <div class="calculo-item"
+             style="display:flex;align-items:center;gap:8px">
           <img src="/Imagenes/plataRanking.png" width="20" height="20"/>
-          Plata — 500 pts
+          Plata — 500 pts globales
         </div>
-        <div class="calculo-item" style="display:flex;align-items:center;gap:8px">
+        <div class="calculo-item"
+             style="display:flex;align-items:center;gap:8px">
           <img src="/Imagenes/oroRanking.png" width="20" height="20"/>
-          Oro — 1,000 pts
+          Oro — 1,000 pts globales
         </div>
-        <div class="calculo-item" style="display:flex;align-items:center;gap:8px">
+        <div class="calculo-item"
+             style="display:flex;align-items:center;gap:8px">
           <img src="/Imagenes/diamanteRanking.png" width="20" height="20"/>
-          Diamante — 5,000 pts
+          Diamante — 5,000 pts globales
         </div>
       </div>
 
-      <!-- Link al ranking de clase -->
       <div class="sidebar-card">
-        <h3>Rankings por clase</h3>
-        <p style="font-size:13px;color:#6B6B80;margin-bottom:12px">
-          Ve a cada clase para ver el ranking específico.
-        </p>
-        <a th:each="clase : ${misClases}"
-           th:href="'/Alumno/Clase/' + ${clase.idClase} + '/Ranking'"
-           class="btn-secondary"
-           style="display:block;text-align:center;margin-bottom:6px;text-decoration:none"
-           th:text="${clase.nombre}">
+        <a href="/Alumno/Rankings" class="btn-secondary"
+           style="display:block;text-align:center;text-decoration:none">
+          Ver ranking global
         </a>
       </div>
 
