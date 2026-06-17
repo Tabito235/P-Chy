@@ -20,6 +20,7 @@ import pchy.pchy.service.ClaseService;
 import pchy.pchy.service.CompetenciaService;
 import pchy.pchy.service.NivelesService;
 import pchy.pchy.service.ProblemaService;
+import pchy.pchy.service.RankingService;
 import pchy.pchy.service.RevisionService;
 import pchy.pchy.service.UsuarioClaseService;
 import pchy.pchy.service.UsuarioService;
@@ -43,6 +44,9 @@ public class adminController {
     private ProblemaService problemaService;
     @Autowired
     private UsuarioClaseService usuarioClaseService;
+@Autowired
+private RankingService rankingService;
+
 
     @Value("${pchy.base-url}")
     private String baseUrl;
@@ -603,6 +607,8 @@ public class adminController {
                     competenciaService.listarPorClase(id));
             model.addAttribute("solicitudes",
                     usuarioClaseService.listarPendientes(id)); // ← nuevo
+               model.addAttribute("rankingClase",          // ← nuevo
+            rankingService.rankingPorClase(id));
                     model.addAttribute("alumnos",
     usuarioClaseService.listarAlumnos(id));
                     
@@ -720,5 +726,7 @@ public String validarEntrega(
            "/Competencia/" + idComp +
            "/Revision?idAlumno=" + idAlumno + "&validado";
 }
+
+
 
 }

@@ -658,3 +658,9 @@ body {
   gap: 8px;
   flex-shrink: 0;
 }
+
+.rank-pos       { font-weight: 800; color: #6B6B80; }
+.rank-pos.top1  { color: #ca8a04; }
+.rank-pos.top2  { color: #64748b; }
+.rank-pos.top3  { color: #b45309; }
+.rank-pts       { font-weight: 700; color: #1646a9; }

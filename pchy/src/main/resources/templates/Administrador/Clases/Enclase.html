@@ -62,14 +62,17 @@
     </div>
 
     <div class="tabs">
-      <button class="tab" data-tab="alumnos">Alumnos</button>
-<button class="tab" data-tab="solicitudes">
+  <button class="tab" data-tab="alumnos">Alumnos</button>
+  <button class="tab" data-tab="solicitudes">
     Solicitudes
-    <span class="badge"
-          th:text="${#lists.size(solicitudes)}">0</span>
-</button>
-      <button class="tab active" data-tab="competencias">Competencias</button>
-    </div>
+    <span class="badge" th:text="${#lists.size(solicitudes)}">0</span>
+  </button>
+  <button class="tab active" data-tab="competencias">Competencias</button>
+  <button class="tab" data-tab="ranking">Ranking 🏆</button>
+</div>
+
+      
+    
   </div>
 </div>
 
@@ -248,6 +251,89 @@
         </form>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- TAB: RANKING -->
+<div id="tab-ranking" class="tab-panel hidden">
+  <div class="panel-card">
+    <div class="panel-header">
+      <h2>Ranking de la clase</h2>
+    </div>
+
+    <div th:if="${#lists.isEmpty(rankingClase)}"
+         style="text-align:center;padding:40px;color:#94a3b8;font-size:14px">
+      Aún no hay puntajes en esta clase.
+    </div>
+
+    <table class="tabla-usuarios" th:if="${!#lists.isEmpty(rankingClase)}">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Alumno</th>
+          <th>Medalla</th>
+          <th>Puntos en clase</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="entry : ${rankingClase}">
+
+          <!-- Posición -->
+          <td>
+            <span class="rank-pos"
+                  th:classappend="${entry.posicion == 1} ? 'top1' :
+                                  (${entry.posicion == 2} ? 'top2' :
+                                  (${entry.posicion == 3} ? 'top3' : ''))"
+                  th:text="${entry.posicion}">
+            </span>
+          </td>
+
+          <!-- Alumno -->
+          <td>
+            <div class="usuario-info">
+              <div class="avatar-tabla">
+                <img th:if="${entry.fotoPerfil != null}"
+                     th:src="${entry.fotoPerfil}" alt="foto"/>
+                <span th:if="${entry.fotoPerfil == null}"
+                      th:text="${entry.nombre?.substring(0,1) +
+                                 entry.apellido?.substring(0,1)}">
+                </span>
+              </div>
+              <div>
+                <div class="usuario-nombre"
+                     th:text="${entry.nombre + ' ' + entry.apellido}">
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <!-- Medalla -->
+          <td>
+            <img th:if="${entry.medalla == 'DIAMANTE'}"
+                 src="/Imagenes/diamanteRanking.png" width="28" height="28"
+                 title="Diamante"/>
+            <img th:if="${entry.medalla == 'ORO'}"
+                 src="/Imagenes/oroRanking.png" width="28" height="28"
+                 title="Oro"/>
+            <img th:if="${entry.medalla == 'PLATA'}"
+                 src="/Imagenes/plataRanking.png" width="28" height="28"
+                 title="Plata"/>
+            <img th:if="${entry.medalla == 'BRONCE'}"
+                 src="/Imagenes/bronceRanking.png" width="28" height="28"
+                 title="Bronce"/>
+            <span th:if="${entry.medalla == null}"
+                  style="color:#94a3b8;font-size:12px">Sin medalla</span>
+          </td>
+
+          <!-- Puntos -->
+          <td>
+            <span class="rank-pts"
+                  th:text="${entry.puntaje} + ' pts'"></span>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
