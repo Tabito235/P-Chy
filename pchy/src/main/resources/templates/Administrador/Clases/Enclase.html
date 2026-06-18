@@ -6,11 +6,12 @@
 <title th:text="'P-Chy – ' + ${clase.nombre}">P-Chy – Clase</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/Estilos/enclase.css"/>
+  <link rel="stylesheet" href="/Estilos/usuario.css"/>
+  <link rel="stylesheet" href="/Estilos/usuarios.css"/>
   <link rel="stylesheet" href="/Estilos/navbarStyles.css"/>
   <link rel="stylesheet" href="/Estilos/comstyle.css"/>
    <link rel="stylesheet" href="/Estilos/modalStyle.css"/>
    <link rel="stylesheet" href="/Estilos/extra.css"/>
-
 
 </head>
 <body>
@@ -311,16 +312,16 @@
           <!-- Medalla -->
           <td>
             <img th:if="${entry.medalla == 'DIAMANTE'}"
-                 src="/Imagenes/diamanteRanking.png" width="28" height="28"
+                 src="/Imagenes/insigneas/diamanteRanking.png" width="28" height="28"
                  title="Diamante"/>
             <img th:if="${entry.medalla == 'ORO'}"
-                 src="/Imagenes/oroRanking.png" width="28" height="28"
+                 src="/Imagenes/insigneas/oroRanking.png" width="28" height="28"
                  title="Oro"/>
             <img th:if="${entry.medalla == 'PLATA'}"
-                 src="/Imagenes/plataRanking.png" width="28" height="28"
+                 src="/Imagenes/insigneas/plataRanking.png" width="28" height="28"
                  title="Plata"/>
             <img th:if="${entry.medalla == 'BRONCE'}"
-                 src="/Imagenes/bronceRanking.png" width="28" height="28"
+                 src="/Imagenes/insigneas/bronceRanking.png" width="28" height="28"
                  title="Bronce"/>
             <span th:if="${entry.medalla == null}"
                   style="color:#94a3b8;font-size:12px">Sin medalla</span>
