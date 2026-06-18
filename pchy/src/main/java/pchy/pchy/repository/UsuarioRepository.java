@@ -246,4 +246,40 @@ public void sumarPuntos(int idUsuario, int puntos) {
     jdbcTemplate.update(sql, puntos, idUsuario);
 }
 
+// UsuarioRepository
+public Usuario obtenerPerfilPorId(int idUsuario) {
+    String sql = "SELECT * FROM usuario WHERE idUsuario = ?";
+    return jdbcTemplate.query(sql, rs -> {
+        if (rs.next()) {
+            Usuario u = new Usuario();
+            u.setIdUsuario(rs.getInt("idUsuario"));
+            u.setNombre(rs.getString("nombre"));
+            u.setApellido(rs.getString("apellido"));
+            u.setCorreo(rs.getString("correo"));
+            u.setMatricula(rs.getString("matricula"));
+            u.setInstitucion(rs.getString("institucion"));
+            u.setFotoPerfil(rs.getString("fotoPerfil"));
+            u.setFechaNacimiento(rs.getDate("fechaNacimiento"));
+            u.setPuntaje(rs.getInt("puntaje"));
+            u.setFechaRegistro(rs.getTimestamp("fechaRegistro"));
+            return u;
+        }
+        return null;
+    }, idUsuario);
+}
+
+public int obtenerRolPorId(int idUsuario) {
+    String sql = """
+        SELECT idRol FROM rolUsuario
+        WHERE idUsuario = ?
+        LIMIT 1
+        """;
+    try {
+        Integer rol = jdbcTemplate.queryForObject(sql, Integer.class, idUsuario);
+        return rol != null ? rol : 3;
+    } catch (Exception e) {
+        return 3;
+    }
+}
+
 }

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pchy.pchy.models.Usuario;
 import pchy.pchy.service.CloudinaryService;
-
+import pchy.pchy.service.RankingService;
 import pchy.pchy.service.UsuarioService;
 
 @Controller
@@ -18,24 +18,33 @@ public class PerfilController {
 
     @Autowired
     private UsuarioService usuarioService;
-
+  @Autowired
+private RankingService rankingService;
 
     // ─── Ver perfil ────────────────────────────────────────────────
-    @GetMapping("/Perfil")
-    public String verPerfil(HttpSession session, Model model) {
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+@GetMapping("/Perfil")
+public String verPerfil(HttpSession session, Model model) {
 
-        if (usuario == null) return "redirect:/Login";
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
 
-        Usuario perfil = usuarioService.obtenerPerfil(usuario.getCorreo());
-        int rol = (int) session.getAttribute("rol");
+    Usuario perfil = usuarioService.obtenerPerfil(usuario.getCorreo());
+    int rol = (int) session.getAttribute("rol");
 
-        model.addAttribute("usuario", perfil);
-        model.addAttribute("rol", rol);
+    model.addAttribute("usuario", perfil);
+    model.addAttribute("rol", rol);
 
-        return "perfil";
+    // Solo para alumnos
+    if (rol == 3) {
+        model.addAttribute("medalla",
+            rankingService.calcularMedalla(perfil.getPuntaje()));
     }
+
+    return "perfil"; // ← siempre la misma vista
+}
+
+
 
     // ─── Actualizar datos personales ───────────────────────────────
 @PostMapping("/Perfil/Actualizar")
@@ -126,4 +135,36 @@ public String subirFoto(
 
     return "redirect:/Perfil?fotoOk";
 }
+
+@GetMapping("/Perfil/{idUsuario}")
+public String verPerfilPublico(
+        @PathVariable int idUsuario,
+        HttpSession session,
+        Model model) {
+
+    if (session.getAttribute("usuario") == null)
+        return "redirect:/Login";
+
+    try {
+        Usuario perfil = usuarioService.obtenerPerfilPorId(idUsuario);
+        if (perfil == null) return "redirect:/";
+
+        int rolVisto = usuarioService.obtenerRolPorId(idUsuario);
+
+        model.addAttribute("usuario", perfil);
+        model.addAttribute("rol", rolVisto);
+        model.addAttribute("viendoOtro", true);
+
+        if (rolVisto == 3) {
+            model.addAttribute("medalla",
+                rankingService.calcularMedalla(perfil.getPuntaje()));
+        }
+
+    } catch (Exception e) {
+        return "redirect:/";
+    }
+
+    return "perfil"; // ← siempre la misma vista
+}
+
 }

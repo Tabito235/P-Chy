@@ -237,5 +237,13 @@ public void cambiarRol(int idUsuario, int nuevoRol) {
     rolRepository.asignarRol(idUsuario, nuevoRol);
 }
 
+// UsuarioService
+public Usuario obtenerPerfilPorId(int idUsuario) {
+    return usuarioRepository.obtenerPerfilPorId(idUsuario);
+}
+
+public int obtenerRolPorId(int idUsuario) {
+    return usuarioRepository.obtenerRolPorId(idUsuario);
+}
 
 }

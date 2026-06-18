@@ -66,24 +66,89 @@
 
           </div>
 
-          <div class="perfil-nombre-wrap">
-            <div class="perfil-nombre"
-                 th:text="${usuario.nombre + ' ' + usuario.apellido}">
-            </div>
-            <!-- Etiqueta de rol -->
-            <span class="perfil-rol" th:switch="${rol}">
-              <span th:case="1">Administrador</span>
-              <span th:case="2">Profesor</span>
-              <span th:case="3">Alumno</span>
-            </span>
-          </div>
-        </div>
+         <div class="perfil-nombre-wrap">
+  <div class="perfil-nombre"
+       th:text="${usuario.nombre + ' ' + usuario.apellido}">
+  </div>
+  <span class="perfil-rol" th:switch="${rol}">
+    <span th:case="1">Administrador</span>
+    <span th:case="2">Profesor</span>
+    <span th:case="3">Alumno</span>
+  </span>
 
-        <!-- Botón que activa el modo edición -->
-        <button class="btn-editar" id="btnEditar"
-                onclick="toggleEdicion(true)">
-          Editar perfil
-        </button>
+  <!-- ── Medallas (solo alumnos) ── -->
+  <div th:if="${rol == 3}" class="perfil-medallas">
+
+    <!-- Bronce: 100 pts -->
+    <div class="medalla-wrap"
+         th:classappend="${usuario.puntaje >= 100} ? '' : ' bloqueada'">
+      <img src="/Imagenes/insigneas/bronce.png"
+           width="36" height="36"
+           th:style="${usuario.puntaje < 100} ? 'filter:grayscale(100%)' : ''"
+           title="Bronce"/>
+      <span class="medalla-tooltip">
+        Bronce — 100 pts
+        <span th:if="${usuario.puntaje < 100}"
+              th:text="'(Te faltan ' + ${100 - usuario.puntaje} + ' pts)'">
+        </span>
+      </span>
+    </div>
+
+    <!-- Plata: 500 pts -->
+    <div class="medalla-wrap"
+         th:classappend="${usuario.puntaje >= 500} ? '' : ' bloqueada'">
+      <img src="/Imagenes/insigneas/plata.png"
+           width="36" height="36"
+           th:style="${usuario.puntaje < 500} ? 'filter:grayscale(100%)' : ''"
+           title="Plata"/>
+      <span class="medalla-tooltip">
+        Plata — 500 pts
+        <span th:if="${usuario.puntaje < 500}"
+              th:text="'(Te faltan ' + ${500 - usuario.puntaje} + ' pts)'">
+        </span>
+      </span>
+    </div>
+
+    <!-- Oro: 1000 pts -->
+    <div class="medalla-wrap"
+         th:classappend="${usuario.puntaje >= 1000} ? '' : ' bloqueada'">
+      <img src="/Imagenes/insigneas/oro.png"
+           width="36" height="36"
+           th:style="${usuario.puntaje < 1000} ? 'filter:grayscale(100%)' : ''"
+           title="Oro"/>
+      <span class="medalla-tooltip">
+        Oro — 1,000 pts
+        <span th:if="${usuario.puntaje < 1000}"
+              th:text="'(Te faltan ' + ${1000 - usuario.puntaje} + ' pts)'">
+        </span>
+      </span>
+    </div>
+
+    <!-- Diamante: 5000 pts -->
+    <div class="medalla-wrap"
+         th:classappend="${usuario.puntaje >= 5000} ? '' : ' bloqueada'">
+      <img src="/Imagenes/insigneas/diamante.png"
+           width="36" height="36"
+           th:style="${usuario.puntaje < 5000} ? 'filter:grayscale(100%)' : ''"
+           title="Diamante"/>
+      <span class="medalla-tooltip">
+        Diamante — 5,000 pts
+        <span th:if="${usuario.puntaje < 5000}"
+              th:text="'(Te faltan ' + ${5000 - usuario.puntaje} + ' pts)'">
+        </span>
+      </span>
+    </div>
+
+  </div>
+</div>
+
+     <!-- Botón editar solo si es tu propio perfil -->
+<button class="btn-editar" id="btnEditar"
+        th:if="${viendoOtro == null or !viendoOtro}"
+        onclick="toggleEdicion(true)">
+  Editar perfil
+</button>
+
       </div>
     </div>
 
@@ -186,7 +251,7 @@
       </div>
 
       <!-- ── CAMBIAR CONTRASEÑA ─────────────────────── -->
-      <div class="card">
+     <div class="card" th:if="${viendoOtro == null or !viendoOtro}">
         <div class="card-titulo">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

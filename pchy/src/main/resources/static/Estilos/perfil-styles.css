@@ -328,3 +328,63 @@ body {
   cursor: pointer;
 }
 .btn-cancelar:hover { background: var(--color-fondo, #f8fafc); }
+
+/* ── Medallas en perfil ── */
+.perfil-medallas {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.medalla-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: default;
+}
+
+.medalla-wrap img {
+  transition: filter .2s, transform .2s;
+}
+
+.medalla-wrap:not(.bloqueada) img:hover {
+  transform: scale(1.15);
+}
+
+.medalla-wrap.bloqueada img {
+  opacity: .6;
+}
+
+/* Tooltip al hacer hover */
+.medalla-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1C1C2E;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 10;
+}
+
+.medalla-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1C1C2E;
+}
+
+.medalla-wrap:hover .medalla-tooltip {
+  opacity: 1;
+}

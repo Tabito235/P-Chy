@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="juegoGato">
+
+    <!-- ========================================= -->
+    <!-- DATOS DEL USUARIO DESDE SPRING           -->
+    <!-- ========================================= -->
+
+    <input type="hidden"
+           id="jg-nombre-jugador"
+           th:value="${usuario.nombre}">
+
+    <!-- ========================================= -->
+    <!-- CONTENEDOR PRINCIPAL                     -->
+    <!-- ========================================= -->
+
+    <div id="jg-app">
+
+        <!-- ===================================== -->
+        <!-- SELECCIÓN DE MODO                    -->
+        <!-- ===================================== -->
+
+        <section id="jg-pantalla-modo"
+                 class="jg-pantalla">
+
+            <div class="jg-card">
+
+                <h2>Juego del Gato</h2>
+
+                <p class="jg-subtitulo">
+                    Selecciona un modo de juego
+                </p>
+
+                <div class="jg-modos">
+
+                    <button id="jg-btn-vs-ia"
+                            class="jg-btn-modo">
+                        Jugador vs IA
+                    </button>
+
+                    <button id="jg-btn-vs-jugador"
+                            class="jg-btn-modo">
+                        Jugador vs Jugador
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================== -->
+        <!-- SELECCIÓN DE PERSONAJE               -->
+        <!-- ===================================== -->
+
+        <section id="jg-pantalla-personajes"
+                 class="jg-pantalla jg-hidden">
+
+            <div class="jg-card">
+
+                <h2 id="jg-titulo-personajes">
+                    Selecciona tu personaje
+                </h2>
+
+                <p id="jg-subtitulo-personajes"
+                   class="jg-subtitulo">
+                </p>
+
+                <div id="jg-grid-personajes">
+
+                    <!-- JS -->
+
+                </div>
+
+                <div class="jg-acciones">
+
+                    <button id="jg-btn-volver"
+                            class="jg-btn-secundario">
+                        Volver
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ===================================== -->
+        <!-- PANTALLA DE JUEGO                    -->
+        <!-- ===================================== -->
+
+        <section id="jg-pantalla-juego"
+                 class="jg-pantalla jg-hidden">
+
+            <!-- ================================= -->
+            <!-- PANEL JUGADORES                  -->
+            <!-- ================================= -->
+
+            <div id="jg-panel-jugadores">
+
+                <!-- Jugador 1 -->
+
+                <div class="jg-jugador">
+
+                    <img id="jg-img-jugador1"
+                         src=""
+                         alt="Jugador 1">
+
+                    <h3 id="jg-nombre-panel-j1"></h3>
+
+                </div>
+
+                <div class="jg-vs">
+                    VS
+                </div>
+
+                <!-- Jugador 2 / IA -->
+
+                <div class="jg-jugador">
+
+                    <img id="jg-img-jugador2"
+                         src=""
+                         alt="Jugador 2">
+
+                    <h3 id="jg-nombre-panel-j2"></h3>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- MARCADOR                          -->
+            <!-- ================================= -->
+
+            <div id="jg-marcador">
+
+                <span id="jg-score-j1">
+                    0
+                </span>
+
+                <span class="jg-separador">
+                    |
+                </span>
+
+                <span id="jg-score-j2">
+                    0
+                </span>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- MENSAJE DE TURNO                  -->
+            <!-- ================================= -->
+
+            <div id="jg-turno-actual">
+
+                Turno de...
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- TABLERO                           -->
+            <!-- ================================= -->
+
+            <div id="jg-tablero">
+
+                <button class="jg-celda"
+                        data-row="0"
+                        data-col="0"></button>
+
+                <button class="jg-celda"
+                        data-row="0"
+                        data-col="1"></button>
+
+                <button class="jg-celda"
+                        data-row="0"
+                        data-col="2"></button>
+
+                <button class="jg-celda"
+                        data-row="1"
+                        data-col="0"></button>
+
+                <button class="jg-celda"
+                        data-row="1"
+                        data-col="1"></button>
+
+                <button class="jg-celda"
+                        data-row="1"
+                        data-col="2"></button>
+
+                <button class="jg-celda"
+                        data-row="2"
+                        data-col="0"></button>
+
+                <button class="jg-celda"
+                        data-row="2"
+                        data-col="1"></button>
+
+                <button class="jg-celda"
+                        data-row="2"
+                        data-col="2"></button>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- ACCIONES                          -->
+            <!-- ================================= -->
+
+            <div class="jg-acciones">
+
+                <button id="jg-btn-reiniciar"
+                        class="jg-btn-secundario">
+
+                    Reiniciar partida
+
+                </button>
+
+                <button id="jg-btn-menu"
+                        class="jg-btn-secundario">
+
+                    Volver al menú
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MODAL RESULTADO                          -->
+    <!-- ========================================= -->
+
+    <div id="jg-modal"
+         class="jg-modal jg-hidden">
+
+        <div class="jg-modal-card">
+
+            <h2 id="jg-modal-titulo">
+                Fin del juego
+            </h2>
+
+            <p id="jg-modal-mensaje">
+            </p>
+
+            <button id="jg-modal-continuar">
+
+                Continuar
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- JS                                        -->
+    <!-- ========================================= -->
+
+    <script src="/js/gatos.js"></script>
+    <script src="/js/minimax.js"></script>
+    <script src="/js/juegoGato.js"></script>
+
+</th:block>
+
+</html>
