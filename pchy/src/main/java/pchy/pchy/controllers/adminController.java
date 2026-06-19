@@ -54,14 +54,27 @@ private RankingService rankingService;
     // Inicio de sesion y el perfil
 
     @GetMapping("/Administrador/Inicio")
-    public String principalAdmin(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null)
-            return "redirect:/Login";
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("rol", session.getAttribute("rol"));
-        return "Administrador/principalAdmin";
-    }
+public String principalAdmin(HttpSession session, Model model) {
+
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
+
+    int idProfesor = usuario.getIdUsuario();
+
+    model.addAttribute("usuario", usuario);
+    model.addAttribute("rol", session.getAttribute("rol"));
+    model.addAttribute("totalClases",
+        claseService.contarClasesActivas(idProfesor));
+    model.addAttribute("totalSolicitudes",
+        usuarioClaseService.contarSolicitudesPendientes(idProfesor));
+    model.addAttribute("competenciasProximas",
+        competenciaService.listarProximasPorProfesor(idProfesor));
+    model.addAttribute("totalCompetenciasActivas",
+        competenciaService.listarProximasPorProfesor(idProfesor).size());
+
+     return "Administrador/principalAdmin";
+
+}
 
     @GetMapping("/Administrador/Perfil")
     public String perfilAdmin() {

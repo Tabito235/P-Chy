@@ -134,4 +134,14 @@ public class ClaseRepository {
         Integer total = jdbcTemplate.queryForObject(sql, Integer.class, codigo);
         return total != null && total > 0;
     }
+
+    public int contarClasesActivas(int idProfesor) {
+    String sql = """
+        SELECT COUNT(*) FROM clase
+        WHERE idProfesorCreador = ? AND activa = TRUE
+        """;
+    Integer total = jdbcTemplate.queryForObject(sql, Integer.class, idProfesor);
+    return total != null ? total : 0;
+}
+
 }

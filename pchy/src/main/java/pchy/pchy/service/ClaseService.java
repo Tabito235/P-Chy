@@ -92,4 +92,8 @@ public class ClaseService {
 
         return codigo;
     }
+
+    public int contarClasesActivas(int idProfesor) {
+    return claseRepository.contarClasesActivas(idProfesor);
+}
 }

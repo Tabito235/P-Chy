@@ -1,0 +1,370 @@
+/* ===================================== */
+/* CONTENEDOR PRINCIPAL                  */
+/* ===================================== */
+
+#jg-app{
+    width:100%;
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+    font-family:'DM Sans',sans-serif;
+}
+
+/* ===================================== */
+/* PANTALLAS                             */
+/* ===================================== */
+
+.jg-pantalla{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.jg-hidden{
+    display:none !important;
+}
+
+/* ===================================== */
+/* TARJETAS                              */
+/* ===================================== */
+
+.jg-card{
+    width:100%;
+    max-width:900px;
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.08);
+}
+
+.jg-card h2{
+    margin:0;
+    text-align:center;
+    font-size:2rem;
+}
+
+.jg-subtitulo{
+    text-align:center;
+    margin-top:10px;
+    color:#6b7280;
+}
+
+/* ===================================== */
+/* BOTONES MODO                          */
+/* ===================================== */
+
+.jg-modos{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    margin-top:30px;
+    flex-wrap:wrap;
+}
+
+.jg-btn-modo{
+    min-width:240px;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    font-size:1rem;
+    font-weight:600;
+    transition:.25s;
+}
+
+.jg-btn-modo:hover{
+    transform:translateY(-3px);
+}
+
+/* ===================================== */
+/* GRID PERSONAJES                       */
+/* ===================================== */
+
+#jg-grid-personajes{
+    margin-top:30px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+
+    gap:20px;
+}
+
+/* ===================================== */
+/* TARJETA PERSONAJE                     */
+/* ===================================== */
+
+.jg-personaje{
+    border:2px solid #e5e7eb;
+    border-radius:18px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+    transition:.25s;
+    background:white;
+}
+
+.jg-personaje:hover{
+    transform:translateY(-4px);
+    border-color:#4f46e5;
+}
+
+.jg-personaje.seleccionado{
+    border-color:#4f46e5;
+    box-shadow:
+        0 0 0 4px rgba(79,70,229,.15);
+}
+
+.jg-personaje img{
+    width:120px;
+    height:120px;
+    object-fit:contain;
+}
+
+.jg-personaje h3{
+    margin-top:12px;
+    margin-bottom:0;
+}
+
+/* ===================================== */
+/* PANEL JUGADORES                       */
+/* ===================================== */
+
+#jg-panel-jugadores{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:50px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+}
+
+.jg-jugador{
+    text-align:center;
+}
+
+.jg-jugador img{
+    width:130px;
+    height:130px;
+    object-fit:contain;
+}
+
+.jg-jugador h3{
+    margin-top:10px;
+}
+
+.jg-vs{
+    font-size:2rem;
+    font-weight:700;
+}
+
+/* ===================================== */
+/* MARCADOR                              */
+/* ===================================== */
+
+#jg-marcador{
+    text-align:center;
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.jg-separador{
+    margin-left:15px;
+    margin-right:15px;
+}
+
+/* ===================================== */
+/* TURNO                                 */
+/* ===================================== */
+
+#jg-turno-actual{
+    text-align:center;
+    margin-bottom:25px;
+    font-weight:600;
+    color:#374151;
+}
+
+/* ===================================== */
+/* TABLERO                               */
+/* ===================================== */
+
+#jg-tablero{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,140px);
+
+    grid-template-rows:
+        repeat(3,140px);
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin-bottom:30px;
+}
+
+/* ===================================== */
+/* CELDAS                                */
+/* ===================================== */
+
+.jg-celda{
+
+    border:none;
+
+    background:white;
+
+    border-radius:16px;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.08);
+
+    cursor:pointer;
+
+    font-size:4rem;
+
+    font-weight:bold;
+
+    transition:.2s;
+}
+
+.jg-celda:hover{
+
+    transform:scale(1.05);
+
+}
+
+.jg-x{
+
+    color:#FFB94A;
+
+}
+
+.jg-o{
+
+    color:#86F073;
+
+}
+
+/* ===================================== */
+/* BOTONES                               */
+/* ===================================== */
+
+.jg-acciones{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:15px;
+
+    margin-top:20px;
+
+    flex-wrap:wrap;
+}
+
+.jg-btn-secundario{
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:12px 20px;
+
+    cursor:pointer;
+
+    font-weight:600;
+}
+
+/* ===================================== */
+/* MODAL                                 */
+/* ===================================== */
+
+.jg-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(0,0,0,.55);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+}
+
+.jg-modal-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    width:90%;
+
+    max-width:450px;
+
+    padding:30px;
+
+    text-align:center;
+}
+
+.jg-modal-card h2{
+
+    margin-top:0;
+}
+
+#jg-modal-continuar{
+
+    margin-top:15px;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+}
+
+/* ===================================== */
+/* RESPONSIVE                            */
+/* ===================================== */
+
+@media(max-width:768px){
+
+    #jg-tablero{
+
+        grid-template-columns:
+            repeat(3,100px);
+
+        grid-template-rows:
+            repeat(3,100px);
+    }
+
+    .jg-celda{
+
+        font-size:3rem;
+    }
+
+    .jg-jugador img{
+
+        width:90px;
+        height:90px;
+    }
+
+    .jg-vs{
+
+        font-size:1.5rem;
+    }
+}

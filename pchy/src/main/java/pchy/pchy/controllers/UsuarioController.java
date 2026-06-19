@@ -45,22 +45,28 @@ public class UsuarioController {
     }
 
     // ── Inicio ────────────────────────────────────────
+
+
     @GetMapping("/Alumno/Inicio")
-    public String inicio(HttpSession session, Model model) {
+public String inicio(HttpSession session, Model model) {
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    if (usuario == null) return "redirect:/Login";
 
-        List<Clase> clases = usuarioClaseService.listarMisClases(
-            usuario.getIdUsuario()
-        );
+    List<Clase> clases = usuarioClaseService.listarMisClases(
+        usuario.getIdUsuario()
+    );
+    List<Competencia> competenciasProximas =
+        competenciaService.listarActivasPorAlumno(usuario.getIdUsuario());
 
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("rol", 3);
-        model.addAttribute("totalClases", clases.size());
+    model.addAttribute("usuario", usuario);
+    model.addAttribute("rol", 3);
+    model.addAttribute("totalClases", clases.size());
+    model.addAttribute("competenciasProximas", competenciasProximas);
 
-        return "Usuario/principalAlumno";
-    }
+    return "Usuario/principalAlumno";
+}
+
 
     @GetMapping("/Alumno/Perfil")
     public String perfil() { return "redirect:/Perfil"; }

@@ -152,4 +152,15 @@ public class UsuarioClaseRepository {
         return u;
     }, idClase);
 }
+
+public int contarSolicitudesPendientes(int idProfesor) {
+    String sql = """
+        SELECT COUNT(*) FROM usuarioClase uc
+        JOIN clase c ON c.idClase = uc.idClase
+        WHERE c.idProfesorCreador = ? AND uc.estado = 'PENDIENTE'
+        """;
+    Integer total = jdbcTemplate.queryForObject(sql, Integer.class, idProfesor);
+    return total != null ? total : 0;
+}
+
 }

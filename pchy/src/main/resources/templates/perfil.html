@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/Estilos/perfil-styles.css">
   <link rel="stylesheet" href="/Estilos/pichy.css">
   <link rel="stylesheet" href="/Estilos/navbarStyles.css">
+    <link rel="stylesheet" href="/Estilos/juegoGato.css">
 </head>
 <body>
    
@@ -286,6 +287,28 @@
       </div>
 
     </div>
+
+<div th:if="${usuario.puntaje >= 10000}"
+     class="gato-desbloqueado">
+
+    <img src="/Imagenes/img/Gato1.png"
+         alt="Juego del Gato"
+         id="abrirJuegoGato">
+
+    <span class="gato-tooltip">
+        Secreto
+    </span>
+
+</div>
+
+
+<div id="contenedorJuegoGato"
+     style="display:none;">
+
+    <div th:replace="~{pchy/juegoGato :: juegoGato}"></div>
+
+</div>
+
   </main>
 
   <script>

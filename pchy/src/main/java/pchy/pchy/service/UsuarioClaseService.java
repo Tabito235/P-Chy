@@ -71,4 +71,8 @@ public class UsuarioClaseService {
     public List<Usuario> listarAlumnos(int idClase) {
     return usuarioClaseRepository.listarAlumnosActivos(idClase);
 }
+
+public int contarSolicitudesPendientes(int idProfesor) {
+    return usuarioClaseRepository.contarSolicitudesPendientes(idProfesor);
+}
 }

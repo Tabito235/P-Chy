@@ -96,4 +96,12 @@ public class CompetenciaService {
     public List<Competencia> listarPublicadasPorClase(int idClase) {
     return competenciaRepository.listarPublicadasPorClase(idClase);
 }
+
+public List<Competencia> listarProximasPorProfesor(int idProfesor) {
+    return competenciaRepository.listarProximasPorProfesor(idProfesor);
+}
+
+public List<Competencia> listarActivasPorAlumno(int idUsuario) {
+    return competenciaRepository.listarActivasPorAlumno(idUsuario);
+}
 }

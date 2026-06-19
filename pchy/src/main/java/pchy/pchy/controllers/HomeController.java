@@ -26,6 +26,11 @@ public class HomeController {
         return "temporal";
     }
 
+     @GetMapping("/desafioDiario")
+    public String desafioDiario() {
+        return "desafioDiario";
+    }
+
     @GetMapping("/Login")
     public String vistaLogin() {
         return "inicioSesionA";
