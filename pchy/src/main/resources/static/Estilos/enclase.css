@@ -664,3 +664,13 @@ body {
 .rank-pos.top2  { color: #64748b; }
 .rank-pos.top3  { color: #b45309; }
 .rank-pts       { font-weight: 700; color: #1646a9; }
+
+.info-casos-prueba{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1e40af;
+    padding:10px 14px;
+    border-radius:10px;
+    margin:12px 0 18px 0;
+    font-size:14px;
+}

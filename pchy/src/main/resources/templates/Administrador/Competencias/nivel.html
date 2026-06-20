@@ -32,6 +32,8 @@
   </div>
 </div>
 
+
+
 <main class="comp-main">
 
   <!-- Breadcrumb -->
@@ -62,6 +64,8 @@
     <span th:text="'Requiere ' + ${nivel.problemasParaDesbloquear} + ' problemas para desbloquear'"></span>
   </div>
 
+  
+
   <!-- Form editar nivel -->
   <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
                    '/Competencia/' + ${competencia.idCompetencia} +
@@ -91,21 +95,28 @@
   </form>
 </div>
 
+
+
 <!-- Panel derecho: lista de problemas -->
 <div class="panel-problemas">
   <div class="panel-prob-header">
-    <div>
-      <div class="panel-prob-titulo">Problemas</div>
-      <div class="panel-prob-tiempo"
-           th:text="'Requiere ' + ${nivel.problemasParaDesbloquear} +
-                    ' de ' + ${#lists.size(problemas)} + ' para desbloquear'">
-      </div>
+  <div>
+    <div class="panel-prob-titulo">Problemas</div>
+    <div class="panel-prob-tiempo"
+         th:text="'Requiere ' + ${nivel.problemasParaDesbloquear} +
+                  ' de ' + ${#lists.size(problemas)} + ' para desbloquear'">
     </div>
-    <button class="btn-add-problema"
-            onclick="document.getElementById('modalNuevoProblema').classList.add('visible')">
-      + Añadir problema
-    </button>
   </div>
+  <button class="btn-add-problema"
+          onclick="document.getElementById('modalNuevoProblema').classList.add('visible')">
+    + Añadir problema
+  </button>
+</div>
+
+<!-- Indicador -->
+<div class="info-casos-prueba">
+  💡 Haz clic en el <strong>nombre de un problema</strong> para administrar sus casos de prueba.
+</div>
 
   <!-- Sin problemas -->
   <div th:if="${#lists.isEmpty(problemas)}"
