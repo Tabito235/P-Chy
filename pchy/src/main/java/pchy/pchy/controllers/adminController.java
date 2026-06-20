@@ -24,6 +24,7 @@ import pchy.pchy.service.RankingService;
 import pchy.pchy.service.RevisionService;
 import pchy.pchy.service.UsuarioClaseService;
 import pchy.pchy.service.UsuarioService;
+import pchy.pchy.util.InstitucionUtil;
 
 import java.util.List;
 
@@ -53,7 +54,8 @@ private RankingService rankingService;
 
     // Inicio de sesion y el perfil
 
-    @GetMapping("/Administrador/Inicio")
+
+@GetMapping("/Administrador/Inicio")
 public String principalAdmin(HttpSession session, Model model) {
 
     Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -71,9 +73,10 @@ public String principalAdmin(HttpSession session, Model model) {
         competenciaService.listarProximasPorProfesor(idProfesor));
     model.addAttribute("totalCompetenciasActivas",
         competenciaService.listarProximasPorProfesor(idProfesor).size());
+   model.addAttribute("imagenInstitucion",
+    InstitucionUtil.obtenerImagen(usuario.getInstitucion()));
 
-     return "Administrador/principalAdmin";
-
+    return "Administrador/principalAdmin";
 }
 
     @GetMapping("/Administrador/Perfil")

@@ -18,19 +18,20 @@
 <main class="contenido">
 
   <!-- Saludo -->
-  <section class="bienvenida">
-    <div class="bienvenida-texto">
-      <h1 th:text="'Hola, ' + ${usuario.nombre} + ' ' + ${usuario.apellido}">
-        Hola, Usuario
-      </h1>
-      <p th:if="${rol == 1}">Gestiona el sistema, clases y profesores.</p>
-      <p th:if="${rol == 2}">Administra tus clases y competencias de C++ y Python.</p>
-    </div>
-    <div class="bienvenida-icono">
-      <img src="/Imagenes/upiiz.png" alt="Logo" class="bienvenida-pichy">
-    </div>
-  </section>
-
+<section class="bienvenida">
+  <div class="bienvenida-texto">
+    <h1 th:text="'Hola, ' + ${usuario.nombre} + ' ' + ${usuario.apellido}">
+      Hola, Usuario
+    </h1>
+    <p th:if="${rol == 1}">Gestiona el sistema, clases y profesores.</p>
+    <p th:if="${rol == 2}">Administra tus clases y competencias de C++ y Python.</p>
+  </div>
+  <div class="bienvenida-icono">
+    <!-- Imagen dinámica según institución -->
+    <img th:src="${imagenInstitucion}"
+         alt="Institución" class="bienvenida-pichy">
+  </div>
+</section>
   <!-- Resumen -->
   <section class="resumen">
     <h2>Resumen rápido</h2>
@@ -146,12 +147,12 @@
     </ol>
     <div class="onboarding-acciones">
       <a href="/Administrador/Nueva/Clase" class="btn-primario">Empezar</a>
-      <a href="#" class="btn-omitir">Omitir por ahora</a>
+      <a href="#" class="no">Omitir por ahora</a>
     </div>
   </section>
 
   <div class="onboarding-acciones" th:if="${rol == 1}">
-    <a href="/Profesor/Registro" class="btn-omitir">Registra a un nuevo profesor</a>
+    <a href="/Profesor/Registro" class="profesor">Registra a un nuevo profesor</a>
   </div>
 
   <div class="onboarding-acciones">

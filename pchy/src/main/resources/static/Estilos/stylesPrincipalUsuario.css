@@ -428,3 +428,44 @@ body {
   .welcome-card  { flex-direction: column; align-items: flex-start; }
   .welcome-img-slot { width: 100%; height: 140px; }
 }
+
+.competition-card{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    min-height:220px;
+}
+
+.comp-title{
+    margin:0;
+    font-size:2rem;
+    font-weight:700;
+}
+
+.comp-meta{
+    margin-top:8px;
+    color:#64748b;
+    font-size:14px;
+}
+
+.btn-enter{
+    display:inline-block;
+    margin-top:16px;
+}
+
+.btn-omitir{
+    display:inline-block;
+    background:#dc2626;
+    color:white;
+    padding:12px 24px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+    transition:all .2s ease;
+}
+
+.btn-omitir:hover{
+    background:#b91c1c;
+    color:white;
+    transform:translateY(-1px);
+}

@@ -11,6 +11,7 @@ import pchy.pchy.models.*;
 import pchy.pchy.repository.EntregaRepository;
 import pchy.pchy.repository.PuntajeClaseRepository;
 import pchy.pchy.service.*;
+import pchy.pchy.util.InstitucionUtil;
 
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class UsuarioController {
     // ── Inicio ────────────────────────────────────────
 
 
-    @GetMapping("/Alumno/Inicio")
+
+@GetMapping("/Alumno/Inicio")
 public String inicio(HttpSession session, Model model) {
 
     Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -63,6 +65,8 @@ public String inicio(HttpSession session, Model model) {
     model.addAttribute("rol", 3);
     model.addAttribute("totalClases", clases.size());
     model.addAttribute("competenciasProximas", competenciasProximas);
+  model.addAttribute("imagenInstitucion",
+    InstitucionUtil.obtenerImagen(usuario.getInstitucion()));
 
     return "Usuario/principalAlumno";
 }
@@ -450,6 +454,44 @@ public String rankingPorClase(
     }
 
     return "Usuario/competencias/RankingClase";
+}
+
+private String obtenerImagenInstitucion(String institucion) {
+    if (institucion == null) return "/Imagenes/upiiz.png";
+
+    // Campus IPN específicos
+    if (institucion.equals("ESCOM"))            return "/Imagenes/instituciones/escom.png";
+    if (institucion.equals("UPIITA"))           return "/Imagenes/instituciones/upiita.png";
+    if (institucion.equals("ESIME Zacatenco"))  return "/Imagenes/instituciones/esime.jpg";
+    if (institucion.equals("ESIME Culhuacán"))  return "/Imagenes/instituciones/esime.jpg";
+    if (institucion.equals("UPIIZ"))            return "/Imagenes/instituciones/upiiz.png";
+    if (institucion.equals("UPIICSA"))          return "/Imagenes/instituciones/upiicsa.png";
+
+    // Universidades generales
+    if (institucion.equals("IPN"))              return "/Imagenes/instituciones/upiiz.png";
+    if (institucion.equals("UNAM"))             return "/Imagenes/instituciones/unam.png";
+    if (institucion.startsWith("TecNM") ||
+        institucion.equals("TecNM"))            return "/Imagenes/instituciones/Tecnm.jpg";
+    if (institucion.equals("UAZ"))              return "/Imagenes/instituciones/uaz.png";
+    if (institucion.equals("UANL"))             return "/Imagenes/instituciones/uanl.png";
+    if (institucion.equals("UDG"))              return "/Imagenes/instituciones/udg.png";
+    if (institucion.equals("BUAP"))             return "/Imagenes/instituciones/buap.png";
+    if (institucion.equals("UAM"))              return "/Imagenes/instituciones/UAM.png";
+    if (institucion.equals("Tec Monterrey"))    return "/Imagenes/instituciones/Mapach.png";
+
+    // Campus UNAM
+    if (institucion.startsWith("Facultad") ||
+        institucion.startsWith("FES"))          return "/Imagenes/instituciones/unam.png";
+
+    // Campus UAM
+    if (institucion.equals("Azcapotzalco") ||
+        institucion.equals("Iztapalapa") ||
+        institucion.equals("Cuajimalpa") ||
+        institucion.equals("Lerma") ||
+        institucion.equals("Xochimilco"))       return "/Imagenes/instituciones/UAM.png";
+
+    // Otra o desconocida → Pichy
+    return "/Imagenes/Pichy.png";
 }
 
 }

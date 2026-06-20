@@ -18,16 +18,18 @@
 <main class="main">
 
   <!-- Bienvenida -->
-  <section class="welcome-card card">
-    <div class="welcome-text">
-      <h1 class="welcome-name"
-          th:text="'Hola, ' + ${usuario.nombre}">Hola</h1>
-      <p class="welcome-sub">Listo para competir hoy en C++ y Python.</p>
-    </div>
-    <div class="bienvenida-img">
-      <img src="/Imagenes/upiiz.png" alt="Logo" class="bienvenida-img">
-    </div>
-  </section>
+<section class="welcome-card card">
+  <div class="welcome-text">
+    <h1 class="welcome-name"
+        th:text="'Hola, ' + ${usuario.nombre}">Hola</h1>
+    <p class="welcome-sub">Listo para competir hoy en C++ y Python.</p>
+  </div>
+  <div class="bienvenida-img">
+    <!-- Imagen dinámica según institución -->
+    <img th:src="${imagenInstitucion}"
+         alt="Institución" class="bienvenida-img">
+  </div>
+</section>
 
   <!-- Resumen -->
   <section class="section">
