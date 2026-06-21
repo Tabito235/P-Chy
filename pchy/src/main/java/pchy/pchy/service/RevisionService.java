@@ -40,4 +40,9 @@ public class RevisionService {
             idEntrega, estado, puntaje, comentario, idRevisor
         );
     }
+
+    public java.util.Map<String, Object> obtenerRevision(int idEntrega) {
+    return revisionRepository.obtenerRevision(idEntrega);
+}
+
 }

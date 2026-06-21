@@ -132,4 +132,23 @@ public class RevisionRepository {
             "APROBADA".equals(estado)
         );
     }
+
+    // Obtener la revisión de una entrega
+public java.util.Map<String, Object> obtenerRevision(int idEntrega) {
+    String sql = """
+        SELECT r.comentario, r.aprobado, r.fechaRevision,
+               u.nombre, u.apellido
+        FROM revision r
+        JOIN usuario u ON u.idUsuario = r.idRevisor
+        WHERE r.idEntrega = ?
+        ORDER BY r.fechaRevision DESC
+        LIMIT 1
+        """;
+    try {
+        return jdbcTemplate.queryForMap(sql, idEntrega);
+    } catch (Exception e) {
+        return null;
+    }
+}
+
 }

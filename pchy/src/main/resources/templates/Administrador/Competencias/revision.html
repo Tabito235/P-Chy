@@ -425,17 +425,22 @@
             </div>
 
             <!-- Código fuente (link) -->
-            <div th:if="${entrega.archivoCodigo != null}"
-                 style="margin-top:14px;padding-top:14px;border-top:1px solid #E0DFF0">
-              <div style="font-size:12.5px;font-weight:700;color:#1C1C2E;margin-bottom:6px">
-                Código fuente
-              </div>
-              <a th:href="${entrega.archivoCodigo}"
-                 target="_blank"
-                 class="btn-archivo ver-completo">
-                📄 Descargar / Ver código
-              </a>
-            </div>
+       
+<div th:if="${entrega.archivoCodigo != null}"
+     style="margin-top:14px;padding-top:14px;border-top:1px solid #E0DFF0">
+  <div style="font-size:12.5px;font-weight:700;color:#1C1C2E;margin-bottom:6px">
+    Código fuente
+  </div>
+  <!-- Detectar extensión según lenguaje y forzar descarga con nombre correcto -->
+  <a th:href="${entrega.archivoCodigo} +
+              '?fl_attachment=solucion.' +
+              (${competencia.lenguaje == 'Python'} ? 'py' : 'cpp')"
+     target="_blank"
+     class="btn-archivo ver-completo">
+    📄 Descargar código
+    (<span th:text="${competencia.lenguaje == 'Python'} ? '.py' : '.cpp'"></span>)
+  </a>
+</div>
           </div>
 
           <!-- Panel: Validar -->

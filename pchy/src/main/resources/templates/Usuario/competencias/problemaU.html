@@ -241,82 +241,199 @@
     </div>
 
     <!-- SIDEBAR ENTREGA -->
-    <div class="u-sidebar">
-      <div class="sidebar-card">
-        <h3>Entregar solución</h3>
+<!-- SIDEBAR ENTREGA -->
+<div class="u-sidebar">
+  <div class="sidebar-card">
 
+    <!-- ── ESTADO 1: Sin entregas — puede enviar ── -->
+   <!-- ── ESTADO 1: Sin entregas — puede enviar ── -->
+<div th:if="${ultimaEntrega == null}">
+  <h3>Entregar solución</h3>
+
+  <form th:action="'/Alumno/Clase/' + ${clase.idClase} +
+                    '/Competencia/' + ${competencia.idCompetencia} +
+                    '/Nivel/' + ${nivel.idNivel} +
+                    '/Problema/' + ${problema.idProblema} + '/Entregar'"
+        method="post" enctype="multipart/form-data" id="formEntrega">
+
+    <div class="pasos-list">
+      <div class="paso">
+        <span class="paso-num">1</span>
+        <span>Archivo de código
+          (<span th:text="${competencia.lenguaje == 'Python'} ? '.py' : '.cpp'"></span>
+          o .txt)
+        </span>
+      </div>
+    </div>
+
+    <div class="upload-area" id="areaCode"
+         onclick="document.getElementById('inputCodigo').click()">
+      <div class="upload-label" id="labelCodigo">📄 Seleccionar archivo</div>
+      <div class="upload-sub"
+           th:text="${competencia.lenguaje} + ' — .py, .cpp o .txt'"></div>
+    </div>
+    <input type="file" id="inputCodigo" name="archivoCodigo"
+           accept=".py,.cpp,.txt,.c" style="display:none" required
+           onchange="mostrarNombre(this,'labelCodigo','areaCode')">
+
+    <div class="pasos-list" style="margin-top:.7rem">
+      <div class="paso">
+        <span class="paso-num">2</span>
+        <span>Captura de pantalla (opcional)</span>
+      </div>
+    </div>
+
+    <div class="upload-area" id="areaCaptura"
+         onclick="document.getElementById('inputCaptura').click()">
+      <div class="upload-label" id="labelCaptura">📷 Subir captura</div>
+      <div class="upload-sub">PNG, JPG — visible para el profesor</div>
+    </div>
+    <input type="file" id="inputCaptura" name="archivoCaptura"
+           accept="image/*" style="display:none"
+           onchange="mostrarNombre(this,'labelCaptura','areaCaptura')">
+
+    <button type="submit" class="btn-primary"
+            style="width:100%;justify-content:center;margin-top:1rem"
+            id="btnEnviar">
+      🚀 Enviar y evaluar
+    </button>
+
+  </form>
+
+  <div id="evaluando"
+       style="display:none;text-align:center;padding:16px;color:#6B6B80">
+    <div style="font-size:13px">Evaluando con Judge0...</div>
+    <div style="font-size:11px;margin-top:4px">Puede tardar unos segundos</div>
+  </div>
+
+</div>
+
+    <!-- ── ESTADO 2: Entregado, Judge revisó, esperando profesor ── -->
+    <div th:if="${ultimaEntrega != null and
+                 ultimaEntrega.estado == 'REVISION'}">
+      <h3>Entregar solución</h3>
+
+      <!-- Banner de espera -->
+      <div style="background:#e0f2fe;border:1.5px solid #7dd3fc;
+                  border-radius:10px;padding:12px 16px;margin-bottom:14px;
+                  font-size:13px;color:#0369a1;font-weight:600">
+        <span th:if="${ultimaEntrega.resultadoJudge == 'ACEPTADO'}">
+          ✓ Revisión interna exitosa — esperando revisión del profesor.
+        </span>
+        <span th:if="${ultimaEntrega.resultadoJudge != 'ACEPTADO'}">
+          ⚠ Entrega enviada — esperando revisión del profesor.
+        </span>
+      </div>
+
+      <!-- Último resultado Judge -->
+      <div style="font-size:12px;color:#6B6B80;margin-bottom:8px"
+           th:text="'Judge: ' + ${ultimaEntrega.resultadoJudge} +
+                    ' (' + ${ultimaEntrega.porcentajeCasos} + '% casos)'">
+      </div>
+      <div style="font-size:12px;color:#6B6B80"
+           th:text="${#dates.format(ultimaEntrega.fechaEntrega,'dd/MM/yyyy HH:mm')}">
+      </div>
+
+      <!-- Puede reenviar mientras no valide el profesor -->
+      <div style="border-top:1px solid #E0DFF0;margin-top:14px;padding-top:14px">
+        <div style="font-size:12px;color:#6B6B80;margin-bottom:10px">
+          Puedes reenviar una solución mejorada mientras el profesor no valide.
+        </div>
         <form th:action="'/Alumno/Clase/' + ${clase.idClase} +
                           '/Competencia/' + ${competencia.idCompetencia} +
                           '/Nivel/' + ${nivel.idNivel} +
                           '/Problema/' + ${problema.idProblema} + '/Entregar'"
               method="post" enctype="multipart/form-data" id="formEntrega">
 
-          <div class="pasos-list">
-            <div class="paso">
-              <span class="paso-num">1</span>
-              <span>Archivo de código
-                (<span th:text="${competencia.lenguaje == 'Python'} ? '.py' : '.cpp'"></span>
-                o .txt)
-              </span>
-            </div>
-          </div>
-
           <div class="upload-area" id="areaCode"
                onclick="document.getElementById('inputCodigo').click()">
-            <div class="upload-label" id="labelCodigo">📄 Seleccionar archivo</div>
-            <div class="upload-sub">
-              <span th:text="${competencia.lenguaje}"></span> — .py, .cpp o .txt
-            </div>
+            <div class="upload-label" id="labelCodigo">📄 Nuevo archivo</div>
+            <div class="upload-sub"
+                 th:text="${competencia.lenguaje} + ' — .py, .cpp o .txt'"></div>
           </div>
           <input type="file" id="inputCodigo" name="archivoCodigo"
                  accept=".py,.cpp,.txt,.c" style="display:none" required
                  onchange="mostrarNombre(this,'labelCodigo','areaCode')">
 
-          <div class="pasos-list" style="margin-top:.7rem">
-            <div class="paso">
-              <span class="paso-num">2</span>
-              <span>Captura de pantalla (opcional)</span>
-            </div>
-          </div>
-
-          <div class="upload-area" id="areaCaptura"
+          <div class="upload-area" id="areaCaptura" style="margin-top:8px"
                onclick="document.getElementById('inputCaptura').click()">
-            <div class="upload-label" id="labelCaptura">📷 Subir captura</div>
-            <div class="upload-sub">PNG, JPG — visible para el profesor</div>
+            <div class="upload-label" id="labelCaptura">📷 Nueva captura</div>
+            <div class="upload-sub">Opcional</div>
           </div>
           <input type="file" id="inputCaptura" name="archivoCaptura"
                  accept="image/*" style="display:none"
                  onchange="mostrarNombre(this,'labelCaptura','areaCaptura')">
 
           <button type="submit" class="btn-primary"
-                  style="width:100%;justify-content:center;margin-top:1rem"
+                  style="width:100%;justify-content:center;margin-top:10px"
                   id="btnEnviar">
-            🚀 Enviar y evaluar
+            🔄 Reenviar solución
           </button>
-
         </form>
 
-        <!-- Spinner mientras evalúa -->
-        <div id="evaluando" style="display:none;text-align:center;padding:16px;color:#6B6B80">
+        <div id="evaluando"
+             style="display:none;text-align:center;padding:16px;color:#6B6B80">
           <div style="font-size:13px">Evaluando con Judge0...</div>
-          <div style="font-size:11px;margin-top:4px">Puede tardar unos segundos</div>
         </div>
-
-        <!-- Historial -->
-        <div th:if="${ultimaEntrega != null}"
-             style="margin-top:1rem;padding-top:1rem;border-top:1px solid #E0DFF0">
-          <div style="font-size:12px;font-weight:700;color:#1C1C2E;margin-bottom:8px">
-            Último intento
-          </div>
-          <div style="font-size:12px;color:#6B6B80"
-               th:text="${#dates.format(ultimaEntrega.fechaEntrega,'dd/MM/yyyy HH:mm')}">
-          </div>
-          <div style="font-size:13px;font-weight:700;margin-top:4px"
-               th:text="${ultimaEntrega.porcentajeCasos} + '%'"></div>
-        </div>
-
       </div>
     </div>
+
+    <!-- ── ESTADO 3: Profesor ya validó (APROBADA o RECHAZADA) ── -->
+    <div th:if="${ultimaEntrega != null and
+                 (ultimaEntrega.estado == 'APROBADA' or
+                  ultimaEntrega.estado == 'RECHAZADA')}">
+
+      <h3>Revisión del profesor</h3>
+
+      <!-- Estado final -->
+      <div style="border-radius:10px;padding:12px 16px;margin-bottom:12px;
+                  font-weight:700;font-size:14px;display:flex;
+                  align-items:center;gap:8px"
+           th:style="${ultimaEntrega.estado == 'APROBADA'} ?
+                     'background:#dcfce7;color:#15803d;border:1.5px solid #86efac' :
+                     'background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5'">
+        <span th:text="${ultimaEntrega.estado == 'APROBADA'} ?
+                       '✓ Aprobada' : '✗ Rechazada'">
+        </span>
+        <span style="font-size:12px;font-weight:600;margin-left:auto"
+              th:text="${ultimaEntrega.puntaje} + ' pts'">
+        </span>
+      </div>
+
+      <!-- Comentario del profesor -->
+      <div style="background:#f8fafc;border:1px solid #E0DFF0;
+                  border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#6B6B80;margin-bottom:6px">
+          Comentario del profesor
+        </div>
+        <div style="font-size:13px;color:#1C1C2E;line-height:1.5"
+             th:if="${revisionProfesor != null}"
+             th:text="${revisionProfesor['comentario'] != null} ?
+                       ${revisionProfesor['comentario']} :
+                       'Sin comentario adicional.'">
+        </div>
+        <div style="font-size:13px;color:#94a3b8"
+             th:if="${revisionProfesor == null}">
+          Sin comentario adicional.
+        </div>
+      </div>
+
+      <!-- Resultado Judge -->
+      <div style="font-size:12px;color:#6B6B80;margin-bottom:4px"
+           th:text="'Judge: ' + ${ultimaEntrega.resultadoJudge} +
+                    ' (' + ${ultimaEntrega.porcentajeCasos} + '% casos)'">
+      </div>
+
+      <!-- Bloqueado -->
+      <div style="background:#f1f5f9;border-radius:8px;padding:10px;
+                  font-size:12px;color:#475569;text-align:center;margin-top:10px">
+        Esta entrega ya fue revisada — no se permiten más intentos.
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
   </div>
 </main>

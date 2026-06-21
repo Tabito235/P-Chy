@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>P-Chy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/Estilos/stylesPrincipalUsuario.css">
+  <link rel="stylesheet" href="/Estilos/pichy.css">
+  <link rel="stylesheet" href="/Estilos/navbarStyles.css">
+</head>
+<body>
+
+
+<div th:replace="~{Administrador/navbar :: navbar}"></div>
+
+<main class="main">
+
+    <div class="video-card">
+        <h2>📺 Cómo usar P-Chy</h2>
+
+        <video controls preload="metadata" class="tutorial-video">
+            <source src="/videos/tutorialMaestro.mp4" type="video/mp4">
+            Tu navegador no soporta videos HTML5.
+        </video>
+
+        <p class="video-desc">
+            En este video aprenderás cómo crear clases, competencias y a como revisar a los alumnos.
+        </p>
+    </div>
+
+</main>
+
+</body>
+</html>

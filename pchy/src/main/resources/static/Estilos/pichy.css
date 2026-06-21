@@ -21,3 +21,30 @@
     width: 500px;
     height: auto;
 }
+
+.video-card{
+    max-width: 900px;
+    margin: 2rem auto;
+    background: #fff;
+    border: 1px solid #E0DFF0;
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,.05);
+}
+
+.video-card h2{
+    margin-bottom: 1rem;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.tutorial-video{
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.video-desc{
+    margin-top: 1rem;
+    color: #6B6B80;
+    line-height: 1.5;
+}

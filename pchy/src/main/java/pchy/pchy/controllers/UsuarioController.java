@@ -29,6 +29,7 @@ public class UsuarioController {
     @Autowired private EntregaRepository    entregaRepository;
     @Autowired private RankingService rankingService;
  @Autowired private PuntajeClaseRepository puntajeClaseRepository;
+ @Autowired private RevisionService revisionService;
     // ── Registro ──────────────────────────────────────
     @GetMapping("/Usuario/Registro")
     public String vistaRegistro() {
@@ -311,11 +312,26 @@ public String inicio(HttpSession session, Model model) {
             );
 
             List<ResultadoCaso> resultadosCasos = null;
-            if (ultimaEntrega != null) {
-                resultadosCasos = entregaService.resultadosCasos(
-                    ultimaEntrega.getIdEntrega()
-                );
-            }
+    java.util.Map<String, Object> revisionProfesor = null;
+
+     if (ultimaEntrega != null) {
+        resultadosCasos = entregaService.resultadosCasos(
+            ultimaEntrega.getIdEntrega()
+        );
+        // Si ya fue validada, obtener la revisión del profesor
+        if ("APROBADA".equals(ultimaEntrega.getEstado()) ||
+        "RECHAZADA".equals(ultimaEntrega.getEstado())) {
+        try {
+            revisionProfesor = revisionService.obtenerRevision(
+                ultimaEntrega.getIdEntrega()
+            );
+        } catch (Exception e) {
+            revisionProfesor = null;
+        }
+    }
+    }
+
+            
 
             model.addAttribute("clase", clase);
             model.addAttribute("competencia", comp);
@@ -324,6 +340,7 @@ public String inicio(HttpSession session, Model model) {
             model.addAttribute("casos", casos);
             model.addAttribute("ultimaEntrega", ultimaEntrega);
             model.addAttribute("resultadosCasos", resultadosCasos);
+            model.addAttribute("revisionProfesor", revisionProfesor); 
             model.addAttribute("rol", 3);
 
         } catch (Exception e) {

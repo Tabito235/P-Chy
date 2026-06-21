@@ -48,4 +48,14 @@ public class HomeController {
                 session
         );
     }
+
+      @GetMapping("/ayudaProfesor")
+    public String ayudaProfesor() {
+        return "ayudaProfesor";
+    }
+
+      @GetMapping("/ayudaUsuario")
+    public String ayudaUsuario() {
+        return "ayudaUsuario";
+    }
 }

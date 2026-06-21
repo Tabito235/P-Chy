@@ -57,7 +57,7 @@ public class EntregaRepository {
             WHERE idEntrega = ?
             """;
 
-        String estado = "ACEPTADO".equals(resultado) ? "APROBADA" : "REVISION";
+         String estado = "REVISION";
 
         jdbcTemplate.update(sql, resultado, porcentaje,
             mensajeError, estado, idEntrega);
