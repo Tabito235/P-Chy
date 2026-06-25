@@ -1,19 +1,3 @@
-/*
-=========================================
-MINIMAX + ALPHA BETA PRUNING
-=========================================
-
-IA = X
-Jugador = O
-
-Estados:
-
-1  = IA gana
-0  = Empate
--1 = Jugador gana
-
-=========================================
-*/
 
 
 function obtenerCasillasDisponibles(tablero) {
