@@ -54,20 +54,63 @@
   <div th:if="${param.nivelError}" class="alerta alerta-error">✗ Error al guardar el nivel.</div>
 
   <!-- Header de la competencia -->
-  <div style="display:flex;gap:8px">
-  <button class="btn-outline" onclick="abrirModalEditarComp()">Editar competencia</button>
+  <!-- Reemplaza el bloque de botones del header de la competencia -->
+<div style="display:flex;gap:8px">
+
+  <!-- Editar solo si está en BORRADOR -->
+  <button th:if="${competencia.estado == 'BORRADOR'}"
+          class="btn-outline" onclick="abrirModalEditarComp()">
+    Editar competencia
+  </button>
+
+  <!-- Si está publicada, mostrar badge en lugar del botón -->
+  <span th:if="${competencia.estado != 'BORRADOR'}"
+        style="background:#fef9c3;color:#a16207;font-size:12px;
+               font-weight:700;padding:6px 12px;border-radius:8px;
+               border:1px solid #fde68a">
+    🔒 Publicada — no editable
+  </span>
+
   <a class="btn-outline"
      th:href="'/Administrador/Clase/' + ${clase.idClase} +
               '/Competencia/' + ${competencia.idCompetencia} + '/Revision'">
     Revisar entregas
   </a>
+
   <form th:if="${competencia.estado == 'BORRADOR'}"
         th:action="'/Administrador/Clase/' + ${clase.idClase} +
                    '/Competencia/' + ${competencia.idCompetencia} + '/Publicar'"
-        method="post" style="display:inline">
-    <button type="submit" class="btn-enter">Publicar</button>
+        method="post" id="formPublicar" style="display:inline">
+    <button type="button" class="btn-enter"
+            onclick="document.getElementById('modalConfirmarPublicar').classList.add('visible')">
+      Publicar
+    </button>
   </form>
 </div>
+
+<!-- Modal confirmación -->
+<div class="modal-overlay" id="modalConfirmarPublicar">
+  <div class="modal-card">
+    <h2 class="modal-titulo">¿Publicar competencia?</h2>
+    <p style="font-size:14px;color:#6B6B80;line-height:1.6;margin-bottom:16px">
+      Una vez publicada, <strong>no podrás modificar</strong> la competencia,
+      sus niveles, problemas ni casos de prueba.<br><br>
+      Los alumnos podrán verla y participar en ella.
+      Asegúrate de que todo esté correcto antes de continuar.
+    </p>
+    <div class="modal-acciones">
+      <button type="button" class="btn-modal-cancel"
+              onclick="document.getElementById('modalConfirmarPublicar').classList.remove('visible')">
+        Cancelar
+      </button>
+      <button type="button" class="btn-modal-submit"
+              onclick="document.getElementById('formPublicar').submit()">
+        Sí, publicar
+      </button>
+    </div>
+  </div>
+</div>
+
 
 
 
@@ -77,10 +120,16 @@
     <div class="panel-niveles">
       <div class="panel-niveles-header">
         <h2>Niveles</h2>
-        <button class="btn-add-nivel-sm"
-                onclick="document.getElementById('modalNuevoNivel').classList.add('visible')">
-          + Añadir nivel
-        </button>
+        <button th:if="${competencia.estado == 'BORRADOR'}"
+        class="btn-add-nivel-sm"
+        onclick="document.getElementById('modalNuevoNivel').classList.add('visible')">
+  + Añadir nivel
+</button>
+
+<span th:if="${competencia.estado != 'BORRADOR'}"
+      style="font-size:12px;color:#64748b;font-weight:600">
+  🔒 Niveles bloqueados
+</span>
       </div>
       <p class="panel-niveles-sub">Selecciona un nivel para gestionar sus problemas</p>
 
@@ -103,22 +152,36 @@ class="nivel-item"
   </div>
         <div style="display:flex;gap:6px;align-items:center">
           <!-- Editar nivel -->
-          <button class="btn-del-nivel"
-                  th:data-id="${nivel.idNivel}"
-                  th:data-titulo="${nivel.titulo}"
-                  th:data-tiempo="${nivel.tiempoLimite}"
-                  onclick="event.preventDefault(); abrirEditarNivel(this)"
-                  title="Editar">
-            Editar
-          </button>
+          <button th:if="${competencia.estado == 'BORRADOR'}"
+        class="btn-del-nivel"
+        th:data-id="${nivel.idNivel}"
+        th:data-titulo="${nivel.titulo}"
+        th:data-tiempo="${nivel.tiempoLimite}"
+        onclick="event.preventDefault(); abrirEditarNivel(this)"
+        title="Editar">
+  Editar
+</button>
+
+<span th:if="${competencia.estado != 'BORRADOR'}"
+      title="Nivel bloqueado"
+      style="font-size:13px">
+  🔒
+</span>
           <!-- Eliminar nivel -->
-          <form th:action="'/Administrador/Clase/' + ${clase.idClase} +
-                           '/Competencia/' + ${competencia.idCompetencia} +
-                           '/Nivel/' + ${nivel.idNivel} + '/Eliminar'"
-                method="post" style="display:inline"
-                onsubmit="event.stopPropagation(); return confirm('¿Eliminar este nivel?')">
-            <button type="submit" class="btn-del-nivel" title="Eliminar">✕</button>
-          </form>
+      <form th:if="${competencia.estado == 'BORRADOR'}"
+      th:action="'/Administrador/Clase/' + ${clase.idClase} +
+                 '/Competencia/' + ${competencia.idCompetencia} +
+                 '/Nivel/' + ${nivel.idNivel} + '/Eliminar'"
+      method="post"
+      style="display:inline"
+      onsubmit="event.stopPropagation(); return confirm('¿Eliminar este nivel?')">
+
+  <button type="submit"
+          class="btn-del-nivel"
+          title="Eliminar">
+    ✕
+  </button>
+</form>
         </div>
       </a>
     </div>
