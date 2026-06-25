@@ -14,21 +14,21 @@ public class ProfesorController {
     private UsuarioService usuarioService;
 
     @GetMapping("/Profesor/Registro")
-    public String vistaRegistroProfesor(){
+    public String vistaRegistroProfesor() {
         return "Profesor/registroProfesor";
     }
 
     @PostMapping("/Profesor/Registro")
     public String registrarProfesor(
-            Usuario usuario){
+            Usuario usuario) {
 
-        try{
+        try {
 
             usuarioService.registrarProfesor(usuario);
 
             return "redirect:/Profesor/Registro?ok";
 
-        }catch(Exception e){
+        } catch (Exception e) {
 
             return "redirect:/Profesor/Registro?error";
         }

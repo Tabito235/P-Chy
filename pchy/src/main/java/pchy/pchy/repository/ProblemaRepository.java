@@ -21,17 +21,16 @@ public class ProblemaRepository {
     public int crear(Problema p) {
 
         String sql = """
-            INSERT INTO problema
-            (idNivel, titulo, enunciado, puntaje, posicion, activo)
-            VALUES (?, ?, ?, ?, ?, TRUE)
-            """;
+                INSERT INTO problema
+                (idNivel, titulo, enunciado, puntaje, posicion, activo)
+                VALUES (?, ?, ?, ?, ?, TRUE)
+                """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS
-            );
+                    sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getIdNivel());
             ps.setString(2, p.getTitulo());
             ps.setString(3, p.getEnunciado());
@@ -46,10 +45,10 @@ public class ProblemaRepository {
     public List<Problema> listarPorNivel(int idNivel) {
 
         String sql = """
-            SELECT * FROM problema
-            WHERE idNivel = ? AND activo = TRUE
-            ORDER BY posicion ASC
-            """;
+                SELECT * FROM problema
+                WHERE idNivel = ? AND activo = TRUE
+                ORDER BY posicion ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idNivel);
     }
@@ -59,7 +58,8 @@ public class ProblemaRepository {
         String sql = "SELECT * FROM problema WHERE idProblema = ?";
 
         return jdbcTemplate.query(sql, rs -> {
-            if (rs.next()) return mapear(rs);
+            if (rs.next())
+                return mapear(rs);
             return null;
         }, idProblema);
     }
@@ -67,32 +67,29 @@ public class ProblemaRepository {
     public void editar(Problema p) {
 
         String sql = """
-            UPDATE problema
-            SET titulo = ?, enunciado = ?, puntaje = ?
-            WHERE idProblema = ? AND idNivel = ?
-            """;
+                UPDATE problema
+                SET titulo = ?, enunciado = ?, puntaje = ?
+                WHERE idProblema = ? AND idNivel = ?
+                """;
 
         jdbcTemplate.update(sql,
-            p.getTitulo(),
-            p.getEnunciado(),
-            p.getPuntaje(),
-            p.getIdProblema(),
-            p.getIdNivel()
-        );
+                p.getTitulo(),
+                p.getEnunciado(),
+                p.getPuntaje(),
+                p.getIdProblema(),
+                p.getIdNivel());
     }
 
     public void desactivar(int idProblema) {
         jdbcTemplate.update(
-            "UPDATE problema SET activo = FALSE WHERE idProblema = ?",
-            idProblema
-        );
+                "UPDATE problema SET activo = FALSE WHERE idProblema = ?",
+                idProblema);
     }
 
     public int contarPorNivel(int idNivel) {
         Integer total = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM problema WHERE idNivel = ? AND activo = TRUE",
-            Integer.class, idNivel
-        );
+                "SELECT COUNT(*) FROM problema WHERE idNivel = ? AND activo = TRUE",
+                Integer.class, idNivel);
         return total != null ? total : 0;
     }
 

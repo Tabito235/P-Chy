@@ -26,224 +26,197 @@ public class UsuarioService {
     @Autowired
     private JavaMailSender mailSender;
 
-    private BCryptPasswordEncoder encoder =
-            new BCryptPasswordEncoder();
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private final int ADMIN = 1;
     private final int PROFESOR = 2;
     private final int ALUMNO = 3;
 
-    public void registrarAlumno(Usuario usuario){
+    public void registrarAlumno(Usuario usuario) {
 
         validarDuplicados(usuario);
 
         usuario.setContrasena(
-            encoder.encode(
-                usuario.getContrasena()
-            )
-        );
+                encoder.encode(
+                        usuario.getContrasena()));
 
         usuarioRepository.guardarUsuario(usuario);
 
-        int idUsuario =
-            usuarioRepository.obtenerIdPorCorreo(
-                usuario.getCorreo()
-            );
+        int idUsuario = usuarioRepository.obtenerIdPorCorreo(
+                usuario.getCorreo());
 
         rolRepository.asignarRol(
-            idUsuario,
-            ALUMNO
-        );
+                idUsuario,
+                ALUMNO);
     }
 
-    public void registrarAdmin(Usuario usuario){
+    public void registrarAdmin(Usuario usuario) {
 
         validarDuplicados(usuario);
 
         usuario.setContrasena(
-            encoder.encode(
-                usuario.getContrasena()
-            )
-        );
+                encoder.encode(
+                        usuario.getContrasena()));
 
         usuarioRepository.guardarUsuario(usuario);
 
-        int idUsuario =
-            usuarioRepository.obtenerIdPorCorreo(
-                usuario.getCorreo()
-            );
+        int idUsuario = usuarioRepository.obtenerIdPorCorreo(
+                usuario.getCorreo());
 
         rolRepository.asignarRol(
-            idUsuario,
-            ADMIN
-        );
+                idUsuario,
+                ADMIN);
     }
 
-    public void registrarProfesor(Usuario usuario){
+    public void registrarProfesor(Usuario usuario) {
 
         validarDuplicados(usuario);
 
-        String passwordPlano =
-                generarPassword();
+        String passwordPlano = generarPassword();
 
         usuario.setContrasena(
-            encoder.encode(passwordPlano)
-        );
+                encoder.encode(passwordPlano));
 
         usuarioRepository.guardarUsuario(usuario);
 
-        int idUsuario =
-            usuarioRepository.obtenerIdPorCorreo(
-                usuario.getCorreo()
-            );
+        int idUsuario = usuarioRepository.obtenerIdPorCorreo(
+                usuario.getCorreo());
 
         rolRepository.asignarRol(
-            idUsuario,
-            PROFESOR
-        );
+                idUsuario,
+                PROFESOR);
 
         enviarCorreoProfesor(
-            usuario.getCorreo(),
-            passwordPlano
-        );
+                usuario.getCorreo(),
+                passwordPlano);
     }
 
     private void validarDuplicados(
-            Usuario usuario){
+            Usuario usuario) {
 
-        if(usuarioRepository.existeCorreo(
-                usuario.getCorreo())){
+        if (usuarioRepository.existeCorreo(
+                usuario.getCorreo())) {
 
             throw new RuntimeException(
-                "Correo ya registrado"
-            );
+                    "Correo ya registrado");
         }
 
-        if(usuarioRepository.existeMatricula(
-                usuario.getMatricula())){
+        if (usuarioRepository.existeMatricula(
+                usuario.getMatricula())) {
 
             throw new RuntimeException(
-                "Matrícula ya registrada"
-            );
+                    "Matrícula ya registrada");
         }
     }
 
-    private String generarPassword(){
+    private String generarPassword() {
 
         return UUID.randomUUID()
                 .toString()
                 .replace("-", "")
-                .substring(0,10);
+                .substring(0, 10);
     }
 
     private void enviarCorreoProfesor(
             String correo,
-            String password){
+            String password) {
 
-        try{
+        try {
 
-            SimpleMailMessage mensaje =
-                    new SimpleMailMessage();
+            SimpleMailMessage mensaje = new SimpleMailMessage();
 
             mensaje.setFrom(
-                "pichyowo9@gmail.com"
-            );
+                    "pichyowo9@gmail.com");
 
             mensaje.setTo(correo);
 
             mensaje.setSubject(
-                "Bienvenido a P-Chy"
-            );
+                    "Bienvenido a P-Chy");
 
             mensaje.setText(
-                "Hola y bienvenido al sistema P-Chy.\n\n" +
+                    "Hola y bienvenido al sistema P-Chy.\n\n" +
 
-                "Tu cuenta de profesor a sido creada de forma exitosamente correcta.\n\n" +
+                            "Tu cuenta de profesor a sido creada de forma exitosamente correcta.\n\n" +
 
-                "Datos de acceso:\n" +
-                "Correo: " + correo + "\n" +
-                "Contraseña: " + password + "\n\n" +
+                            "Datos de acceso:\n" +
+                            "Correo: " + correo + "\n" +
+                            "Contraseña: " + password + "\n\n" +
 
-                "Recuerda cambiar tu contraseña al iniciar sesión... ¡Oye! ¿Sabias que el primer correo electronico fue: QWERTYUIOP? ¡Yo tampoco lo sabia! Lo acabo de ver en google" 
-            );
+                            "Recuerda cambiar tu contraseña al iniciar sesión... ¡Oye! ¿Sabias que el primer correo electronico fue: QWERTYUIOP? ¡Yo tampoco lo sabia! Lo acabo de ver en google");
 
             mailSender.send(mensaje);
 
-        }catch(Exception e){
-    throw new RuntimeException("No se pudo enviar correo");
-}
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo enviar correo");
+        }
     }
 
-    public Usuario obtenerPerfil(String correo){
+    public Usuario obtenerPerfil(String correo) {
 
-    Usuario u = usuarioRepository.obtenerPerfilCompleto(correo);
+        Usuario u = usuarioRepository.obtenerPerfilCompleto(correo);
 
-    if(u == null){
-        throw new RuntimeException("Usuario no encontrado");
+        if (u == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
+        return u;
     }
 
-    return u;
-}
+    public void actualizarPerfil(String correo, Usuario datos) {
 
-public void actualizarPerfil(String correo, Usuario datos) {
+        Usuario u = usuarioRepository.buscarPorCorreo(correo);
+        if (u == null)
+            throw new RuntimeException("Usuario no encontrado");
 
-    Usuario u = usuarioRepository.buscarPorCorreo(correo);
-    if (u == null) throw new RuntimeException("Usuario no encontrado");
+        u.setNombre(datos.getNombre());
+        u.setApellido(datos.getApellido());
+        
+        if (datos.getFechaNacimiento() != null) {
+            u.setFechaNacimiento(datos.getFechaNacimiento());
+        }
 
-    u.setNombre(datos.getNombre());
-    u.setApellido(datos.getApellido());
-    // u.setInstitucion() — no se modifica
-
-    if (datos.getFechaNacimiento() != null) {
-        u.setFechaNacimiento(datos.getFechaNacimiento());
+        usuarioRepository.actualizarPerfil(u);
     }
 
-    usuarioRepository.actualizarPerfil(u);
-}
+    public void cambiarPassword(String correo, String actual, String nueva, String confirmar) {
 
-public void cambiarPassword(String correo, String actual, String nueva, String confirmar){
+        Usuario u = usuarioRepository.buscarPorCorreo(correo);
 
-    Usuario u = usuarioRepository.buscarPorCorreo(correo);
+        if (!encoder.matches(actual, u.getContrasena())) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
 
-    if(!encoder.matches(actual, u.getContrasena())){
-        throw new RuntimeException("Contraseña incorrecta");
+        if (!nueva.equals(confirmar)) {
+            throw new RuntimeException("No coinciden");
+        }
+
+        String nuevaHash = encoder.encode(nueva);
+
+        usuarioRepository.actualizarPassword(correo, nuevaHash);
     }
 
-    if(!nueva.equals(confirmar)){
-        throw new RuntimeException("No coinciden");
+
+
+    public void actualizarFoto(String correo, String ruta) {
+        usuarioRepository.actualizarFoto(correo, ruta);
     }
 
-    String nuevaHash = encoder.encode(nueva);
+    public List<Usuario> listarUsuariosConRol() {
+        return rolRepository.listarUsuariosConRol();
+    }
 
-    usuarioRepository.actualizarPassword(correo, nuevaHash);
-}
+    public void cambiarRol(int idUsuario, int nuevoRol) {
+        rolRepository.eliminarRoles(idUsuario);
+        rolRepository.asignarRol(idUsuario, nuevoRol);
+    }
 
-// Agregar en UsuarioService.java
+   
+    public Usuario obtenerPerfilPorId(int idUsuario) {
+        return usuarioRepository.obtenerPerfilPorId(idUsuario);
+    }
 
-public void actualizarFoto(String correo, String ruta) {
-    usuarioRepository.actualizarFoto(correo, ruta);
-}
-
-// Reemplaza actualizarPerfil en UsuarioService
-
-// Listar todos los usuarios con su rol
-public List<Usuario> listarUsuariosConRol() {
-    return rolRepository.listarUsuariosConRol();
-}
-
-// Cambiar rol de un usuario
-public void cambiarRol(int idUsuario, int nuevoRol) {
-    rolRepository.eliminarRoles(idUsuario);
-    rolRepository.asignarRol(idUsuario, nuevoRol);
-}
-
-// UsuarioService
-public Usuario obtenerPerfilPorId(int idUsuario) {
-    return usuarioRepository.obtenerPerfilPorId(idUsuario);
-}
-
-public int obtenerRolPorId(int idUsuario) {
-    return usuarioRepository.obtenerRolPorId(idUsuario);
-}
+    public int obtenerRolPorId(int idUsuario) {
+        return usuarioRepository.obtenerRolPorId(idUsuario);
+    }
 
 }

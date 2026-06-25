@@ -23,19 +23,18 @@ public class EntregaRepository {
     public int crear(Entrega e) {
 
         String sql = """
-            INSERT INTO entrega
-            (idUsuario, idNivel, idProblema, archivoCodigo,
-             archivoCaptura, puntaje, estado, resultadoJudge,
-             porcentajeCasos, mensajeError)
-            VALUES (?, ?, ?, ?, ?, 0, 'PENDIENTE', 'PENDIENTE', 0, NULL)
-            """;
+                INSERT INTO entrega
+                (idUsuario, idNivel, idProblema, archivoCodigo,
+                 archivoCaptura, puntaje, estado, resultadoJudge,
+                 porcentajeCasos, mensajeError)
+                VALUES (?, ?, ?, ?, ?, 0, 'PENDIENTE', 'PENDIENTE', 0, NULL)
+                """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS
-            );
+                    sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, e.getIdUsuario());
             ps.setInt(2, e.getIdNivel());
             ps.setInt(3, e.getIdProblema());
@@ -49,50 +48,50 @@ public class EntregaRepository {
 
     // Actualizar resultado del Judge
     public void actualizarResultadoJudge(int idEntrega, String resultado,
-                                          int porcentaje, String mensajeError) {
+            int porcentaje, String mensajeError) {
         String sql = """
-            UPDATE entrega
-            SET resultadoJudge = ?, porcentajeCasos = ?,
-                mensajeError = ?, estado = ?
-            WHERE idEntrega = ?
-            """;
+                UPDATE entrega
+                SET resultadoJudge = ?, porcentajeCasos = ?,
+                    mensajeError = ?, estado = ?
+                WHERE idEntrega = ?
+                """;
 
-         String estado = "REVISION";
+        String estado = "REVISION";
 
         jdbcTemplate.update(sql, resultado, porcentaje,
-            mensajeError, estado, idEntrega);
+                mensajeError, estado, idEntrega);
     }
 
     // Guardar resultado por caso
     public void guardarResultadoCaso(ResultadoCaso rc) {
 
         String sql = """
-            INSERT INTO resultadoCaso
-            (idEntrega, idCaso, correcto, salidaObtenida, tiempoEjecucion)
-            VALUES (?, ?, ?, ?, ?)
-            """;
+                INSERT INTO resultadoCaso
+                (idEntrega, idCaso, correcto, salidaObtenida, tiempoEjecucion)
+                VALUES (?, ?, ?, ?, ?)
+                """;
 
         jdbcTemplate.update(sql,
-            rc.getIdEntrega(),
-            rc.getIdCaso(),
-            rc.isCorrecto(),
-            rc.getSalidaObtenida(),
-            rc.getTiempoEjecucion()
-        );
+                rc.getIdEntrega(),
+                rc.getIdCaso(),
+                rc.isCorrecto(),
+                rc.getSalidaObtenida(),
+                rc.getTiempoEjecucion());
     }
 
     // Obtener última entrega del alumno para un problema
     public Entrega obtenerUltima(int idUsuario, int idProblema) {
 
         String sql = """
-            SELECT * FROM entrega
-            WHERE idUsuario = ? AND idProblema = ?
-            ORDER BY fechaEntrega DESC
-            LIMIT 1
-            """;
+                SELECT * FROM entrega
+                WHERE idUsuario = ? AND idProblema = ?
+                ORDER BY fechaEntrega DESC
+                LIMIT 1
+                """;
 
         return jdbcTemplate.query(sql, rs -> {
-            if (rs.next()) return mapear(rs);
+            if (rs.next())
+                return mapear(rs);
             return null;
         }, idUsuario, idProblema);
     }
@@ -101,25 +100,25 @@ public class EntregaRepository {
     public List<Entrega> listarPorProblema(int idUsuario, int idProblema) {
 
         String sql = """
-            SELECT * FROM entrega
-            WHERE idUsuario = ? AND idProblema = ?
-            ORDER BY fechaEntrega DESC
-            """;
+                SELECT * FROM entrega
+                WHERE idUsuario = ? AND idProblema = ?
+                ORDER BY fechaEntrega DESC
+                """;
 
         return jdbcTemplate.query(sql,
-            (rs, row) -> mapear(rs), idUsuario, idProblema);
+                (rs, row) -> mapear(rs), idUsuario, idProblema);
     }
 
     // Resultados por caso de una entrega
     public List<ResultadoCaso> listarResultadosCasos(int idEntrega) {
 
         String sql = """
-            SELECT rc.*, cp.entrada, cp.salidaEsperada
-            FROM resultadoCaso rc
-            JOIN casoPrueba cp ON cp.idCaso = rc.idCaso
-            WHERE rc.idEntrega = ?
-            ORDER BY cp.posicion ASC
-            """;
+                SELECT rc.*, cp.entrada, cp.salidaEsperada
+                FROM resultadoCaso rc
+                JOIN casoPrueba cp ON cp.idCaso = rc.idCaso
+                WHERE rc.idEntrega = ?
+                ORDER BY cp.posicion ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> {
             ResultadoCaso rc = new ResultadoCaso();
@@ -135,18 +134,16 @@ public class EntregaRepository {
         }, idEntrega);
     }
 
-    // Verificar si el alumno ya completó el problema (APROBADA)
     public boolean estaAprobado(int idUsuario, int idProblema) {
 
         String sql = """
-            SELECT COUNT(*) FROM entrega
-            WHERE idUsuario = ? AND idProblema = ?
-            AND estado = 'APROBADA'
-            """;
+                SELECT COUNT(*) FROM entrega
+                WHERE idUsuario = ? AND idProblema = ?
+                AND estado = 'APROBADA'
+                """;
 
         Integer total = jdbcTemplate.queryForObject(
-            sql, Integer.class, idUsuario, idProblema
-        );
+                sql, Integer.class, idUsuario, idProblema);
         return total != null && total > 0;
     }
 
@@ -154,15 +151,14 @@ public class EntregaRepository {
     public int contarAprobadosEnNivel(int idUsuario, int idNivel) {
 
         String sql = """
-            SELECT COUNT(DISTINCT e.idProblema)
-            FROM entrega e
-            WHERE e.idUsuario = ? AND e.idNivel = ?
-            AND e.estado = 'APROBADA'
-            """;
+                SELECT COUNT(DISTINCT e.idProblema)
+                FROM entrega e
+                WHERE e.idUsuario = ? AND e.idNivel = ?
+                AND e.estado = 'APROBADA'
+                """;
 
         Integer total = jdbcTemplate.queryForObject(
-            sql, Integer.class, idUsuario, idNivel
-        );
+                sql, Integer.class, idUsuario, idNivel);
         return total != null ? total : 0;
     }
 
@@ -183,41 +179,39 @@ public class EntregaRepository {
         return e;
     }
 
-    // Verificar si el alumno ya completó un problema (Judge ACEPTADO)
-public boolean problemaCompletado(int idUsuario, int idProblema) {
-    String sql = """
-        SELECT COUNT(*) FROM entrega
-        WHERE idUsuario = ? AND idProblema = ?
-        AND resultadoJudge = 'ACEPTADO'
-        """;
-    Integer total = jdbcTemplate.queryForObject(sql, Integer.class,
-        idUsuario, idProblema);
-    return total != null && total > 0;
-}
+    // Verificar si el alumno ya completó un problema 
+    public boolean problemaCompletado(int idUsuario, int idProblema) {
+        String sql = """
+                SELECT COUNT(*) FROM entrega
+                WHERE idUsuario = ? AND idProblema = ?
+                AND resultadoJudge = 'ACEPTADO'
+                """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class,
+                idUsuario, idProblema);
+        return total != null && total > 0;
+    }
 
-// Contar problemas distintos completados (Judge ACEPTADO) en un nivel
-public int contarProblemasCompletadosEnNivel(int idUsuario, int idNivel) {
-    String sql = """
-        SELECT COUNT(DISTINCT e.idProblema)
-        FROM entrega e
-        WHERE e.idUsuario = ? AND e.idNivel = ?
-        AND e.resultadoJudge = 'ACEPTADO'
-        """;
-    Integer total = jdbcTemplate.queryForObject(sql, Integer.class,
-        idUsuario, idNivel);
-    return total != null ? total : 0;
-}
+    public int contarProblemasCompletadosEnNivel(int idUsuario, int idNivel) {
+        String sql = """
+                SELECT COUNT(DISTINCT e.idProblema)
+                FROM entrega e
+                WHERE e.idUsuario = ? AND e.idNivel = ?
+                AND e.resultadoJudge = 'ACEPTADO'
+                """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class,
+                idUsuario, idNivel);
+        return total != null ? total : 0;
+    }
 
-// Contar cuántas veces el alumno ha completado (ACEPTADO) un problema
-public long contarEntregasAceptadasParaProblema(int idUsuario, int idProblema) {
-    String sql = """
-        SELECT COUNT(*) FROM entrega
-        WHERE idUsuario = ? AND idProblema = ?
-        AND resultadoJudge = 'ACEPTADO'
-        """;
-    Long total = jdbcTemplate.queryForObject(sql, Long.class,
-        idUsuario, idProblema);
-    return total != null ? total : 0;
-}
+    public long contarEntregasAceptadasParaProblema(int idUsuario, int idProblema) {
+        String sql = """
+                SELECT COUNT(*) FROM entrega
+                WHERE idUsuario = ? AND idProblema = ?
+                AND resultadoJudge = 'ACEPTADO'
+                """;
+        Long total = jdbcTemplate.queryForObject(sql, Long.class,
+                idUsuario, idProblema);
+        return total != null ? total : 0;
+    }
 
 }

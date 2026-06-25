@@ -22,7 +22,7 @@ public class CasoPruebaService {
             throw new RuntimeException("La salida esperada es obligatoria");
 
         int posicion = casoPruebaRepository
-            .listarPorProblema(idProblema).size() + 1;
+                .listarPorProblema(idProblema).size() + 1;
 
         CasoPrueba caso = new CasoPrueba();
         caso.setIdProblema(idProblema);
@@ -34,8 +34,8 @@ public class CasoPruebaService {
     }
 
     public List<CasoPrueba> listarPorProblema(int idProblema) {
-    return casoPruebaRepository.listarPorProblema(idProblema);
-}
+        return casoPruebaRepository.listarPorProblema(idProblema);
+    }
 
     public void eliminar(int idCaso) {
         casoPruebaRepository.eliminar(idCaso);

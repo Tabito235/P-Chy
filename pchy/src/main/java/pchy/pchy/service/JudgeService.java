@@ -39,23 +39,23 @@ public class JudgeService {
 
     // Resultado de ejecutar contra un caso
     public record EjecucionResult(
-        boolean correcto,
-        String salidaObtenida,
-        float tiempoEjecucion,
-        String error
-    ) {}
+            boolean correcto,
+            String salidaObtenida,
+            float tiempoEjecucion,
+            String error) {
+    }
 
     // Resultado total de la entrega
     public record JudgeResult(
-        String veredicto,        // ACEPTADO, ERROR_COMPILACION, ERROR_EJECUCION, TIEMPO_LIMITE
-        int porcentaje,          // % de casos pasados
-        String mensajeError,
-        List<ResultadoCaso> resultados
-    ) {}
+            String veredicto, // ACEPTADO, ERROR_COMPILACION, ERROR_EJECUCION, TIEMPO_LIMITE
+            int porcentaje, // % de casos pasados
+            String mensajeError,
+            List<ResultadoCaso> resultados) {
+    }
 
     public JudgeResult evaluar(String codigo, String lenguaje,
-                                List<CasoPrueba> casos,
-                                int idEntrega) throws Exception {
+            List<CasoPrueba> casos,
+            int idEntrega) throws Exception {
 
         int languageId = lenguaje.equalsIgnoreCase("Python") ? langPython : langCpp;
 
@@ -67,7 +67,7 @@ public class JudgeService {
         for (CasoPrueba caso : casos) {
 
             EjecucionResult res = ejecutar(codigo, languageId,
-                caso.getEntrada(), caso.getSalidaEsperada());
+                    caso.getEntrada(), caso.getSalidaEsperada());
 
             ResultadoCaso rc = new ResultadoCaso();
             rc.setIdEntrega(idEntrega);
@@ -100,37 +100,38 @@ public class JudgeService {
             }
         }
 
-        int porcentaje = casos.isEmpty() ? 0 :
-            (casosCorrectos * 100) / casos.size();
+        int porcentaje = casos.isEmpty() ? 0 : (casosCorrectos * 100) / casos.size();
 
-        if (casosCorrectos == casos.size()) veredicto = "ACEPTADO";
+        if (casosCorrectos == casos.size())
+            veredicto = "ACEPTADO";
 
         return new JudgeResult(veredicto, porcentaje, primerError, resultados);
     }
 
     private EjecucionResult ejecutar(String codigo, int languageId,
-                                      String stdin, String expectedOutput)
+            String stdin, String expectedOutput)
             throws Exception {
 
         // 1. Enviar submission
-        String body = mapper.writeValueAsString(new java.util.HashMap<>() {{
-            put("source_code", codigo);
-            put("language_id", languageId);
-            put("stdin", stdin);
-            put("expected_output", expectedOutput);
-        }});
+        String body = mapper.writeValueAsString(new java.util.HashMap<>() {
+            {
+                put("source_code", codigo);
+                put("language_id", languageId);
+                put("stdin", stdin);
+                put("expected_output", expectedOutput);
+            }
+        });
 
         HttpRequest submitRequest = HttpRequest.newBuilder()
-            .uri(URI.create(apiUrl + "/submissions?base64_encoded=false&wait=true"))
-            .header("Content-Type", "application/json")
-            .header("X-RapidAPI-Key", apiKey)
-            .header("X-RapidAPI-Host", apiHost)
-            .POST(HttpRequest.BodyPublishers.ofString(body))
-            .build();
+                .uri(URI.create(apiUrl + "/submissions?base64_encoded=false&wait=true"))
+                .header("Content-Type", "application/json")
+                .header("X-RapidAPI-Key", apiKey)
+                .header("X-RapidAPI-Host", apiHost)
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
 
         HttpResponse<String> response = httpClient.send(
-            submitRequest, HttpResponse.BodyHandlers.ofString()
-        );
+                submitRequest, HttpResponse.BodyHandlers.ofString());
 
         JsonNode json = mapper.readTree(response.body());
 
@@ -147,10 +148,14 @@ public class JudgeService {
         boolean correcto = (statusId == 3);
 
         String error = null;
-        if (statusId == 5) error = "Time Limit Exceeded";
-        else if (statusId == 6) error = "Compilation Error: " + compileOutput;
-        else if (statusId >= 7) error = "Runtime Error: " + stderr;
-        else if (statusId == 4) error = null; // Wrong Answer, no es error
+        if (statusId == 5)
+            error = "Time Limit Exceeded";
+        else if (statusId == 6)
+            error = "Compilation Error: " + compileOutput;
+        else if (statusId >= 7)
+            error = "Runtime Error: " + stderr;
+        else if (statusId == 4)
+            error = null; // Wrong Answer, no es error
 
         return new EjecucionResult(correcto, stdout, tiempo, error);
     }

@@ -8,34 +8,73 @@ public class ResultadoCaso {
     private boolean correcto;
     private String salidaObtenida;
     private float tiempoEjecucion;
-
-    // Para mostrar en vista
     private String entrada;
     private String salidaEsperada;
 
-    public ResultadoCaso() {}
+    public ResultadoCaso() {
+    }
 
-    public int getIdResultado() { return idResultado; }
-    public void setIdResultado(int idResultado) { this.idResultado = idResultado; }
+    public int getIdResultado() {
+        return idResultado;
+    }
 
-    public int getIdEntrega() { return idEntrega; }
-    public void setIdEntrega(int idEntrega) { this.idEntrega = idEntrega; }
+    public void setIdResultado(int idResultado) {
+        this.idResultado = idResultado;
+    }
 
-    public int getIdCaso() { return idCaso; }
-    public void setIdCaso(int idCaso) { this.idCaso = idCaso; }
+    public int getIdEntrega() {
+        return idEntrega;
+    }
 
-    public boolean isCorrecto() { return correcto; }
-    public void setCorrecto(boolean correcto) { this.correcto = correcto; }
+    public void setIdEntrega(int idEntrega) {
+        this.idEntrega = idEntrega;
+    }
 
-    public String getSalidaObtenida() { return salidaObtenida; }
-    public void setSalidaObtenida(String salidaObtenida) { this.salidaObtenida = salidaObtenida; }
+    public int getIdCaso() {
+        return idCaso;
+    }
 
-    public float getTiempoEjecucion() { return tiempoEjecucion; }
-    public void setTiempoEjecucion(float tiempoEjecucion) { this.tiempoEjecucion = tiempoEjecucion; }
+    public void setIdCaso(int idCaso) {
+        this.idCaso = idCaso;
+    }
 
-    public String getEntrada() { return entrada; }
-    public void setEntrada(String entrada) { this.entrada = entrada; }
+    public boolean isCorrecto() {
+        return correcto;
+    }
 
-    public String getSalidaEsperada() { return salidaEsperada; }
-    public void setSalidaEsperada(String salidaEsperada) { this.salidaEsperada = salidaEsperada; }
+    public void setCorrecto(boolean correcto) {
+        this.correcto = correcto;
+    }
+
+    public String getSalidaObtenida() {
+        return salidaObtenida;
+    }
+
+    public void setSalidaObtenida(String salidaObtenida) {
+        this.salidaObtenida = salidaObtenida;
+    }
+
+    public float getTiempoEjecucion() {
+        return tiempoEjecucion;
+    }
+
+    public void setTiempoEjecucion(float tiempoEjecucion) {
+        this.tiempoEjecucion = tiempoEjecucion;
+    }
+
+    public String getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(String entrada) {
+        this.entrada = entrada;
+    }
+
+    public String getSalidaEsperada() {
+        return salidaEsperada;
+    }
+
+    public void setSalidaEsperada(String salidaEsperada) {
+        this.salidaEsperada = salidaEsperada;
+    }
 }

@@ -18,63 +18,63 @@ public class PerfilController {
 
     @Autowired
     private UsuarioService usuarioService;
-  @Autowired
-private RankingService rankingService;
+    @Autowired
+    private RankingService rankingService;
 
-    // ─── Ver perfil ────────────────────────────────────────────────
+    // Ver perfil
 
-@GetMapping("/Perfil")
-public String verPerfil(HttpSession session, Model model) {
+    @GetMapping("/Perfil")
+    public String verPerfil(HttpSession session, Model model) {
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    Usuario perfil = usuarioService.obtenerPerfil(usuario.getCorreo());
-    int rol = (int) session.getAttribute("rol");
+        Usuario perfil = usuarioService.obtenerPerfil(usuario.getCorreo());
+        int rol = (int) session.getAttribute("rol");
 
-    model.addAttribute("usuario", perfil);
-    model.addAttribute("rol", rol);
+        model.addAttribute("usuario", perfil);
+        model.addAttribute("rol", rol);
 
-    // Solo para alumnos
-    if (rol == 3) {
-        model.addAttribute("medalla",
-            rankingService.calcularMedalla(perfil.getPuntaje()));
+        // Solo para alumnos
+        if (rol == 3) {
+            model.addAttribute("medalla",
+                    rankingService.calcularMedalla(perfil.getPuntaje()));
+        }
+
+        return "perfil";
     }
 
-    return "perfil"; // ← siempre la misma vista
-}
+    // Actualizar pefil
+    @PostMapping("/Perfil/Actualizar")
+    public String actualizarPerfil(
+            @RequestParam String nombre,
+            @RequestParam String apellido,
+            @RequestParam(required = false) String fechaNacimiento,
+            HttpSession session) {
 
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
+        Usuario datos = new Usuario();
+        datos.setNombre(nombre);
+        datos.setApellido(apellido);
+        // institución no se toca
 
-    // ─── Actualizar datos personales ───────────────────────────────
-@PostMapping("/Perfil/Actualizar")
-public String actualizarPerfil(
-        @RequestParam String nombre,
-        @RequestParam String apellido,
-        @RequestParam(required = false) String fechaNacimiento,
-        HttpSession session) {
+        if (fechaNacimiento != null && !fechaNacimiento.isBlank()) {
+            datos.setFechaNacimiento(java.sql.Date.valueOf(fechaNacimiento));
+        }
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        usuarioService.actualizarPerfil(usuario.getCorreo(), datos);
 
-    Usuario datos = new Usuario();
-    datos.setNombre(nombre);
-    datos.setApellido(apellido);
-    // institución no se toca
+        Usuario actualizado = usuarioService.obtenerPerfil(usuario.getCorreo());
+        session.setAttribute("usuario", actualizado);
 
-    if (fechaNacimiento != null && !fechaNacimiento.isBlank()) {
-        datos.setFechaNacimiento(java.sql.Date.valueOf(fechaNacimiento));
+        return "redirect:/Perfil?ok";
     }
 
-    usuarioService.actualizarPerfil(usuario.getCorreo(), datos);
-
-    Usuario actualizado = usuarioService.obtenerPerfil(usuario.getCorreo());
-    session.setAttribute("usuario", actualizado);
-
-    return "redirect:/Perfil?ok";
-}
-
-    // ─── Cambiar contraseña ────────────────────────────────────────
+    // Cambair contraseña
     @PostMapping("/Perfil/Password")
     public String cambiarPassword(
             @RequestParam String actual,
@@ -84,87 +84,89 @@ public String actualizarPerfil(
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             usuarioService.cambiarPassword(
-                usuario.getCorreo(), actual, nueva, confirmar
-            );
+                    usuario.getCorreo(), actual, nueva, confirmar);
             return "redirect:/Perfil?passOk";
 
         } catch (Exception e) {
             return "redirect:/Perfil?passError=" +
-                java.net.URLEncoder.encode(
-                    e.getMessage(),
-                    java.nio.charset.StandardCharsets.UTF_8
-                );
+                    java.net.URLEncoder.encode(
+                            e.getMessage(),
+                            java.nio.charset.StandardCharsets.UTF_8);
         }
     }
 
-    // ─── Subir foto de perfil ──────────────────────────────────────
+    // Subir foto
     @Autowired
-private CloudinaryService cloudinaryService;
+    private CloudinaryService cloudinaryService;
 
-@PostMapping("/Perfil/Foto")
-public String subirFoto(
-        @RequestParam("foto") MultipartFile foto,
-        HttpSession session) {
+    @PostMapping("/Perfil/Foto")
+    public String subirFoto(
+            @RequestParam("foto") MultipartFile foto,
+            HttpSession session) {
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-    if (usuario == null) return "redirect:/Login";
-    if (foto.isEmpty())  return "redirect:/Perfil?fotoError";
+        if (usuario == null)
+            return "redirect:/Login";
+        if (foto.isEmpty())
+            return "redirect:/Perfil?fotoError";
 
-    try {
-        // Nombre único por usuario (sin extensión, Cloudinary la maneja)
-        String nombreArchivo = "perfil_" + usuario.getIdUsuario();
+        try {
+            // Nombre único por usuario
+            String nombreArchivo = "perfil_" + usuario.getIdUsuario();
 
-        // Sube a Cloudinary y obtiene la URL pública
-        String urlPublica = cloudinaryService.subirFoto(foto, nombreArchivo);
+            // Sube a Cloudinary y obtiene la URL pública
+            String urlPublica = cloudinaryService.subirFoto(foto, nombreArchivo);
 
-        // Guarda la URL en BD
-        usuarioService.actualizarFoto(usuario.getCorreo(), urlPublica);
+            // Guarda la URL en BD
+            usuarioService.actualizarFoto(usuario.getCorreo(), urlPublica);
 
-        // Refresca sesión
-        Usuario actualizado = usuarioService.obtenerPerfil(usuario.getCorreo());
-        session.setAttribute("usuario", actualizado);
+            // Refresca sesión
+            Usuario actualizado = usuarioService.obtenerPerfil(usuario.getCorreo());
+            session.setAttribute("usuario", actualizado);
 
-    } catch (Exception e) {
-        return "redirect:/Perfil?fotoError";
-    }
-
-    return "redirect:/Perfil?fotoOk";
-}
-
-@GetMapping("/Perfil/{idUsuario}")
-public String verPerfilPublico(
-        @PathVariable int idUsuario,
-        HttpSession session,
-        Model model) {
-
-    if (session.getAttribute("usuario") == null)
-        return "redirect:/Login";
-
-    try {
-        Usuario perfil = usuarioService.obtenerPerfilPorId(idUsuario);
-        if (perfil == null) return "redirect:/";
-
-        int rolVisto = usuarioService.obtenerRolPorId(idUsuario);
-
-        model.addAttribute("usuario", perfil);
-        model.addAttribute("rol", rolVisto);
-        model.addAttribute("viendoOtro", true);
-
-        if (rolVisto == 3) {
-            model.addAttribute("medalla",
-                rankingService.calcularMedalla(perfil.getPuntaje()));
+        } catch (Exception e) {
+            return "redirect:/Perfil?fotoError";
         }
 
-    } catch (Exception e) {
-        return "redirect:/";
+        return "redirect:/Perfil?fotoOk";
     }
 
-    return "perfil"; // ← siempre la misma vista
-}
+    @GetMapping("/Perfil/{idUsuario}")
+    public String verPerfilPublico(
+            @PathVariable int idUsuario,
+            HttpSession session,
+            Model model) {
+
+        if (session.getAttribute("usuario") == null)
+            return "redirect:/Login";
+
+        try {
+            Usuario perfil = usuarioService.obtenerPerfilPorId(idUsuario);
+            if (perfil == null)
+                return "redirect:/";
+
+            int rolVisto = usuarioService.obtenerRolPorId(idUsuario);
+
+            model.addAttribute("usuario", perfil);
+            model.addAttribute("rol", rolVisto);
+            model.addAttribute("viendoOtro", true);
+
+            if (rolVisto == 3) {
+                model.addAttribute("medalla",
+                        rankingService.calcularMedalla(perfil.getPuntaje()));
+            }
+
+        } catch (Exception e) {
+            return "redirect:/";
+        }
+
+        return "perfil";
+    }
 
 }

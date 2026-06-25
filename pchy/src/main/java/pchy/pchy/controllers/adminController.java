@@ -45,39 +45,38 @@ public class adminController {
     private ProblemaService problemaService;
     @Autowired
     private UsuarioClaseService usuarioClaseService;
-@Autowired
-private RankingService rankingService;
-
+    @Autowired
+    private RankingService rankingService;
 
     @Value("${pchy.base-url}")
     private String baseUrl;
 
     // Inicio de sesion y el perfil
 
+    @GetMapping("/Administrador/Inicio")
+    public String principalAdmin(HttpSession session, Model model) {
 
-@GetMapping("/Administrador/Inicio")
-public String principalAdmin(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        int idProfesor = usuario.getIdUsuario();
 
-    int idProfesor = usuario.getIdUsuario();
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("rol", session.getAttribute("rol"));
+        model.addAttribute("totalClases",
+                claseService.contarClasesActivas(idProfesor));
+        model.addAttribute("totalSolicitudes",
+                usuarioClaseService.contarSolicitudesPendientes(idProfesor));
+        model.addAttribute("competenciasProximas",
+                competenciaService.listarProximasPorProfesor(idProfesor));
+        model.addAttribute("totalCompetenciasActivas",
+                competenciaService.listarProximasPorProfesor(idProfesor).size());
+        model.addAttribute("imagenInstitucion",
+                InstitucionUtil.obtenerImagen(usuario.getInstitucion()));
 
-    model.addAttribute("usuario", usuario);
-    model.addAttribute("rol", session.getAttribute("rol"));
-    model.addAttribute("totalClases",
-        claseService.contarClasesActivas(idProfesor));
-    model.addAttribute("totalSolicitudes",
-        usuarioClaseService.contarSolicitudesPendientes(idProfesor));
-    model.addAttribute("competenciasProximas",
-        competenciaService.listarProximasPorProfesor(idProfesor));
-    model.addAttribute("totalCompetenciasActivas",
-        competenciaService.listarProximasPorProfesor(idProfesor).size());
-   model.addAttribute("imagenInstitucion",
-    InstitucionUtil.obtenerImagen(usuario.getInstitucion()));
-
-    return "Administrador/principalAdmin";
-}
+        return "Administrador/principalAdmin";
+    }
 
     @GetMapping("/Administrador/Perfil")
     public String perfilAdmin() {
@@ -125,8 +124,6 @@ public String principalAdmin(HttpSession session, Model model) {
             return "redirect:/Administrador/Nueva/Clase?error";
         }
     }
-
-    
 
     @PostMapping("/Administrador/Clase/{id}/Editar")
     public String editarClase(
@@ -263,7 +260,7 @@ public String principalAdmin(HttpSession session, Model model) {
 
     // Los niveles
 
-    // ─── Crear nivel (actualizado) ────────────────────
+    // Crear nivel
     @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/Nuevo")
     public String crearNivel(
             @PathVariable int idClase,
@@ -288,7 +285,7 @@ public String principalAdmin(HttpSession session, Model model) {
                 "/Competencia/" + idComp;
     }
 
-    // ─── Ver nivel con problemas ──────────────────────
+    // Ver nivel
     @GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}")
     public String verNivel(
             @PathVariable int idClase,
@@ -319,7 +316,7 @@ public String principalAdmin(HttpSession session, Model model) {
         return "Administrador/Competencias/nivel";
     }
 
-    // ─── Crear problema ───────────────────────────────
+    // Crear problema
     @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/Nuevo")
     public String crearProblema(
             @PathVariable int idClase,
@@ -345,7 +342,7 @@ public String principalAdmin(HttpSession session, Model model) {
                 "/Competencia/" + idComp + "/Nivel/" + idNivel;
     }
 
-    // ─── Editar problema ──────────────────────────────
+    // eDITAR problema
     @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Editar")
     public String editarProblema(
             @PathVariable int idClase,
@@ -372,7 +369,7 @@ public String principalAdmin(HttpSession session, Model model) {
                 "/Competencia/" + idComp + "/Nivel/" + idNivel;
     }
 
-    // ─── Eliminar problema ────────────────────────────
+    // Eliminar problema
     @PostMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Eliminar")
     public String eliminarProblema(
             @PathVariable int idClase,
@@ -609,8 +606,6 @@ public String principalAdmin(HttpSession session, Model model) {
             HttpSession session,
             Model model) {
 
-                
-
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null)
             return "redirect:/Login";
@@ -622,12 +617,12 @@ public String principalAdmin(HttpSession session, Model model) {
             model.addAttribute("competencias",
                     competenciaService.listarPorClase(id));
             model.addAttribute("solicitudes",
-                    usuarioClaseService.listarPendientes(id)); // ← nuevo
-               model.addAttribute("rankingClase",          // ← nuevo
-            rankingService.rankingPorClase(id));
-                    model.addAttribute("alumnos",
-    usuarioClaseService.listarAlumnos(id));
-                    
+                    usuarioClaseService.listarPendientes(id));
+            model.addAttribute("rankingClase",
+                    rankingService.rankingPorClase(id));
+            model.addAttribute("alumnos",
+                    usuarioClaseService.listarAlumnos(id));
+
         } catch (Exception e) {
             return "redirect:/Administrador/Clases";
         }
@@ -660,89 +655,85 @@ public String principalAdmin(HttpSession session, Model model) {
     }
 
     @Autowired
-private RevisionService revisionService;
+    private RevisionService revisionService;
 
-// Ver revisión de una competencia
-@GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Revision")
-public String verRevision(
-        @PathVariable int idClase,
-        @PathVariable int idComp,
-        @RequestParam(required = false) Integer idAlumno,
-        HttpSession session,
-        Model model) {
+    // Ver revisión de una competencia
+    @GetMapping("/Administrador/Clase/{idClase}/Competencia/{idComp}/Revision")
+    public String verRevision(
+            @PathVariable int idClase,
+            @PathVariable int idComp,
+            @RequestParam(required = false) Integer idAlumno,
+            HttpSession session,
+            Model model) {
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    try {
-        Clase clase           = claseService.obtenerClase(idClase, usuario.getIdUsuario());
-        Competencia comp      = competenciaService.obtener(idComp);
-        List<Usuario> alumnos = revisionService.listarAlumnosConEntregas(idComp);
+        try {
+            Clase clase = claseService.obtenerClase(idClase, usuario.getIdUsuario());
+            Competencia comp = competenciaService.obtener(idComp);
+            List<Usuario> alumnos = revisionService.listarAlumnosConEntregas(idComp);
 
-        model.addAttribute("clase", clase);
-        model.addAttribute("competencia", comp);
-        model.addAttribute("alumnos", alumnos);
+            model.addAttribute("clase", clase);
+            model.addAttribute("competencia", comp);
+            model.addAttribute("alumnos", alumnos);
 
-        // Si se seleccionó un alumno, cargar sus entregas
-        if (idAlumno != null) {
-            List<Entrega> entregas = revisionService.listarEntregasAlumno(
-                idAlumno, idComp
-            );
+            // Si se seleccionó un alumno, cargar sus entregas
+            if (idAlumno != null) {
+                List<Entrega> entregas = revisionService.listarEntregasAlumno(
+                        idAlumno, idComp);
 
-            // Para cada entrega, cargar resultados de casos
-            java.util.Map<Integer, List<ResultadoCaso>> resultadosPorEntrega =
-                new java.util.HashMap<>();
+                // Para cada entrega, cargar resultados de casos
+                java.util.Map<Integer, List<ResultadoCaso>> resultadosPorEntrega = new java.util.HashMap<>();
 
-            for (Entrega e : entregas) {
-                resultadosPorEntrega.put(
-                    e.getIdEntrega(),
-                    revisionService.listarResultadosCasos(e.getIdEntrega())
-                );
+                for (Entrega e : entregas) {
+                    resultadosPorEntrega.put(
+                            e.getIdEntrega(),
+                            revisionService.listarResultadosCasos(e.getIdEntrega()));
+                }
+
+                model.addAttribute("alumnoSeleccionado", idAlumno);
+                model.addAttribute("entregas", entregas);
+                model.addAttribute("resultadosPorEntrega", resultadosPorEntrega);
             }
 
-            model.addAttribute("alumnoSeleccionado", idAlumno);
-            model.addAttribute("entregas", entregas);
-            model.addAttribute("resultadosPorEntrega", resultadosPorEntrega);
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase;
         }
 
-    } catch (Exception e) {
-        return "redirect:/Administrador/Clase/" + idClase;
+        return "Administrador/Competencias/revision";
     }
 
-    return "Administrador/Competencias/revision";
-}
+    // Validar una entrega
+    @PostMapping("/Administrador/Entrega/{idEntrega}/Validar")
+    public String validarEntrega(
+            @PathVariable int idEntrega,
+            @RequestParam String estado,
+            @RequestParam(defaultValue = "0") int puntaje,
+            @RequestParam(required = false) String comentario,
+            @RequestParam int idClase,
+            @RequestParam int idComp,
+            @RequestParam int idAlumno,
+            HttpSession session) {
 
-// Validar una entrega
-@PostMapping("/Administrador/Entrega/{idEntrega}/Validar")
-public String validarEntrega(
-        @PathVariable int idEntrega,
-        @RequestParam String estado,
-        @RequestParam(defaultValue = "0") int puntaje,
-        @RequestParam(required = false) String comentario,
-        @RequestParam int idClase,
-        @RequestParam int idComp,
-        @RequestParam int idAlumno,
-        HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        try {
+            revisionService.validar(
+                    idEntrega, estado, puntaje,
+                    comentario, usuario.getIdUsuario());
+        } catch (Exception e) {
+            return "redirect:/Administrador/Clase/" + idClase +
+                    "/Competencia/" + idComp +
+                    "/Revision?idAlumno=" + idAlumno + "&error";
+        }
 
-    try {
-        revisionService.validar(
-            idEntrega, estado, puntaje,
-            comentario, usuario.getIdUsuario()
-        );
-    } catch (Exception e) {
         return "redirect:/Administrador/Clase/" + idClase +
-               "/Competencia/" + idComp +
-               "/Revision?idAlumno=" + idAlumno + "&error";
+                "/Competencia/" + idComp +
+                "/Revision?idAlumno=" + idAlumno + "&validado";
     }
-
-    return "redirect:/Administrador/Clase/" + idClase +
-           "/Competencia/" + idComp +
-           "/Revision?idAlumno=" + idAlumno + "&validado";
-}
-
-
 
 }

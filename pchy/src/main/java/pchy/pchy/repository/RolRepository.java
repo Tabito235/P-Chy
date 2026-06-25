@@ -29,14 +29,14 @@ public class RolRepository {
     public List<Usuario> listarUsuariosConRol() {
 
         String sql = """
-            SELECT u.idUsuario, u.nombre, u.apellido, u.correo,
-                   u.matricula, u.institucion, u.fotoPerfil,
-                   u.activo, r.idRol, r.nombre AS nombreRol
-            FROM usuario u
-            JOIN rolUsuario ru ON u.idUsuario = ru.idUsuario
-            JOIN rol r ON ru.idRol = r.idRol
-            ORDER BY r.idRol ASC, u.nombre ASC
-            """;
+                SELECT u.idUsuario, u.nombre, u.apellido, u.correo,
+                       u.matricula, u.institucion, u.fotoPerfil,
+                       u.activo, r.idRol, r.nombre AS nombreRol
+                FROM usuario u
+                JOIN rolUsuario ru ON u.idUsuario = ru.idUsuario
+                JOIN rol r ON ru.idRol = r.idRol
+                ORDER BY r.idRol ASC, u.nombre ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> {
             Usuario u = new Usuario();

@@ -20,10 +20,11 @@ public class Usuario {
     private boolean activo;
     private Timestamp fechaRegistro;
 
-private String rolActual;
-private int idRolActual;
+    private String rolActual;
+    private int idRolActual;
 
-    public Usuario(){}
+    public Usuario() {
+    }
 
     public int getIdUsuario() {
         return idUsuario;
@@ -129,11 +130,20 @@ private int idRolActual;
         this.fechaRegistro = fechaRegistro;
     }
 
+    // Y sus getters/setters
+    public String getRolActual() {
+        return rolActual;
+    }
 
-// Y sus getters/setters
-public String getRolActual() { return rolActual; }
-public void setRolActual(String rolActual) { this.rolActual = rolActual; }
+    public void setRolActual(String rolActual) {
+        this.rolActual = rolActual;
+    }
 
-public int getIdRolActual() { return idRolActual; }
-public void setIdRolActual(int idRolActual) { this.idRolActual = idRolActual; }
+    public int getIdRolActual() {
+        return idRolActual;
+    }
+
+    public void setIdRolActual(int idRolActual) {
+        this.idRolActual = idRolActual;
+    }
 }

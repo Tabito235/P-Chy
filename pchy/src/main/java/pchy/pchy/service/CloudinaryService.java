@@ -19,13 +19,11 @@ public class CloudinaryService {
             throws IOException {
 
         Map resultado = cloudinary.uploader().upload(
-            archivo.getBytes(),
-            ObjectUtils.asMap(
-                "public_id",   "pchy/perfiles/" + nombreArchivo,
-                "overwrite",   true,
-                "folder",      "pchy/perfiles"
-            )
-        );
+                archivo.getBytes(),
+                ObjectUtils.asMap(
+                        "public_id", "pchy/perfiles/" + nombreArchivo,
+                        "overwrite", true,
+                        "folder", "pchy/perfiles"));
 
         return (String) resultado.get("secure_url");
     }

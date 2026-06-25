@@ -60,7 +60,6 @@ public class NivelesRepository {
                 n.getIdCompetencia());
     }
 
-    // Actualiza el mapper también
     private Niveles mapear(java.sql.ResultSet rs) throws java.sql.SQLException {
         Niveles n = new Niveles();
         n.setIdNivel(rs.getInt("idNivel"));
@@ -96,7 +95,7 @@ public class NivelesRepository {
         }, idNivel);
     }
 
-    // Borrado lógico
+  
     public void desactivarNivel(int idNivel) {
 
         String sql = "UPDATE nivel SET activo = FALSE WHERE idNivel = ?";

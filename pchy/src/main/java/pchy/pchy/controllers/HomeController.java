@@ -26,7 +26,7 @@ public class HomeController {
         return "temporal";
     }
 
-     @GetMapping("/desafioDiario")
+    @GetMapping("/desafioDiario")
     public String desafioDiario() {
         return "desafioDiario";
     }
@@ -45,16 +45,15 @@ public class HomeController {
         return loginService.autenticar(
                 correo,
                 contrasena,
-                session
-        );
+                session);
     }
 
-      @GetMapping("/ayudaProfesor")
+    @GetMapping("/ayudaProfesor")
     public String ayudaProfesor() {
         return "ayudaProfesor";
     }
 
-      @GetMapping("/ayudaUsuario")
+    @GetMapping("/ayudaUsuario")
     public String ayudaUsuario() {
         return "ayudaUsuario";
     }

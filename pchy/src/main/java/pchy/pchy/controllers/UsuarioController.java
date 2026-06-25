@@ -18,19 +18,32 @@ import java.util.List;
 @Controller
 public class UsuarioController {
 
-    @Autowired private UsuarioService       usuarioService;
-    @Autowired private UsuarioClaseService  usuarioClaseService;
-    @Autowired private CompetenciaService   competenciaService;
-    @Autowired private NivelesService       nivelesService;
-    @Autowired private ProblemaService      problemaService;
-    @Autowired private CasoPruebaService    casoPruebaService;
-    @Autowired private EntregaService       entregaService;
-    @Autowired private ProgresoService      progresoService;
-    @Autowired private EntregaRepository    entregaRepository;
-    @Autowired private RankingService rankingService;
- @Autowired private PuntajeClaseRepository puntajeClaseRepository;
- @Autowired private RevisionService revisionService;
-    // ── Registro ──────────────────────────────────────
+    @Autowired
+    private UsuarioService usuarioService;
+    @Autowired
+    private UsuarioClaseService usuarioClaseService;
+    @Autowired
+    private CompetenciaService competenciaService;
+    @Autowired
+    private NivelesService nivelesService;
+    @Autowired
+    private ProblemaService problemaService;
+    @Autowired
+    private CasoPruebaService casoPruebaService;
+    @Autowired
+    private EntregaService entregaService;
+    @Autowired
+    private ProgresoService progresoService;
+    @Autowired
+    private EntregaRepository entregaRepository;
+    @Autowired
+    private RankingService rankingService;
+    @Autowired
+    private PuntajeClaseRepository puntajeClaseRepository;
+    @Autowired
+    private RevisionService revisionService;
+
+    // Registro
     @GetMapping("/Usuario/Registro")
     public String vistaRegistro() {
         return "Usuario/registroUsuario";
@@ -46,76 +59,74 @@ public class UsuarioController {
         }
     }
 
-    // ── Inicio ────────────────────────────────────────
+    // Inicio
 
+    @GetMapping("/Alumno/Inicio")
+    public String inicio(HttpSession session, Model model) {
 
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-@GetMapping("/Alumno/Inicio")
-public String inicio(HttpSession session, Model model) {
+        List<Clase> clases = usuarioClaseService.listarMisClases(
+                usuario.getIdUsuario());
+        List<Competencia> competenciasProximas = competenciaService.listarActivasPorAlumno(usuario.getIdUsuario());
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("rol", 3);
+        model.addAttribute("totalClases", clases.size());
+        model.addAttribute("competenciasProximas", competenciasProximas);
+        model.addAttribute("imagenInstitucion",
+                InstitucionUtil.obtenerImagen(usuario.getInstitucion()));
 
-    List<Clase> clases = usuarioClaseService.listarMisClases(
-        usuario.getIdUsuario()
-    );
-    List<Competencia> competenciasProximas =
-        competenciaService.listarActivasPorAlumno(usuario.getIdUsuario());
-
-    model.addAttribute("usuario", usuario);
-    model.addAttribute("rol", 3);
-    model.addAttribute("totalClases", clases.size());
-    model.addAttribute("competenciasProximas", competenciasProximas);
-  model.addAttribute("imagenInstitucion",
-    InstitucionUtil.obtenerImagen(usuario.getInstitucion()));
-
-    return "Usuario/principalAlumno";
-}
-
+        return "Usuario/principalAlumno";
+    }
 
     @GetMapping("/Alumno/Perfil")
-    public String perfil() { return "redirect:/Perfil"; }
+    public String perfil() {
+        return "redirect:/Perfil";
+    }
 
-    // ── Mis clases ────────────────────────────────────
+    // Mis clases
     @GetMapping("/Alumno/Mis/Clases")
     public String misClases(HttpSession session, Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         List<Clase> clases = usuarioClaseService.listarMisClases(
-            usuario.getIdUsuario()
-        );
+                usuario.getIdUsuario());
         model.addAttribute("clases", clases);
         model.addAttribute("rol", 3);
 
         return "Usuario/misClases";
     }
 
-    // ── Unirse a clase con código ─────────────────────
+    // Codgigo
     @PostMapping("/Alumno/Unirse")
     public String unirse(
             @RequestParam String codigo,
             HttpSession session) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             String nombre = usuarioClaseService.solicitarUnirse(
-                codigo, usuario.getIdUsuario()
-            );
+                    codigo, usuario.getIdUsuario());
             return "redirect:/Alumno/Mis/Clases?solicitudOk=" +
-                java.net.URLEncoder.encode(nombre,
-                    java.nio.charset.StandardCharsets.UTF_8);
+                    java.net.URLEncoder.encode(nombre,
+                            java.nio.charset.StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "redirect:/Alumno/Mis/Clases?error=" +
-                java.net.URLEncoder.encode(e.getMessage(),
-                    java.nio.charset.StandardCharsets.UTF_8);
+                    java.net.URLEncoder.encode(e.getMessage(),
+                            java.nio.charset.StandardCharsets.UTF_8);
         }
     }
 
-    // ── En clase (ver competencias) ───────────────────
+    // Ver competencia
     @GetMapping("/Alumno/Clase/{idClase}")
     public String enClase(
             @PathVariable int idClase,
@@ -123,23 +134,22 @@ public String inicio(HttpSession session, Model model) {
             Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             usuarioClaseService.verificarAcceso(
-                usuario.getIdUsuario(), idClase
-            );
+                    usuario.getIdUsuario(), idClase);
 
             Clase clase = usuarioClaseService.listarMisClases(
                     usuario.getIdUsuario())
-                .stream()
-                .filter(c -> c.getIdClase() == idClase)
-                .findFirst()
-                .orElseThrow();
+                    .stream()
+                    .filter(c -> c.getIdClase() == idClase)
+                    .findFirst()
+                    .orElseThrow();
 
             // Solo competencias PUBLICADAS para el alumno
-            List<Competencia> competencias =
-                competenciaService.listarPublicadasPorClase(idClase);
+            List<Competencia> competencias = competenciaService.listarPublicadasPorClase(idClase);
 
             model.addAttribute("clase", clase);
             model.addAttribute("competencias", competencias);
@@ -152,7 +162,7 @@ public String inicio(HttpSession session, Model model) {
         return "Usuario/Enclase";
     }
 
-    // ── Ver competencia (niveles) ─────────────────────
+    // Ver nivel
     @GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}")
     public String verCompetencia(
             @PathVariable int idClase,
@@ -161,37 +171,32 @@ public String inicio(HttpSession session, Model model) {
             Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             usuarioClaseService.verificarAcceso(
-                usuario.getIdUsuario(), idClase
-            );
+                    usuario.getIdUsuario(), idClase);
 
             Clase clase = usuarioClaseService.listarMisClases(
                     usuario.getIdUsuario())
-                .stream()
-                .filter(c -> c.getIdClase() == idClase)
-                .findFirst().orElseThrow();
+                    .stream()
+                    .filter(c -> c.getIdClase() == idClase)
+                    .findFirst().orElseThrow();
 
-            Competencia comp   = competenciaService.obtener(idComp);
+            Competencia comp = competenciaService.obtener(idComp);
             List<Niveles> niveles = nivelesService.listarPorCompetencia(idComp);
 
-            java.util.Map<Integer, Boolean> nivelDesbloqueado =
-                new java.util.HashMap<>();
-            java.util.Map<Integer, Integer> progresoNivel =
-                new java.util.HashMap<>();
+            java.util.Map<Integer, Boolean> nivelDesbloqueado = new java.util.HashMap<>();
+            java.util.Map<Integer, Integer> progresoNivel = new java.util.HashMap<>();
 
             for (Niveles n : niveles) {
                 boolean disponible = progresoService.nivelDisponible(
-                    usuario.getIdUsuario(), n.getIdNivel(), n.getPosicion()
-                );
+                        usuario.getIdUsuario(), n.getIdNivel(), n.getPosicion());
                 nivelDesbloqueado.put(n.getIdNivel(), disponible);
                 progresoNivel.put(n.getIdNivel(),
-                    progresoService.obtenerProblemasCompletados(
-                        usuario.getIdUsuario(), n.getIdNivel()
-                    )
-                );
+                        progresoService.obtenerProblemasCompletados(
+                                usuario.getIdUsuario(), n.getIdNivel()));
             }
 
             model.addAttribute("clase", clase);
@@ -208,7 +213,7 @@ public String inicio(HttpSession session, Model model) {
         return "Usuario/competencias/compUsuario";
     }
 
-    // ── Ver nivel ─────────────────────────────────────
+    // ver nivel
     @GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}")
     public String verNivel(
             @PathVariable int idClase,
@@ -218,47 +223,42 @@ public String inicio(HttpSession session, Model model) {
             Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             usuarioClaseService.verificarAcceso(
-                usuario.getIdUsuario(), idClase
-            );
+                    usuario.getIdUsuario(), idClase);
 
             Clase clase = usuarioClaseService.listarMisClases(
                     usuario.getIdUsuario())
-                .stream()
-                .filter(c -> c.getIdClase() == idClase)
-                .findFirst().orElseThrow();
+                    .stream()
+                    .filter(c -> c.getIdClase() == idClase)
+                    .findFirst().orElseThrow();
 
             Competencia comp = competenciaService.obtener(idComp);
-            Niveles nivel    = nivelesService.obtener(idNivel);
+            Niveles nivel = nivelesService.obtener(idNivel);
 
             // Verificar desbloqueo
             boolean disponible = progresoService.nivelDisponible(
-                usuario.getIdUsuario(), idNivel, nivel.getPosicion()
-            );
+                    usuario.getIdUsuario(), idNivel, nivel.getPosicion());
 
             if (!disponible) {
                 return "redirect:/Alumno/Clase/" + idClase +
-                       "/Competencia/" + idComp + "?bloqueado";
+                        "/Competencia/" + idComp + "?bloqueado";
             }
 
             List<Problema> problemas = problemaService.listarPorNivel(idNivel);
 
             int completados = progresoService.obtenerProblemasCompletados(
-                usuario.getIdUsuario(), idNivel
-            );
+                    usuario.getIdUsuario(), idNivel);
 
-            java.util.Map<Integer, Boolean> problemaCompletado =
-                new java.util.HashMap<>();
+            java.util.Map<Integer, Boolean> problemaCompletado = new java.util.HashMap<>();
             for (Problema p : problemas) {
                 problemaCompletado.put(
-                    p.getIdProblema(),
-                    entregaRepository.problemaCompletado(
-                        usuario.getIdUsuario(), p.getIdProblema()
-                    )
-                );
+                        p.getIdProblema(),
+                        entregaRepository.problemaCompletado(
+                                usuario.getIdUsuario(), p.getIdProblema()));
             }
 
             model.addAttribute("clase", clase);
@@ -271,13 +271,13 @@ public String inicio(HttpSession session, Model model) {
 
         } catch (Exception e) {
             return "redirect:/Alumno/Clase/" + idClase +
-                   "/Competencia/" + idComp;
+                    "/Competencia/" + idComp;
         }
 
         return "Usuario/competencias/lvlUsuario";
     }
 
-    // ── Ver problema ──────────────────────────────────
+    // ver problema
     @GetMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}")
     public String verProblema(
             @PathVariable int idClase,
@@ -288,50 +288,44 @@ public String inicio(HttpSession session, Model model) {
             Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         try {
             usuarioClaseService.verificarAcceso(
-                usuario.getIdUsuario(), idClase
-            );
+                    usuario.getIdUsuario(), idClase);
 
             Clase clase = usuarioClaseService.listarMisClases(
                     usuario.getIdUsuario())
-                .stream()
-                .filter(c -> c.getIdClase() == idClase)
-                .findFirst().orElseThrow();
+                    .stream()
+                    .filter(c -> c.getIdClase() == idClase)
+                    .findFirst().orElseThrow();
 
-            Competencia comp  = competenciaService.obtener(idComp);
-            Niveles nivel     = nivelesService.obtener(idNivel);
+            Competencia comp = competenciaService.obtener(idComp);
+            Niveles nivel = nivelesService.obtener(idNivel);
             Problema problema = problemaService.obtener(idProblema);
-            List<CasoPrueba> casos =
-                casoPruebaService.listarPorProblema(idProblema);
+            List<CasoPrueba> casos = casoPruebaService.listarPorProblema(idProblema);
 
             Entrega ultimaEntrega = entregaService.obtenerUltima(
-                usuario.getIdUsuario(), idProblema
-            );
+                    usuario.getIdUsuario(), idProblema);
 
             List<ResultadoCaso> resultadosCasos = null;
-    java.util.Map<String, Object> revisionProfesor = null;
+            java.util.Map<String, Object> revisionProfesor = null;
 
-     if (ultimaEntrega != null) {
-        resultadosCasos = entregaService.resultadosCasos(
-            ultimaEntrega.getIdEntrega()
-        );
-        // Si ya fue validada, obtener la revisión del profesor
-        if ("APROBADA".equals(ultimaEntrega.getEstado()) ||
-        "RECHAZADA".equals(ultimaEntrega.getEstado())) {
-        try {
-            revisionProfesor = revisionService.obtenerRevision(
-                ultimaEntrega.getIdEntrega()
-            );
-        } catch (Exception e) {
-            revisionProfesor = null;
-        }
-    }
-    }
-
-            
+            if (ultimaEntrega != null) {
+                resultadosCasos = entregaService.resultadosCasos(
+                        ultimaEntrega.getIdEntrega());
+                // Si ya fue validada, obtener la revisión del profesor
+                if ("APROBADA".equals(ultimaEntrega.getEstado()) ||
+                        "RECHAZADA".equals(ultimaEntrega.getEstado())) {
+                    try {
+                        revisionProfesor = revisionService.obtenerRevision(
+                                ultimaEntrega.getIdEntrega());
+                    } catch (Exception e) {
+                        revisionProfesor = null;
+                    }
+                }
+            }
 
             model.addAttribute("clase", clase);
             model.addAttribute("competencia", comp);
@@ -340,18 +334,18 @@ public String inicio(HttpSession session, Model model) {
             model.addAttribute("casos", casos);
             model.addAttribute("ultimaEntrega", ultimaEntrega);
             model.addAttribute("resultadosCasos", resultadosCasos);
-            model.addAttribute("revisionProfesor", revisionProfesor); 
+            model.addAttribute("revisionProfesor", revisionProfesor);
             model.addAttribute("rol", 3);
 
         } catch (Exception e) {
             return "redirect:/Alumno/Clase/" + idClase +
-                   "/Competencia/" + idComp + "/Nivel/" + idNivel;
+                    "/Competencia/" + idComp + "/Nivel/" + idNivel;
         }
 
         return "Usuario/competencias/problemaU";
     }
 
-    // ── Entregar solución ─────────────────────────────
+    // entregar solucion
     @PostMapping("/Alumno/Clase/{idClase}/Competencia/{idComp}/Nivel/{idNivel}/Problema/{idProblema}/Entregar")
     public String entregar(
             @PathVariable int idClase,
@@ -359,156 +353,167 @@ public String inicio(HttpSession session, Model model) {
             @PathVariable int idNivel,
             @PathVariable int idProblema,
             @RequestParam("archivoCodigo") MultipartFile archivoCodigo,
-            @RequestParam(value = "archivoCaptura", required = false)
-                MultipartFile archivoCaptura,
+            @RequestParam(value = "archivoCaptura", required = false) MultipartFile archivoCaptura,
             HttpSession session) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/Login";
+        if (usuario == null)
+            return "redirect:/Login";
 
         String base = "/Alumno/Clase/" + idClase +
-                      "/Competencia/" + idComp +
-                      "/Nivel/" + idNivel +
-                      "/Problema/" + idProblema;
+                "/Competencia/" + idComp +
+                "/Nivel/" + idNivel +
+                "/Problema/" + idProblema;
 
         try {
             Competencia comp = competenciaService.obtener(idComp);
 
-Entrega entrega = entregaService.enviar(
-    usuario.getIdUsuario(),
-    idNivel,
-    idProblema,
-    comp.getLenguaje(),
-    idClase,  // ← agregar
-    archivoCodigo,
-    archivoCaptura
-);
+            Entrega entrega = entregaService.enviar(
+                    usuario.getIdUsuario(),
+                    idNivel,
+                    idProblema,
+                    comp.getLenguaje(),
+                    idClase,
+                    archivoCodigo,
+                    archivoCaptura);
 
             return "redirect:" + base +
-                   "?resultado=" + entrega.getResultadoJudge() +
-                   "&porcentaje=" + entrega.getPorcentajeCasos();
+                    "?resultado=" + entrega.getResultadoJudge() +
+                    "&porcentaje=" + entrega.getPorcentajeCasos();
 
         } catch (Exception e) {
             return "redirect:" + base + "?judgeError";
         }
     }
 
-
-
     @GetMapping("/Alumno/Competencias/Resultado")
     public String resultado() {
         return "Usuario/competencias/ResultU";
     }
 
+    // Ranking global (Nolouse jsajasjajs)
+    @GetMapping("/Alumno/Rankings")
+    public String rankingGlobal(HttpSession session, Model model) {
 
-// Ranking global
-@GetMapping("/Alumno/Rankings")
-public String rankingGlobal(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
+        List<RankingEntry> ranking = rankingService.rankingGlobal();
+        int miPosicion = rankingService.posicionGlobal(usuario.getIdUsuario());
+        String miMedalla = rankingService.calcularMedalla(usuario.getPuntaje());
 
-    List<RankingEntry> ranking = rankingService.rankingGlobal();
-    int miPosicion = rankingService.posicionGlobal(usuario.getIdUsuario());
-    String miMedalla = rankingService.calcularMedalla(usuario.getPuntaje());
-
-    model.addAttribute("ranking", ranking);
-    model.addAttribute("miPosicion", miPosicion);
-    model.addAttribute("miPuntaje", usuario.getPuntaje());
-    model.addAttribute("miMedalla", miMedalla);
-    model.addAttribute("usuario", usuario);
-    model.addAttribute("rol", 3);
-
-    return "Usuario/competencias/RanksU";
-}
-
-// Ranking por clase
-@GetMapping("/Alumno/Clase/{idClase}/Ranking")
-public String rankingPorClase(
-        @PathVariable int idClase,
-        HttpSession session,
-        Model model) {
-
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    if (usuario == null) return "redirect:/Login";
-
-    try {
-        usuarioClaseService.verificarAcceso(
-            usuario.getIdUsuario(), idClase
-        );
-
-        Clase clase = usuarioClaseService.listarMisClases(
-                usuario.getIdUsuario())
-            .stream()
-            .filter(c -> c.getIdClase() == idClase)
-            .findFirst().orElseThrow();
-
-        List<RankingEntry> ranking =
-            rankingService.rankingPorClase(idClase);
-
-        int miPosicion = rankingService.posicionEnClase(
-            usuario.getIdUsuario(), idClase
-        );
-
-        List<Clase> misClases = usuarioClaseService.listarMisClases(
-    usuario.getIdUsuario()
-);
-
-        int miPuntajeClase = puntajeClaseRepository.obtenerPuntaje(
-            usuario.getIdUsuario(), idClase
-        );
-
-        model.addAttribute("clase", clase);
         model.addAttribute("ranking", ranking);
         model.addAttribute("miPosicion", miPosicion);
-        model.addAttribute("miPuntajeClase", miPuntajeClase);
+        model.addAttribute("miPuntaje", usuario.getPuntaje());
+        model.addAttribute("miMedalla", miMedalla);
         model.addAttribute("usuario", usuario);
         model.addAttribute("rol", 3);
-        model.addAttribute("misClases", misClases);
 
-    } catch (Exception e) {
-        return "redirect:/Alumno/Mis/Clases";
+        return "Usuario/competencias/RanksU";
     }
 
-    return "Usuario/competencias/RankingClase";
-}
+    // Ranking por clase
+    @GetMapping("/Alumno/Clase/{idClase}/Ranking")
+    public String rankingPorClase(
+            @PathVariable int idClase,
+            HttpSession session,
+            Model model) {
 
-private String obtenerImagenInstitucion(String institucion) {
-    if (institucion == null) return "/Imagenes/upiiz.png";
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null)
+            return "redirect:/Login";
 
-    // Campus IPN específicos
-    if (institucion.equals("ESCOM"))            return "/Imagenes/instituciones/escom.png";
-    if (institucion.equals("UPIITA"))           return "/Imagenes/instituciones/upiita.png";
-    if (institucion.equals("ESIME Zacatenco"))  return "/Imagenes/instituciones/esime.jpg";
-    if (institucion.equals("ESIME Culhuacán"))  return "/Imagenes/instituciones/esime.jpg";
-    if (institucion.equals("UPIIZ"))            return "/Imagenes/instituciones/upiiz.png";
-    if (institucion.equals("UPIICSA"))          return "/Imagenes/instituciones/upiicsa.png";
+        try {
+            usuarioClaseService.verificarAcceso(
+                    usuario.getIdUsuario(), idClase);
 
-    // Universidades generales
-    if (institucion.equals("IPN"))              return "/Imagenes/instituciones/upiiz.png";
-    if (institucion.equals("UNAM"))             return "/Imagenes/instituciones/unam.png";
-    if (institucion.startsWith("TecNM") ||
-        institucion.equals("TecNM"))            return "/Imagenes/instituciones/Tecnm.jpg";
-    if (institucion.equals("UAZ"))              return "/Imagenes/instituciones/uaz.png";
-    if (institucion.equals("UANL"))             return "/Imagenes/instituciones/uanl.png";
-    if (institucion.equals("UDG"))              return "/Imagenes/instituciones/udg.png";
-    if (institucion.equals("BUAP"))             return "/Imagenes/instituciones/buap.png";
-    if (institucion.equals("UAM"))              return "/Imagenes/instituciones/UAM.png";
-    if (institucion.equals("Tec Monterrey"))    return "/Imagenes/instituciones/Mapach.png";
+            Clase clase = usuarioClaseService.listarMisClases(
+                    usuario.getIdUsuario())
+                    .stream()
+                    .filter(c -> c.getIdClase() == idClase)
+                    .findFirst().orElseThrow();
 
-    // Campus UNAM
-    if (institucion.startsWith("Facultad") ||
-        institucion.startsWith("FES"))          return "/Imagenes/instituciones/unam.png";
+            List<RankingEntry> ranking = rankingService.rankingPorClase(idClase);
 
-    // Campus UAM
-    if (institucion.equals("Azcapotzalco") ||
-        institucion.equals("Iztapalapa") ||
-        institucion.equals("Cuajimalpa") ||
-        institucion.equals("Lerma") ||
-        institucion.equals("Xochimilco"))       return "/Imagenes/instituciones/UAM.png";
+            int miPosicion = rankingService.posicionEnClase(
+                    usuario.getIdUsuario(), idClase);
 
-    // Otra o desconocida → Pichy
-    return "/Imagenes/Pichy.png";
-}
+            List<Clase> misClases = usuarioClaseService.listarMisClases(
+                    usuario.getIdUsuario());
+
+            int miPuntajeClase = puntajeClaseRepository.obtenerPuntaje(
+                    usuario.getIdUsuario(), idClase);
+
+            model.addAttribute("clase", clase);
+            model.addAttribute("ranking", ranking);
+            model.addAttribute("miPosicion", miPosicion);
+            model.addAttribute("miPuntajeClase", miPuntajeClase);
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("rol", 3);
+            model.addAttribute("misClases", misClases);
+
+        } catch (Exception e) {
+            return "redirect:/Alumno/Mis/Clases";
+        }
+
+        return "Usuario/competencias/RankingClase";
+    }
+
+    private String obtenerImagenInstitucion(String institucion) {
+        if (institucion == null)
+            return "/Imagenes/upiiz.png";
+
+        // Campus IPN específicos
+        if (institucion.equals("ESCOM"))
+            return "/Imagenes/instituciones/escom.png";
+        if (institucion.equals("UPIITA"))
+            return "/Imagenes/instituciones/upiita.png";
+        if (institucion.equals("ESIME Zacatenco"))
+            return "/Imagenes/instituciones/esime.jpg";
+        if (institucion.equals("ESIME Culhuacán"))
+            return "/Imagenes/instituciones/esime.jpg";
+        if (institucion.equals("UPIIZ"))
+            return "/Imagenes/instituciones/upiiz.png";
+        if (institucion.equals("UPIICSA"))
+            return "/Imagenes/instituciones/upiicsa.png";
+
+        // Universidades generales
+        if (institucion.equals("IPN"))
+            return "/Imagenes/instituciones/upiiz.png";
+        if (institucion.equals("UNAM"))
+            return "/Imagenes/instituciones/unam.png";
+        if (institucion.startsWith("TecNM") ||
+                institucion.equals("TecNM"))
+            return "/Imagenes/instituciones/Tecnm.jpg";
+        if (institucion.equals("UAZ"))
+            return "/Imagenes/instituciones/uaz.png";
+        if (institucion.equals("UANL"))
+            return "/Imagenes/instituciones/uanl.png";
+        if (institucion.equals("UDG"))
+            return "/Imagenes/instituciones/udg.png";
+        if (institucion.equals("BUAP"))
+            return "/Imagenes/instituciones/buap.png";
+        if (institucion.equals("UAM"))
+            return "/Imagenes/instituciones/UAM.png";
+        if (institucion.equals("Tec Monterrey"))
+            return "/Imagenes/instituciones/Mapach.png";
+
+        // Campus UNAM
+        if (institucion.startsWith("Facultad") ||
+                institucion.startsWith("FES"))
+            return "/Imagenes/instituciones/unam.png";
+
+        // Campus UAM
+        if (institucion.equals("Azcapotzalco") ||
+                institucion.equals("Iztapalapa") ||
+                institucion.equals("Cuajimalpa") ||
+                institucion.equals("Lerma") ||
+                institucion.equals("Xochimilco"))
+            return "/Imagenes/instituciones/UAM.png";
+
+        // Otra o desconocida 
+        return "/Imagenes/Pichy.png";
+    }
 
 }

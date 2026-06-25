@@ -21,47 +21,49 @@ import java.util.Map;
 @Service
 public class EntregaService {
 
-    @Autowired private EntregaRepository  entregaRepository;
-    @Autowired private CasoPruebaRepository casoPruebaRepository;
-    @Autowired private JudgeService       judgeService;
-    @Autowired private Cloudinary         cloudinary;
-    @Autowired private ProgresoService progresoService;
-@Autowired private ProblemaRepository problemaRepository;
+    @Autowired
+    private EntregaRepository entregaRepository;
+    @Autowired
+    private CasoPruebaRepository casoPruebaRepository;
+    @Autowired
+    private JudgeService judgeService;
+    @Autowired
+    private Cloudinary cloudinary;
+    @Autowired
+    private ProgresoService progresoService;
+    @Autowired
+    private ProblemaRepository problemaRepository;
 
+    // Proceso para subir la vaina
     public Entrega enviar(int idUsuario, int idNivel, int idProblema,
-                          String lenguaje, int idClase,
-                          MultipartFile archivoCodigo,
-                          MultipartFile archivoCaptura) throws Exception {
-Problema problema = problemaRepository.obtenerPorId(idProblema);
+            String lenguaje, int idClase,
+            MultipartFile archivoCodigo,
+            MultipartFile archivoCaptura) throws Exception {
+        Problema problema = problemaRepository.obtenerPorId(idProblema);
 
         // 1. Leer código fuente
         String codigo = new String(
-            archivoCodigo.getBytes(), StandardCharsets.UTF_8
-        );
+                archivoCodigo.getBytes(), StandardCharsets.UTF_8);
 
         // 2. Subir captura a Cloudinary
         String urlCaptura = null;
         if (archivoCaptura != null && !archivoCaptura.isEmpty()) {
             Map resultado = cloudinary.uploader().upload(
-                archivoCaptura.getBytes(),
-                ObjectUtils.asMap(
-                    "folder", "pchy/capturas",
-                    "resource_type", "image"
-                )
-            );
+                    archivoCaptura.getBytes(),
+                    ObjectUtils.asMap(
+                            "folder", "pchy/capturas",
+                            "resource_type", "image"));
             urlCaptura = (String) resultado.get("secure_url");
         }
 
         // 3. Subir código a Cloudinary (como raw)
         Map resCode = cloudinary.uploader().upload(
-            archivoCodigo.getBytes(),
-            ObjectUtils.asMap(
-                "folder", "pchy/codigos",
-                "resource_type", "raw",
-                "public_id", "codigo_" + idUsuario + "_" + idProblema + "_" +
-                             System.currentTimeMillis()
-            )
-        );
+                archivoCodigo.getBytes(),
+                ObjectUtils.asMap(
+                        "folder", "pchy/codigos",
+                        "resource_type", "raw",
+                        "public_id", "codigo_" + idUsuario + "_" + idProblema + "_" +
+                                System.currentTimeMillis()));
         String urlCodigo = (String) resCode.get("secure_url");
 
         // 4. Crear entrega en BD
@@ -81,17 +83,15 @@ Problema problema = problemaRepository.obtenerPorId(idProblema);
         if (casos.isEmpty()) {
             // Sin casos: marcar como REVISION para que el profesor revise
             entregaRepository.actualizarResultadoJudge(
-                idEntrega, "SIN_CASOS", 0,
-                "No hay casos de prueba definidos. Requiere revisión manual."
-            );
+                    idEntrega, "SIN_CASOS", 0,
+                    "No hay casos de prueba definidos. Requiere revisión manual.");
             entrega.setResultadoJudge("SIN_CASOS");
             entrega.setPorcentajeCasos(0);
             return entrega;
         }
 
         // 6. Enviar a Judge0
-        JudgeService.JudgeResult result =
-            judgeService.evaluar(codigo, lenguaje, casos, idEntrega);
+        JudgeService.JudgeResult result = judgeService.evaluar(codigo, lenguaje, casos, idEntrega);
 
         // 7. Guardar resultado por caso
         for (ResultadoCaso rc : result.resultados()) {
@@ -100,19 +100,17 @@ Problema problema = problemaRepository.obtenerPorId(idProblema);
 
         // 8. Actualizar entrega con resultado
         entregaRepository.actualizarResultadoJudge(
-            idEntrega,
-            result.veredicto(),
-            result.porcentaje(),
-            result.mensajeError()
-        );
- if ("ACEPTADO".equals(result.veredicto())) {
-        progresoService.procesarEntregaAceptada(
-            idUsuario, idNivel, idProblema,
-            problema != null ? problema.getPuntaje() : 0,
-            idClase  // ← pasar idClase
-        );
-}
-        
+                idEntrega,
+                result.veredicto(),
+                result.porcentaje(),
+                result.mensajeError());
+        if ("ACEPTADO".equals(result.veredicto())) {
+            progresoService.procesarEntregaAceptada(
+                    idUsuario, idNivel, idProblema,
+                    problema != null ? problema.getPuntaje() : 0,
+                    idClase // ← pasar idClase
+            );
+        }
 
         entrega.setResultadoJudge(result.veredicto());
         entrega.setPorcentajeCasos(result.porcentaje());

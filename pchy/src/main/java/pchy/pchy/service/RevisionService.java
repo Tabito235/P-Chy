@@ -22,8 +22,7 @@ public class RevisionService {
 
     public List<Entrega> listarEntregasAlumno(int idUsuario, int idCompetencia) {
         return revisionRepository.listarUltimasEntregasAlumno(
-            idUsuario, idCompetencia
-        );
+                idUsuario, idCompetencia);
     }
 
     public List<ResultadoCaso> listarResultadosCasos(int idEntrega) {
@@ -31,18 +30,17 @@ public class RevisionService {
     }
 
     public void validar(int idEntrega, String estado,
-                        int puntaje, String comentario, int idRevisor) {
+            int puntaje, String comentario, int idRevisor) {
 
         if (!"APROBADA".equals(estado) && !"RECHAZADA".equals(estado))
             throw new RuntimeException("Estado inválido");
 
         revisionRepository.validarEntrega(
-            idEntrega, estado, puntaje, comentario, idRevisor
-        );
+                idEntrega, estado, puntaje, comentario, idRevisor);
     }
 
     public java.util.Map<String, Object> obtenerRevision(int idEntrega) {
-    return revisionRepository.obtenerRevision(idEntrega);
-}
+        return revisionRepository.obtenerRevision(idEntrega);
+    }
 
 }

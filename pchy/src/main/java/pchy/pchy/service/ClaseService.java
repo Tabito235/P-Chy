@@ -15,7 +15,6 @@ public class ClaseService {
     @Autowired
     private ClaseRepository claseRepository;
 
-    // Crea la clase
     public void crearClase(String nombre, String descripcion, int idProfesor) {
 
         if (nombre == null || nombre.isBlank()) {
@@ -31,11 +30,9 @@ public class ClaseService {
         claseRepository.crearClase(clase);
     }
 
-    // Lista las del profe
     public List<Clase> listarMisClases(int idProfesor) {
         return claseRepository.listarPorProfesor(idProfesor);
     }
-
 
     public Clase obtenerClase(int idClase, int idProfesor) {
 
@@ -52,9 +49,9 @@ public class ClaseService {
         return clase;
     }
 
-    // pAra editar
+  
     public void editarClase(int idClase, String nombre,
-                             String descripcion, int idProfesor) {
+            String descripcion, int idProfesor) {
 
         if (nombre == null || nombre.isBlank()) {
             throw new RuntimeException("El nombre es obligatorio");
@@ -69,12 +66,10 @@ public class ClaseService {
         claseRepository.editarClase(clase);
     }
 
-    //Pra eleiminar
     public void eliminarClase(int idClase, int idProfesor) {
         claseRepository.desactivarClase(idClase, idProfesor);
     }
 
-    // Codigo 
     private String generarCodigo() {
 
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -84,8 +79,7 @@ public class ClaseService {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 6; i++) {
                 sb.append(chars.charAt(
-                    (int)(Math.random() * chars.length())
-                ));
+                        (int) (Math.random() * chars.length())));
             }
             codigo = sb.toString();
         } while (claseRepository.existeCodigo(codigo));
@@ -94,6 +88,6 @@ public class ClaseService {
     }
 
     public int contarClasesActivas(int idProfesor) {
-    return claseRepository.contarClasesActivas(idProfesor);
-}
+        return claseRepository.contarClasesActivas(idProfesor);
+    }
 }

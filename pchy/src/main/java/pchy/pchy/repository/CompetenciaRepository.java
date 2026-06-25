@@ -22,10 +22,10 @@ public class CompetenciaRepository {
     public int crearCompetencia(Competencia c) {
 
         String sql = """
-            INSERT INTO competencia
-            (idClase, nombre, descripcion, lenguaje, fechaInicio, fechaFin, estado)
-            VALUES (?, ?, ?, ?, ?, ?, 'BORRADOR')
-            """;
+                INSERT INTO competencia
+                (idClase, nombre, descripcion, lenguaje, fechaInicio, fechaFin, estado)
+                VALUES (?, ?, ?, ?, ?, ?, 'BORRADOR')
+                """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -47,10 +47,10 @@ public class CompetenciaRepository {
     public List<Competencia> listarPorClase(int idClase) {
 
         String sql = """
-            SELECT * FROM competencia
-            WHERE idClase = ?
-            ORDER BY fechaInicio ASC
-            """;
+                SELECT * FROM competencia
+                WHERE idClase = ?
+                ORDER BY fechaInicio ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idClase);
     }
@@ -61,30 +61,30 @@ public class CompetenciaRepository {
         String sql = "SELECT * FROM competencia WHERE idCompetencia = ?";
 
         return jdbcTemplate.query(sql, rs -> {
-            if (rs.next()) return mapear(rs);
+            if (rs.next())
+                return mapear(rs);
             return null;
         }, idCompetencia);
     }
 
-    //Editar
+    // Editar
     public void editarCompetencia(Competencia c) {
 
         String sql = """
-            UPDATE competencia
-            SET nombre = ?, descripcion = ?, lenguaje = ?,
-                fechaInicio = ?, fechaFin = ?
-            WHERE idCompetencia = ? AND idClase = ?
-            """;
+                UPDATE competencia
+                SET nombre = ?, descripcion = ?, lenguaje = ?,
+                    fechaInicio = ?, fechaFin = ?
+                WHERE idCompetencia = ? AND idClase = ?
+                """;
 
         jdbcTemplate.update(sql,
-            c.getNombre(),
-            c.getDescripcion(),
-            c.getLenguaje(),
-            c.getFechaInicio(),
-            c.getFechaFin(),
-            c.getIdCompetencia(),
-            c.getIdClase()
-        );
+                c.getNombre(),
+                c.getDescripcion(),
+                c.getLenguaje(),
+                c.getFechaInicio(),
+                c.getFechaFin(),
+                c.getIdCompetencia(),
+                c.getIdClase());
     }
 
     // en que esta, si editado, eliminado, y eso
@@ -94,85 +94,81 @@ public class CompetenciaRepository {
         jdbcTemplate.update(sql, estado, idCompetencia);
     }
 
-    //Borrar
+    // Borrar
 
+    public void eliminarCompetencia(int idCompetencia, int idClase) {
 
+        // 1. Eliminar resultadoCaso (FK hacia casoPrueba y entrega)
+        String sqlResultados = """
+                DELETE rc FROM resultadoCaso rc
+                JOIN casoPrueba cp ON cp.idCaso = rc.idCaso
+                JOIN problema p ON p.idProblema = cp.idProblema
+                JOIN nivel n ON n.idNivel = p.idNivel
+                WHERE n.idCompetencia = ?
+                """;
+        jdbcTemplate.update(sqlResultados, idCompetencia);
 
-  public void eliminarCompetencia(int idCompetencia, int idClase) {
+        // 2. Eliminar revisiones (FK hacia entrega)
+        String sqlRevisiones = """
+                DELETE rv FROM revision rv
+                JOIN entrega e ON e.idEntrega = rv.idEntrega
+                JOIN nivel n ON n.idNivel = e.idNivel
+                WHERE n.idCompetencia = ?
+                """;
+        jdbcTemplate.update(sqlRevisiones, idCompetencia);
 
-    // 1. Eliminar resultadoCaso (FK hacia casoPrueba y entrega)
-    String sqlResultados = """
-        DELETE rc FROM resultadoCaso rc
-        JOIN casoPrueba cp ON cp.idCaso = rc.idCaso
-        JOIN problema p ON p.idProblema = cp.idProblema
-        JOIN nivel n ON n.idNivel = p.idNivel
-        WHERE n.idCompetencia = ?
-        """;
-    jdbcTemplate.update(sqlResultados, idCompetencia);
+        // 3. Eliminar entregas (FK hacia nivel y problema)
+        String sqlEntregas = """
+                DELETE e FROM entrega e
+                JOIN nivel n ON n.idNivel = e.idNivel
+                WHERE n.idCompetencia = ?
+                """;
+        jdbcTemplate.update(sqlEntregas, idCompetencia);
 
-    // 2. Eliminar revisiones (FK hacia entrega)
-    String sqlRevisiones = """
-        DELETE rv FROM revision rv
-        JOIN entrega e ON e.idEntrega = rv.idEntrega
-        JOIN nivel n ON n.idNivel = e.idNivel
-        WHERE n.idCompetencia = ?
-        """;
-    jdbcTemplate.update(sqlRevisiones, idCompetencia);
+        // 4. Eliminar casoPrueba (FK hacia problema)
+        String sqlCasos = """
+                DELETE cp FROM casoPrueba cp
+                JOIN problema p ON p.idProblema = cp.idProblema
+                JOIN nivel n ON n.idNivel = p.idNivel
+                WHERE n.idCompetencia = ?
+                """;
+        jdbcTemplate.update(sqlCasos, idCompetencia);
 
-    // 3. Eliminar entregas (FK hacia nivel y problema)
-    String sqlEntregas = """
-        DELETE e FROM entrega e
-        JOIN nivel n ON n.idNivel = e.idNivel
-        WHERE n.idCompetencia = ?
-        """;
-    jdbcTemplate.update(sqlEntregas, idCompetencia);
+        // 5. Eliminar progreso de niveles
+        String sqlProgreso = """
+                DELETE pn FROM progresoNivel pn
+                JOIN nivel n ON n.idNivel = pn.idNivel
+                WHERE n.idCompetencia = ?
+                """;
+        jdbcTemplate.update(sqlProgreso, idCompetencia);
 
-    // 4. Eliminar casoPrueba (FK hacia problema)
-    String sqlCasos = """
-        DELETE cp FROM casoPrueba cp
-        JOIN problema p ON p.idProblema = cp.idProblema
-        JOIN nivel n ON n.idNivel = p.idNivel
-        WHERE n.idCompetencia = ?
-        """;
-    jdbcTemplate.update(sqlCasos, idCompetencia);
+        // 6. Eliminar problemas
+        String sqlProblemas = """
+                DELETE p FROM problema p
+                JOIN nivel n ON n.idNivel = p.idNivel
+                WHERE n.idCompetencia = ?
+                """;
+        jdbcTemplate.update(sqlProblemas, idCompetencia);
 
-    // 5. Eliminar progreso de niveles
-    String sqlProgreso = """
-        DELETE pn FROM progresoNivel pn
-        JOIN nivel n ON n.idNivel = pn.idNivel
-        WHERE n.idCompetencia = ?
-        """;
-    jdbcTemplate.update(sqlProgreso, idCompetencia);
+        // 7. Eliminar niveles
+        jdbcTemplate.update(
+                "DELETE FROM nivel WHERE idCompetencia = ?",
+                idCompetencia);
 
-    // 6. Eliminar problemas
-    String sqlProblemas = """
-        DELETE p FROM problema p
-        JOIN nivel n ON n.idNivel = p.idNivel
-        WHERE n.idCompetencia = ?
-        """;
-    jdbcTemplate.update(sqlProblemas, idCompetencia);
-
-    // 7. Eliminar niveles
-    jdbcTemplate.update(
-        "DELETE FROM nivel WHERE idCompetencia = ?",
-        idCompetencia
-    );
-
-    // 8. Eliminar la competencia
-    jdbcTemplate.update(
-        "DELETE FROM competencia WHERE idCompetencia = ? AND idClase = ?",
-        idCompetencia, idClase
-    );
-}
+        // 8. Eliminar la competencia
+        jdbcTemplate.update(
+                "DELETE FROM competencia WHERE idCompetencia = ? AND idClase = ?",
+                idCompetencia, idClase);
+    }
 
     public List<Competencia> listarPublicadasPorClase(int idClase) {
-    String sql = """
-        SELECT * FROM competencia
-        WHERE idClase = ? AND estado = 'PUBLICADA'
-        ORDER BY fechaInicio ASC
-        """;
-    return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idClase);
-}
+        String sql = """
+                SELECT * FROM competencia
+                WHERE idClase = ? AND estado = 'PUBLICADA'
+                ORDER BY fechaInicio ASC
+                """;
+        return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idClase);
+    }
 
     // Mapeado
     private Competencia mapear(java.sql.ResultSet rs) throws java.sql.SQLException {
@@ -189,29 +185,29 @@ public class CompetenciaRepository {
     }
 
     public List<Competencia> listarProximasPorProfesor(int idProfesor) {
-    String sql = """
-        SELECT c.* FROM competencia c
-        JOIN clase cl ON cl.idClase = c.idClase
-        WHERE cl.idProfesorCreador = ?
-        AND c.estado = 'PUBLICADA'
-        AND c.fechaInicio >= NOW()
-        ORDER BY c.fechaInicio ASC
-        LIMIT 3
-        """;
-    return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idProfesor);
-}
+        String sql = """
+                SELECT c.* FROM competencia c
+                JOIN clase cl ON cl.idClase = c.idClase
+                WHERE cl.idProfesorCreador = ?
+                AND c.estado = 'PUBLICADA'
+                AND c.fechaInicio >= NOW()
+                ORDER BY c.fechaInicio ASC
+                LIMIT 3
+                """;
+        return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idProfesor);
+    }
 
-public List<Competencia> listarActivasPorAlumno(int idUsuario) {
-    String sql = """
-        SELECT c.* FROM competencia c
-        JOIN clase cl ON cl.idClase = c.idClase
-        JOIN usuarioClase uc ON uc.idClase = cl.idClase
-        WHERE uc.idUsuario = ? AND uc.estado = 'ACTIVO'
-        AND c.estado = 'PUBLICADA'
-        AND c.fechaFin >= NOW()
-        ORDER BY c.fechaInicio ASC
-        LIMIT 3
-        """;
-    return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idUsuario);
-}
+    public List<Competencia> listarActivasPorAlumno(int idUsuario) {
+        String sql = """
+                SELECT c.* FROM competencia c
+                JOIN clase cl ON cl.idClase = c.idClase
+                JOIN usuarioClase uc ON uc.idClase = cl.idClase
+                WHERE uc.idUsuario = ? AND uc.estado = 'ACTIVO'
+                AND c.estado = 'PUBLICADA'
+                AND c.fechaFin >= NOW()
+                ORDER BY c.fechaInicio ASC
+                LIMIT 3
+                """;
+        return jdbcTemplate.query(sql, (rs, row) -> mapear(rs), idUsuario);
+    }
 }

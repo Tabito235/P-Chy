@@ -20,17 +20,17 @@ public class RevisionRepository {
     public List<Usuario> listarAlumnosConEntregas(int idCompetencia) {
 
         String sql = """
-            SELECT DISTINCT u.idUsuario, u.nombre, u.apellido,
-                   u.correo, u.matricula, u.fotoPerfil,
-                   COUNT(DISTINCT e.idProblema) AS problemasEntregados
-            FROM usuario u
-            JOIN entrega e ON e.idUsuario = u.idUsuario
-            JOIN problema p ON p.idProblema = e.idProblema
-            JOIN nivel n ON n.idNivel = p.idNivel
-            WHERE n.idCompetencia = ?
-            GROUP BY u.idUsuario
-            ORDER BY u.nombre ASC
-            """;
+                SELECT DISTINCT u.idUsuario, u.nombre, u.apellido,
+                       u.correo, u.matricula, u.fotoPerfil,
+                       COUNT(DISTINCT e.idProblema) AS problemasEntregados
+                FROM usuario u
+                JOIN entrega e ON e.idUsuario = u.idUsuario
+                JOIN problema p ON p.idProblema = e.idProblema
+                JOIN nivel n ON n.idNivel = p.idNivel
+                WHERE n.idCompetencia = ?
+                GROUP BY u.idUsuario
+                ORDER BY u.nombre ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> {
             Usuario u = new Usuario();
@@ -47,22 +47,22 @@ public class RevisionRepository {
 
     // Última entrega de un alumno por problema
     public List<Entrega> listarUltimasEntregasAlumno(int idUsuario,
-                                                       int idCompetencia) {
+            int idCompetencia) {
         String sql = """
-            SELECT e.*
-            FROM entrega e
-            JOIN (
-                SELECT idProblema, MAX(fechaEntrega) AS ultima
-                FROM entrega
-                WHERE idUsuario = ?
-                GROUP BY idProblema
-            ) ult ON ult.idProblema = e.idProblema
-                 AND ult.ultima = e.fechaEntrega
-            JOIN problema p ON p.idProblema = e.idProblema
-            JOIN nivel n ON n.idNivel = p.idNivel
-            WHERE e.idUsuario = ? AND n.idCompetencia = ?
-            ORDER BY p.posicion ASC
-            """;
+                SELECT e.*
+                FROM entrega e
+                JOIN (
+                    SELECT idProblema, MAX(fechaEntrega) AS ultima
+                    FROM entrega
+                    WHERE idUsuario = ?
+                    GROUP BY idProblema
+                ) ult ON ult.idProblema = e.idProblema
+                     AND ult.ultima = e.fechaEntrega
+                JOIN problema p ON p.idProblema = e.idProblema
+                JOIN nivel n ON n.idNivel = p.idNivel
+                WHERE e.idUsuario = ? AND n.idCompetencia = ?
+                ORDER BY p.posicion ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> {
             Entrega e = new Entrega();
@@ -86,12 +86,12 @@ public class RevisionRepository {
     public List<ResultadoCaso> listarResultadosCasos(int idEntrega) {
 
         String sql = """
-            SELECT rc.*, cp.entrada, cp.salidaEsperada
-            FROM resultadoCaso rc
-            JOIN casoPrueba cp ON cp.idCaso = rc.idCaso
-            WHERE rc.idEntrega = ?
-            ORDER BY cp.posicion ASC
-            """;
+                SELECT rc.*, cp.entrada, cp.salidaEsperada
+                FROM resultadoCaso rc
+                JOIN casoPrueba cp ON cp.idCaso = rc.idCaso
+                WHERE rc.idEntrega = ?
+                ORDER BY cp.posicion ASC
+                """;
 
         return jdbcTemplate.query(sql, (rs, row) -> {
             ResultadoCaso rc = new ResultadoCaso();
@@ -107,48 +107,47 @@ public class RevisionRepository {
         }, idEntrega);
     }
 
-    // Validar entrega manualmente (aprobar o rechazar)
+    // Validar entrega manualmente 
     public void validarEntrega(int idEntrega, String estado,
-                                int puntaje, String comentario,
-                                int idRevisor) {
+            int puntaje, String comentario,
+            int idRevisor) {
 
         // Actualizar entrega
         String sqlEntrega = """
-            UPDATE entrega
-            SET estado = ?, puntaje = ?
-            WHERE idEntrega = ?
-            """;
+                UPDATE entrega
+                SET estado = ?, puntaje = ?
+                WHERE idEntrega = ?
+                """;
         jdbcTemplate.update(sqlEntrega, estado, puntaje, idEntrega);
 
         // Guardar revisión
         String sqlRevision = """
-            INSERT INTO revision
-            (idEntrega, idRevisor, comentario, aprobado)
-            VALUES (?, ?, ?, ?)
-            """;
+                INSERT INTO revision
+                (idEntrega, idRevisor, comentario, aprobado)
+                VALUES (?, ?, ?, ?)
+                """;
         jdbcTemplate.update(sqlRevision,
-            idEntrega, idRevisor,
-            comentario,
-            "APROBADA".equals(estado)
-        );
+                idEntrega, idRevisor,
+                comentario,
+                "APROBADA".equals(estado));
     }
 
     // Obtener la revisión de una entrega
-public java.util.Map<String, Object> obtenerRevision(int idEntrega) {
-    String sql = """
-        SELECT r.comentario, r.aprobado, r.fechaRevision,
-               u.nombre, u.apellido
-        FROM revision r
-        JOIN usuario u ON u.idUsuario = r.idRevisor
-        WHERE r.idEntrega = ?
-        ORDER BY r.fechaRevision DESC
-        LIMIT 1
-        """;
-    try {
-        return jdbcTemplate.queryForMap(sql, idEntrega);
-    } catch (Exception e) {
-        return null;
+    public java.util.Map<String, Object> obtenerRevision(int idEntrega) {
+        String sql = """
+                SELECT r.comentario, r.aprobado, r.fechaRevision,
+                       u.nombre, u.apellido
+                FROM revision r
+                JOIN usuario u ON u.idUsuario = r.idRevisor
+                WHERE r.idEntrega = ?
+                ORDER BY r.fechaRevision DESC
+                LIMIT 1
+                """;
+        try {
+            return jdbcTemplate.queryForMap(sql, idEntrega);
+        } catch (Exception e) {
+            return null;
+        }
     }
-}
 
 }

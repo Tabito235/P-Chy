@@ -11,10 +11,6 @@ public class Clase {
     private int idProfesorCreador;
     private boolean activa;
     private Timestamp fechaCreacion;
-
-    // Esto solo ayuda a la vista, suma y esas cosas, no lo cuento en la BD, pero
-    // sirve chido (creo ajsjasajja... ay nunca comento y ahora que si nomas pongo
-    // esto)
     private int totalAlumnos;
     private int totalCompetencias;
 

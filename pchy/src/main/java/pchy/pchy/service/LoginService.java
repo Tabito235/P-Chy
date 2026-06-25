@@ -15,42 +15,39 @@ public class LoginService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private BCryptPasswordEncoder encoder =
-            new BCryptPasswordEncoder();
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public String autenticar(
             String correo,
             String contrasena,
-            HttpSession session){
+            HttpSession session) {
 
-        Usuario usuario =
-            usuarioRepository.buscarPorCorreo(correo);
+        Usuario usuario = usuarioRepository.buscarPorCorreo(correo);
 
-        if(usuario == null){
+        if (usuario == null) {
             return "redirect:/Login?error";
         }
 
-        if(!encoder.matches(
+        if (!encoder.matches(
                 contrasena,
-                usuario.getContrasena())){
+                usuario.getContrasena())) {
 
             return "redirect:/Login?error";
         }
 
         session.setAttribute("usuario", usuario);
 
-int rol = usuarioRepository.obtenerRol(usuario.getIdUsuario());
+        int rol = usuarioRepository.obtenerRol(usuario.getIdUsuario());
 
-session.setAttribute("rol", rol); // ← solo aquí, no antes
+        session.setAttribute("rol", rol); 
 
-if (rol == 1)
-    return "redirect:/Administrador/Inicio";
+        if (rol == 1)
+            return "redirect:/Administrador/Inicio";
 
-if (rol == 2)
-    return "redirect:/Administrador/Inicio";
+        if (rol == 2)
+            return "redirect:/Administrador/Inicio";
 
-return "redirect:/Alumno/Inicio"; 
+        return "redirect:/Alumno/Inicio";
     }
 
-    
 }

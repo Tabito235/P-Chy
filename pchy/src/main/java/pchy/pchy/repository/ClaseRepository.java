@@ -14,7 +14,8 @@ public class ClaseRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-// Eto es para crear clase
+
+    // Eto es para crear clase
     public void crearClase(Clase clase) {
 
         String sql = """
@@ -99,7 +100,7 @@ public class ClaseRepository {
         }, idClase);
     }
 
-    //Eto edita la vaina
+    // Eto edita la vaina
     public void editarClase(Clase clase) {
 
         String sql = """
@@ -115,7 +116,7 @@ public class ClaseRepository {
                 clase.getIdProfesorCreador());
     }
 
-    // ─Pa borrarla
+    // Pa´ borrarla
     public void desactivarClase(int idClase, int idProfesor) {
 
         String sql = """
@@ -127,7 +128,6 @@ public class ClaseRepository {
         jdbcTemplate.update(sql, idClase, idProfesor);
     }
 
-    // Pa que se peuda crear y no ecista el codigo para no repetir
     public boolean existeCodigo(String codigo) {
 
         String sql = "SELECT COUNT(*) FROM clase WHERE codigo = ?";
@@ -136,12 +136,12 @@ public class ClaseRepository {
     }
 
     public int contarClasesActivas(int idProfesor) {
-    String sql = """
-        SELECT COUNT(*) FROM clase
-        WHERE idProfesorCreador = ? AND activa = TRUE
-        """;
-    Integer total = jdbcTemplate.queryForObject(sql, Integer.class, idProfesor);
-    return total != null ? total : 0;
-}
+        String sql = """
+                SELECT COUNT(*) FROM clase
+                WHERE idProfesorCreador = ? AND activa = TRUE
+                """;
+        Integer total = jdbcTemplate.queryForObject(sql, Integer.class, idProfesor);
+        return total != null ? total : 0;
+    }
 
 }

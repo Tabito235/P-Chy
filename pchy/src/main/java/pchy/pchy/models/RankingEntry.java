@@ -8,29 +8,64 @@ public class RankingEntry {
     private String apellido;
     private String fotoPerfil;
     private int puntaje;
-    private String medalla; // BRONCE, PLATA, ORO, DIAMANTE, null
+    private String medalla;
 
-    public RankingEntry() {}
+    public RankingEntry() {
+    }
 
-    // Getters y setters
-    public int getPosicion() { return posicion; }
-    public void setPosicion(int posicion) { this.posicion = posicion; }
+    public int getPosicion() {
+        return posicion;
+    }
 
-    public int getIdUsuario() { return idUsuario; }
-    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public int getIdUsuario() {
+        return idUsuario;
+    }
 
-    public String getApellido() { return apellido; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
-    public String getFotoPerfil() { return fotoPerfil; }
-    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public int getPuntaje() { return puntaje; }
-    public void setPuntaje(int puntaje) { this.puntaje = puntaje; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public String getMedalla() { return medalla; }
-    public void setMedalla(String medalla) { this.medalla = medalla; }
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
+
+    public int getPuntaje() {
+        return puntaje;
+    }
+
+    public void setPuntaje(int puntaje) {
+        this.puntaje = puntaje;
+    }
+
+    public String getMedalla() {
+        return medalla;
+    }
+
+    public void setMedalla(String medalla) {
+        this.medalla = medalla;
+    }
 }
